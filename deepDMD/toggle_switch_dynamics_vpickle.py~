@@ -1,0 +1,59 @@
+import numpy as np
+from scipy.integrate import odeint
+import matplotlib.pyplot as plt
+import csv
+
+# function that returns dz/dt
+def model(z,t):
+    dzdt = [np.power(1+z[1]**3.55, -1) - 0.5*z[0],
+            np.power(1+z[0]**3.53, -1) - 0.5*z[1]]
+    return dzdt
+
+# time points
+t = np.linspace(0,50,100)
+# X and Y range
+Xrange = np.linspace(0,5,10)
+Yrange = np.linspace(0,5,10)
+All_Z = None;
+for k1 in range(len(Xrange)):
+    for k2 in range(len(Yrange)):
+        z0 = [Xrange[k1],Yrange[k2]];
+        Z = odeint(model,z0,t)
+        Z  = Z.T;
+        if type(All_Z) == np.ndarray:
+            np.vstack((All_Z,Z));
+        else:
+            All_Z = Z; 
+
+
+
+            
+
+Yf = All_Z[:,1:];
+Yp = All_Z[:,0:-1];      
+
+print("[DEBUG] All_Z.shape: " + repr(All_Z.shape));
+
+print("[DEBUG] Yf.shape: " + repr(Yf.shape));
+print("[DEBUG] Yp.shape: " + repr(Yp.shape));
+
+import pickle
+file_obj = open('koopman_data/sim_toggle_switch.pickle','wb');
+pickle.dump([list(np.transpose(Yp)), list(np.transpose(Yf))], file_obj);
+file_obj.close(); 
+
+'''
+with open('ToggleSwitchData.csv','w') as f1:
+    writer=csv.writer(f1, delimiter=',',lineterminator='\n',)
+    for k1 in range(len(Xrange)):
+        for k2 in range(len(Yrange)):
+            z0 = [Xrange[k1], Yrange[k2]] # initial condition
+            Z = odeint(model,z0,t)        # solve ODEs
+            plt.plot(Z[:,0],Z[:,1])       # plot each solution
+            writer.writerow(Z)
+plt.xlabel('x1(t)')
+plt.ylabel('x2(t)')
+plt.show()        
+
+
+'''

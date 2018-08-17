@@ -1,0 +1,468 @@
+import numpy as np
+from scipy import optimize, integrate
+from matplotlib import pyplot as plt
+
+
+def logistic(x, center, alpha):
+    """
+    :param x: float, function input
+    :param center: float, parameter
+    :param alpha: float, parameter
+    :return: 
+    """
+    return 1./(1 + np.exp(-alpha * (x - center)))
+
+
+def mv_logistic(x, mu, alpha, l, n):  # n==len(x) must be true!
+    """
+    Product of logistic functions
+    :param x: array, function input
+    :param mu: array, function parameter
+    :param alpha: float, parameter
+    :param l: int, index of a matrix
+    :param n: len(x)
+    :return: 
+    """
+    return np.prod([logistic(x[j], mu[l, j], alpha) for j in range(n)])
+
+
+def Lambda_T(x, mu, alpha, n, N_L):  # n==len(x) must be true!
+    """
+    Vector of product of logistic functions
+    :param x: 
+    :param mu: 
+    :param alpha: 
+    :param n: 
+    :param N_L: 
+    :return: 
+    """
+    return np.array([mv_logistic(x, mu, alpha, l, n) for l in range(N_L)])
+
+
+def x_bar_T(x, N_L):
+    """
+    Extened x vector for approximation contribution of the original state to the KO.
+    :param x: 
+    :param N_L: 
+    :return: 
+    """
+    return np.hstack([np.array([0]), x, np.zeros(N_L)])
+
+
+def mv_log_prime(x, mu, alpha, l, n, func):
+    """
+    The derivative of the lth logistic product.
+    :param x: 
+    :param mu: 
+    :param alpha: 
+    :param l: 
+    :param n: 
+    :param func: a function from R^n to R^n
+    :return: 
+    """
+    return mv_logistic(x, mu, alpha, l, n) * alpha * sum([(1 - logistic(x[i], mu[l, i], alpha)) * func(x)[i] for i in range(n)])
+
+
+def oss1(x):
+    """
+    System's first state evolution rule (just an example)
+    :param x: 
+    :return: 
+    """
+    return x[1]
+
+
+def oss2(x):
+    """
+    System's second state evolution rule (just an example)
+    :param x: 
+    :return: 
+    """
+    return -x[0] + 0.2 * (1 - x[0]**2) * x[1]
+
+
+def f(x):
+    """
+    The state evolution rule for the entire system (just an example)
+    :param x: 
+    :return: 
+    """
+    return np.array([oss1(x), oss2(x)])
+
+
+def g(x, mu, alpha, n, func, N_L):
+    """
+    The derivative of the lifted state.
+    :param x: 
+    :param mu: 
+    :param alpha: 
+    :param n: 
+    :param func: 
+    :param N_L: 
+    :return: 
+    """
+    # First we make each of the Lambda_T entries and the f entries
+    L_T = [mv_log_prime(x, mu, alpha, l, n, func) for l in range(N_L)]
+    f_x = func(x)
+    return np.hstack([0, f_x, L_T])
+
+
+def to_min(points, mu_vec, w_vec, alpha, func, N_L, n):
+    """
+    Auxiliary function in the minimization process.
+    :param points: 
+    :param mu_vec: 
+    :param w_vec: 
+    :param alpha: 
+    :param func: 
+    :param N_L: 
+    :param n: 
+    :return: 
+    """
+    # First we reorganize mu_vec and w_vec into matrices
+    dim_w = n+N_L+1
+    mu = mu_vec.reshape(N_L, n)
+    w = w_vec.reshape(dim_w, dim_w)
+    #print(dim_w-1, np.shape(Lambda_T(points[0], mu, alpha, n, N_L))[0]+ n)
+    coeff = lambda x: np.hstack([np.array([1]), np.zeros(dim_w - 1)]) + x_bar_T(x, N_L) + \
+        np.hstack([np.zeros(n+1), Lambda_T(x, mu, alpha, n, N_L)])
+    return sum([np.linalg.norm((coeff(x)).dot(w) - g(x, mu, alpha, n, func, N_L)) for x in points])
+
+
+def calc_Mu_K(points, N_L, n, alpha, func, initer):
+    """
+    Solving the koopman approximation problem.  Warning, this will optimize over dim_w^2 + N_L*n variables, so its big.
+    :param points: 
+    :param N_L: 
+    :param n: 
+    :param alpha: 
+    :param func: 
+    :param initer: 
+    :return: 
+    """
+    dim_w = n + N_L + 1
+    opt_results = optimize.minimize(lambda inpt: to_min(points, inpt[0:N_L*n], inpt[N_L*n:], alpha, func, N_L, n), initer)
+    Mu = opt_results.x[0:N_L*n].reshape(N_L, n)
+    K = opt_results.x[N_L*n:].reshape(dim_w, dim_w)
+    print("Result of the optimization routine: {0}".format(str(opt_results.success)))
+    return Mu, K
+
+
+def calc_Mu(points, N_L, n, alpha, func, initer, W):
+    """
+    Solving the koopman approximation problem.  Warning, this will optimize over dim_w^2 + N_L*n variables, so its big.
+    :param points: 
+    :param N_L: 
+    :param n: 
+    :param alpha: 
+    :param func: 
+    :param initer: 
+    :param W: an array (w_vec)
+    :return: 
+    """
+    opt_results = optimize.minimize(lambda inpt: to_min(points, inpt, W, alpha, func, N_L, n), initer)
+    Mu = opt_results.x.reshape(N_L, n)
+    print("Result of the Mu optimization routine: {0}".format(str(opt_results.success)))
+    return Mu
+
+
+def calc_K(points, N_L, n, alpha, func, initer, Mu):
+    """
+    Solving the koopman approximation problem.  Warning, this will optimize over dim_w^2 + N_L*n variables, so its big.
+    :param points: 
+    :param N_L: 
+    :param n: 
+    :param alpha: 
+    :param func: 
+    :param initer: 
+    :param Mu:
+    :return: 
+    """
+    dim_w = n + N_L + 1
+    opt_results = optimize.minimize(lambda inpt: to_min(points, Mu, inpt, alpha, func, N_L, n), initer)
+    K = opt_results.x.reshape(dim_w, dim_w)
+    print("Result of the W optimization routine: {0}".format(str(opt_results.success)))
+    return K
+
+
+# Now we test the code above and try to learn then simulate the behavior of our operator.
+# We use nonlinear system class to do so.
+
+class NonlinearSystem:
+    """
+    Class for a non-linear system,
+    Methods: 
+    """
+    def __init__(self, func, n, alpha, starting_vals, N_L, mu, k):
+        """
+        :param func: function discribing system evolution, R^n to R^n
+        element's derivative.
+        :param alpha: 
+        :param starting_vals: array discribing the initial condition of the system.
+        """
+        self.n = n
+        self.x0 = starting_vals
+        self.f = func
+        self.m = N_L
+        self.alpha = alpha
+        self.koop = k
+        self.mu = mu
+        self.ksim = None
+        self.nsim = None
+        self.npm = self.m + self.n
+
+    def lift_state(self):
+        """
+        :return: the lifted state.
+        """
+        return np.hstack([1, self.x0, Lambda_T(self.x0, self.mu, self.alpha, self.n, self.m)])
+
+
+    def simulate_koop(self, times):
+        """
+        runs a simulation for the koopman operator state
+        :param times: array of times to show the state behavior at.
+        :return: an array of the behavior of the system...
+        """
+        ex0 = self.lift_state()
+        self.ksim = integrate.odeint(lambda x, t: self.koop.dot(x), ex0, times)
+
+    def simulate_reg(self, times):
+        """
+        runs a simulation of the normal system to use for comparison.
+        :param times: 
+        :return: 
+        """
+        self.nsim = integrate.odeint(lambda x, t: self.f(x), self.x0, times)
+
+    def plot(self, koopman=True, formula=True, indx=0):
+        """
+        Plots the most recent simulation results
+        :return: 
+        """
+        if koopman and formula:
+            # We plot the two simulations side by side
+            plt.plot(self.ksim.T[indx+1], label="Evolved with the Koopman Operator")
+            plt.plot(self.nsim.T[indx], label="Evolved by the Dynamics Formula")
+            plt.legend()
+            plt.title("Comparison of Koopman Evolution and Formula Evolution")
+            plt.ylim(-4, 4)
+            plt.show()
+        elif koopman:
+            plt.plot(self.ksim.T[indx+1], label="Evolved with the Koopman Operator")
+            plt.legend()
+            plt.title("State Evolution")
+            plt.show()
+        elif formula:
+            plt.plot(self.nsim.T[indx], label="Evolved by the Dynamics Formula")
+            plt.legend()
+            plt.title("State Evolution")
+            plt.show()
+        else:
+            print("Neither koopman nor formula were chosen to be True.")
+
+
+# We now set the paramenters for the simulation and learning problem.
+
+# points = [[np.random.randn()*2.2, np.random.randn()*2.2] for i in range(40)]
+points = np.loadtxt("good_points")
+print(points)
+
+N_L = 3  # This is the number of centers.
+n = 2
+alpha = 10
+x0 = np.array([.5, -.5])
+
+######################################################################################
+# Formatting the problem as a single optimization
+initer = np.ones(N_L*n + (N_L+n+1)**2) * 0.00  # np.random.rand(N_L*n + (N_L+n+1)**2)
+print("Initial point of the optimization problem: {0}".format(str(initer)))
+Mu, K = calc_Mu_K(points, N_L, n, alpha, f, initer)
+######################################################################################
+# This method has preformed better than the method below, however, it has yet to give satisfactory results, often 
+# because it is too slow.  Also, I have not seen significant improvement in the approximations even when I increase
+# the number of centers...
+"""
+######################################################################################
+# We try optimizing over one then the other and over and over again.
+K = calc_K(points, N_L, n, alpha, f, np.zeros((N_L+n+1)**2), np.random.rand(N_L*n))
+Mu = calc_Mu(points, N_L, n, alpha, f, np.random.rand(N_L*n), K.reshape(1, (N_L+n+1)**2))
+K = calc_K(points, N_L, n, alpha, f, np.random.rand((N_L+n+1)**2), Mu.reshape(1, N_L*n))
+Mu = calc_Mu(points, N_L, n, alpha, f, np.random.rand(N_L*n), K.reshape(1, (N_L+n+1)**2))
+K = calc_K(points, N_L, n, alpha, f, np.random.rand((N_L+n+1)**2), Mu.reshape(1, N_L*n))  # Be sure to end on K
+######################################################################################
+# In practice the code above has done worse in approximating our system than having the entire optimization in one call
+# I don't know the reason for that.
+"""
+atpt_num = str(8)  # Change this value to stop saving over yourself.
+title_mu = "mu attempt {0}".format(atpt_num)
+title_k = "k attempt {0}".format(atpt_num)
+title_points = "points attempt {0}".format(atpt_num)
+title_hyper = ""
+# Save and store the results for Mu and K
+np.savetxt(title_mu, Mu)
+np.savetxt(title_k, K)
+np.savetxt(title_points, points)
+
+example = NonlinearSystem(f, n, alpha, x0, N_L, Mu, -K)
+# Run the simulation to plot the result of this choice of Mu and K
+times = np.linspace(0, 50, 120)
+example.simulate_koop(times)
+example.simulate_reg(times)
+example.plot(indx=0)
+example.plot(indx=1)
+
+print(example.ksim[:, 1:3] - example.nsim)
+
+# print(example.nsim)
+
+"""sim_output = np.array([[  5.00000000e-01,  -5.00000000e-01],
+             [  3.02400437e-01,  -6.69252405e-01],
+             [  5.76222030e-02,  -7.77805735e-01],
+             [ -2.10548495e-01,  -8.05407896e-01],
+             [ -4.72031000e-01,  -7.36138621e-01],
+             [ -6.93466810e-01,  -5.68071580e-01],
+             [ -8.44273359e-01,  -3.20001863e-01],
+             [ -9.03180498e-01,  -2.68318788e-02],
+             [ -8.61467522e-01,   2.73923631e-01],
+             [ -7.21844458e-01,   5.52576550e-01],
+             [ -4.95522416e-01,   7.87339916e-01],
+             [ -2.00669250e-01,   9.57146191e-01],
+             [  1.36630804e-01,   1.03538116e+00],
+             [  4.80675135e-01,   9.92986147e-01],
+             [  7.87734463e-01,   8.14718662e-01],
+             [  1.01407813e+00,   5.17941939e-01],
+             [  1.12756267e+00,   1.51808246e-01],
+             [  1.11458474e+00,  -2.27288127e-01],
+             [  9.78149757e-01,  -5.79091148e-01],
+             [  7.31440491e-01,  -8.81817093e-01],
+             [  3.93684691e-01,  -1.11835101e+00],
+             [ -8.66170126e-03,  -1.26069645e+00],
+             [ -4.37092422e-01,  -1.26608167e+00],
+             [ -8.38692273e-01,  -1.09699427e+00],
+             [ -1.15422979e+00,  -7.59354555e-01],
+             [ -1.33654071e+00,  -3.17084533e-01],
+             [ -1.36492142e+00,   1.45208472e-01],
+             [ -1.24345367e+00,   5.69785100e-01],
+             [ -9.89204755e-01,   9.35027678e-01],
+             [ -6.23368134e-01,   1.23317982e+00],
+             [ -1.71316757e-01,   1.44309064e+00],
+             [  3.29752285e-01,   1.51467849e+00],
+             [  8.22458951e-01,   1.38397446e+00],
+             [  1.23322544e+00,   1.02993365e+00],
+             [  1.49621026e+00,   5.21517713e-01],
+             [  1.57943204e+00,  -2.23746702e-02],
+             [  1.48700770e+00,  -5.16536630e-01],
+             [  1.24126361e+00,  -9.35674262e-01],
+             [  8.66972223e-01,  -1.28347396e+00],
+             [  3.88493632e-01,  -1.55281838e+00],
+             [ -1.61479244e-01,  -1.69809015e+00],
+             [ -7.27925283e-01,  -1.63614714e+00],
+             [ -1.22918479e+00,  -1.30682912e+00],
+             [ -1.58036979e+00,  -7.61190929e-01],
+             [ -1.73245584e+00,  -1.46461516e-01],
+             [ -1.68509899e+00,   4.14032529e-01],
+             [ -1.46515967e+00,   8.81660028e-01],
+             [ -1.10242531e+00,   1.26827398e+00],
+             [ -6.21813421e-01,   1.58336627e+00],
+             [ -5.09464037e-02,   1.79641264e+00],
+             [  5.62912289e-01,   1.82163805e+00],
+             [  1.13936645e+00,   1.56216316e+00],
+             [  1.57960510e+00,   1.02478625e+00],
+             [  1.81301974e+00,   3.61442819e-01],
+             [  1.82713179e+00,  -2.61705524e-01],
+             [  1.64963082e+00,  -7.78023509e-01],
+             [  1.31568316e+00,  -1.19885130e+00],
+             [  8.52908302e-01,  -1.54807369e+00],
+             [  2.85637200e-01,  -1.81526805e+00],
+             [ -3.48359805e-01,  -1.92825190e+00],
+             [ -9.77991998e-01,  -1.77062439e+00],
+             [ -1.50003624e+00,  -1.29209008e+00],
+             [ -1.82252868e+00,  -6.14148883e-01],
+             [ -1.91265297e+00,   6.37944623e-02],
+             [ -1.79239536e+00,   6.32261617e-01],
+             [ -1.50093584e+00,   1.08893369e+00],
+             [ -1.07033822e+00,   1.46634022e+00],
+             [ -5.24406327e-01,   1.77386156e+00],
+             [  1.07133262e-01,   1.96227271e+00],
+             [  7.66440035e-01,   1.91722391e+00],
+             [  1.35593984e+00,   1.53927957e+00],
+             [  1.76838333e+00,   8.88943074e-01],
+             [  1.94538985e+00,   1.72319872e-01],
+             [  1.89504111e+00,  -4.50837024e-01],
+             [  1.65705703e+00,  -9.48727656e-01],
+             [  1.26864330e+00,  -1.35388472e+00],
+             [  7.55724798e-01,  -1.69195549e+00],
+             [  1.42986429e-01,  -1.93904871e+00],
+             [ -5.24931163e-01,  -1.99929751e+00],
+             [ -1.16330995e+00,  -1.74602877e+00],
+             [ -1.65940268e+00,  -1.16649726e+00],
+             [ -1.92937211e+00,  -4.37291102e-01],
+             [ -1.95946980e+00,   2.38289079e-01],
+             [ -1.78437260e+00,   7.83783354e-01],
+             [ -1.44567517e+00,   1.22023376e+00],
+             [ -9.73404841e-01,   1.58404664e+00],
+             [ -3.90474390e-01,   1.87469083e+00],
+             [  2.69150416e-01,   2.02311828e+00],
+             [  9.36754718e-01,   1.89966205e+00],
+             [  1.50418361e+00,   1.42705279e+00],
+             [  1.86778115e+00,   7.19821221e-01],
+             [  1.98655282e+00,   1.86650115e-03],
+             [  1.88297047e+00,  -5.96142921e-01],
+             [  1.60051238e+00,  -1.06979686e+00],
+             [  1.17435323e+00,  -1.45889935e+00],
+             [  6.28522340e-01,  -1.78218338e+00],
+             [ -1.01637067e-02,  -1.99917423e+00],
+             [ -6.88646612e-01,  -1.99583950e+00],
+             [ -1.31104616e+00,  -1.65311963e+00],
+             [ -1.76331200e+00,  -1.00635890e+00],
+             [ -1.97611285e+00,  -2.65573100e-01],
+             [ -1.95214506e+00,   3.85950583e-01],
+             [ -1.73234600e+00,   9.03593691e-01],
+             [ -1.35690925e+00,   1.32089160e+00],
+             [ -8.53224168e-01,   1.67059263e+00],
+             [ -2.44549105e-01,   1.93861249e+00],
+             [  4.29131956e-01,   2.03708258e+00],
+             [  1.08829505e+00,   1.83173319e+00],
+             [  1.61898505e+00,   1.28146557e+00],
+             [  1.92746691e+00,   5.46703462e-01],
+             [  1.99040825e+00,  -1.52960729e-01],
+             [  1.84001021e+00,  -7.20661717e-01],
+             [  1.51989635e+00,  -1.17141532e+00],
+             [  1.06226930e+00,  -1.54553839e+00],
+             [  4.90019669e-01,  -1.85124923e+00],
+             [ -1.66326615e-01,  -2.03038083e+00],
+             [ -8.44235500e-01,  -1.95591777e+00],
+             [ -1.43882800e+00,  -1.52928878e+00],
+             [ -1.84014327e+00,  -8.36025831e-01],
+             [ -1.99575146e+00,  -1.02084402e-01],
+             [ -1.92184064e+00,   5.19118034e-01],
+             [ -1.66213434e+00,   1.00990885e+00],
+             [ -1.25413431e+00,   1.40993867e+00],
+             [ -7.22955051e-01,   1.74473303e+00],
+             [ -9.34641445e-02,   1.98474721e+00],
+             [  5.86894945e-01,   2.02489740e+00],
+             [  1.22817423e+00,   1.73587115e+00],
+             [  1.71458494e+00,   1.12106779e+00],
+             [  1.96604154e+00,   3.76190838e-01],
+             [  1.97569647e+00,  -2.97070727e-01],
+             [  1.78219779e+00,  -8.34579683e-01],
+             [  1.42760239e+00,  -1.26467562e+00],
+             [  9.41135167e-01,  -1.62438887e+00],
+             [  3.45499768e-01,  -1.90925578e+00],
+             [ -3.23619414e-01,  -2.04302024e+00],
+             [ -9.93522789e-01,  -1.89147550e+00],
+             [ -1.55270531e+00,  -1.38715605e+00],
+             [ -1.89951371e+00,  -6.63096712e-01],
+             [ -1.99909263e+00,   5.35517669e-02],
+             [ -1.87830451e+00,   6.42981085e-01],
+             [ -1.58147056e+00,   1.10912218e+00],
+             [ -1.14297825e+00,   1.49340262e+00],
+             [ -5.86322333e-01,   1.81177109e+00],
+             [  6.07312835e-02,   2.01786967e+00],
+             [  7.42051341e-01,   1.99199194e+00],
+             [  1.35816446e+00,   1.61954777e+00],
+             [  1.79531624e+00,   9.52821127e-01],
+             [  1.98943716e+00,   2.10469633e-01],
+             [  1.94828704e+00,  -4.32586330e-01],
+             [  1.71436399e+00,  -9.41561484e-01]])"""

@@ -1,0 +1,9 @@
+Merge branch 'master' of https://stash.pnnl.gov/scm/~yeun026/darpa-sd2
+
+# Please enter a commit message to explain why this merge is necessary,
+# especially if it merges an updated upstream into a topic branch.
+#
+# Lines starting with '#' will be ignored, and an empty message aborts
+# the commit
+
+This is do to a conflict from Craig Bakker and potentially Nathan Hodas.

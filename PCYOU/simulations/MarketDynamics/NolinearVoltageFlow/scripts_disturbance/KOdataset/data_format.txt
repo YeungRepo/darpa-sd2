@@ -1,0 +1,15 @@
+data format:
+
+rows-------time instants (751 in total: 0:0.2:150 seconds)
+
+columns----states (240 in total):
+
+col(1:10)-----frequencies at generator buses (deviation) in rad/s
+col(11:49)----bus phase angels in rad
+col(50:59)----governor vavle positions in pu
+col(60:69)----mechanical power generations in pu
+col(70:108)---controllable loads in pu
+col(109)------Lagrange multiplier lambda corresponding to global power balance in $/pu
+col(110:155)--Lagrange multipliers eta^+ corresponding to line upper thermal limit in $/pu
+col(156:201)--Lagrange multipliers eta^- corresponding to line lower thermal limit in $/pu
+col(202:240)--bus voltage magnitudes in pu

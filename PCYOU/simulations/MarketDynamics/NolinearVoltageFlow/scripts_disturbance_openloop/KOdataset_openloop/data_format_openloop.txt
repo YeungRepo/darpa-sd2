@@ -1,0 +1,12 @@
+data format (open-loop system without feedback cyber layer):
+
+rows-------time instants (751 in total: 0:0.2:150 seconds)
+
+columns----states (147 in total):
+
+col(1:10)-----frequencies at generator buses (deviation) in rad/s
+col(11:49)----bus phase angels in rad
+col(50:59)----governor vavle positions in pu (all 0’s due to no feedback control signal)
+col(60:69)----mechanical power generations in pu (will be driven to 0 as valve positions are constant at 0)
+col(70:108)---controllable loads in pu (constant at initial values due to no feedback control signal)
+col(109:147)—bus voltage magnitudes in pu

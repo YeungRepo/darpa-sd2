@@ -1,0 +1,94 @@
+
+
+
+\documentclass[journal,12pt,onecolumn,draftclsnofoot]{IEEEtran}
+
+
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{color}
+
+
+\renewcommand{\arraystretch}{1.3} 
+\newcommand{\diag}{\mathop{\mathrm{diag}}}
+\newcommand{\tabincell}[2]{\begin{tabular}{@{}#1@{}}#2\end{tabular}}  
+\newtheorem{remark}{Remark}
+
+
+
+% correct bad hyphenation here
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+
+\begin{document}
+
+\title{Potential Working Directions in Power Systems Coupled with Market Dynamics \\ \Large{Working Report}}
+
+
+\author{Pengcheng You \\  Nov 3 2017% <-this % stops a space
+%\thanks{M. Shell was with the Department
+%of Electrical and Computer Engineering, Georgia Institute of Technology, Atlanta,
+%GA, 30332 USA e-mail: (see http://www.michaelshell.org/contact.html).}% <-this % stops a space
+%\thanks{J. Doe and J. Doe are with Anonymous University.}% <-this % stops a space
+%\thanks{Manuscript received April 19, 2005; revised August 26, 2015.}
+}
+
+
+% make the title area
+\maketitle
+
+
+%\begin{abstract}
+%
+%\end{abstract}
+
+%
+%\begin{IEEEkeywords}
+%
+%\end{IEEEkeywords}
+
+
+\IEEEpeerreviewmaketitle
+
+
+I reorganize the several ideas we discussed yesterday and combine some correlated ones together. Four ideas are summarized below.
+
+\section{Potential directions}
+
+\subsection{Idea 1}
+
+\cite{stegink2016stabilization} studies the problem of maximizing social welfare while stabilizing a structuring-preserving power network coupled with market dynamics. In particular, unlike most of the existing literature that designs direct controller for generation or load sides, this paper utilizes an indirect market-based mechanism to induce generators and loads to adjust their operating points rationally. It turns out a three-order physical power network model coupled with the designed market dynamics is locally asymptotically stable under some conditions and the equilibrium restores frequency to its nominal value as well as maximizes social welfare.
+
+The first idea is to investigate if the Koopman operator approach can be applied here to further check the stability of the coupled system. Specifically, we can simulate the dynamical system and obtain various time-series trajectories as training and testing data. Hopefully a Koopman operator as well as the corresponding dictionary of basis functions can be learned through the most recently developed \emph{deep dynamic mode decomposition}. Once we have the Koopman operator, we can apply the stability analysis for linear systems, i.e., check the eigenvalues of the Koopman operator. 
+%an eigendecomposition of K will yield the eigenmodes for the neural network basis functions. The weighted combination of those basis functions will define the Koopman eigenfunctions, with corresponding Koopman eigenvalues in the diagonalization or Jordan form of K.
+
+
+An further extension is to use a high-fidelity power system simulator, e.g., PSCAD, to interact with market dynamics instead of the three-order approximate model. By this means, a more accurate Koopman operator could be possibly learned.  
+
+
+\subsection{Idea 2}
+
+In \cite{stegink2016stabilization} the market clearing model, which the distributed dynamic pricing algorithm (market dynamics) is based on, is oversimplified that ignores generation/load capacity and line congestion. An interesting direction is to look at a more practical market mechanism and design a new dynamic pricing scheme to characterize the market dynamics. If a linear DC power flow model is used, probably distributed controllers based on primal-dual gradient algorithms that are applied to a specified economic dispatch problem are also designable. 
+
+\subsection{Idea 3}
+
+The model of a power network coupled with market dynamics is a closed-loop system. Then it is possible to investigate whether the coupled system is robust to its parameter variations, just like Enrique's paper where he looked at the impact of an inaccurate estimate of damping factors (which may also take in the frequency-dependent load factors) on his controller's performance. 
+
+%\emph{(I'm currently not familiar with how to analyze the robustness of a system, and will learn from textbook.}
+% And one silly question about robustness: In Lina, Changhong, Enrique's papers, they assume a step change in a constant term, e.g., net power injections resulted from power imbalance, and then show their closed-loop systems can always reach a desirable equilibrium. This is not about robustness, right?   )}
+%Robustness is the ability of a closed-loop system to be insensitive to component variations.
+
+
+\subsection{Idea 4}
+
+Instead of a constant step change in net power injections, a more realistic model is to assume stochastic power injections from DERs. Then the controller design will be much more challenging. With stochasticity introduced into the system, the method in Zhiyuan's paper "\emph{Decomposition of Nonlinear Dynamical Systems Using Koopman Gramians}" would probably work where the Koopman operator is generalized to characterize the effect of inputs or controls. More specifically, inputs are modeled as disturbances without state-space dynamics. Is it similar here? 
+
+\bibliographystyle{IEEEtran}  
+\bibliography{bib}  
+
+
+\end{document}
+
+

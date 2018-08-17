@@ -1,0 +1,51 @@
+
+#! /usr/bin/env python
+
+import pickle;
+import numpy as np;
+from numpy.linalg import pinv;
+from numpy.polynomial.legendre import legvander;
+import cvxopt;
+from cvxpy import Minimize, Problem, Variable,norm1,norm2,installed_solvers,lambda_max;
+from cvxpy import norm as cvxpynorm;
+import cvxpy;
+import tensorflow as tf
+
+def quad_form(X,vec):
+    temp = np.dot(X,vec);
+    return np.dot(vec.T,temp)[0][0];
+
+sess = tf.InteractiveSession();
+
+saver = tf.train.import_meta_graph('exp_toggle_switch.pickle.ckpt.meta')
+saver.restore(sess,tf.train.latest_checkpoint('./'));
+
+psiyp = tf.get_collection('psiyp')[0];
+psiyf = tf.get_collection('psiyf')[0];
+yp_feed = tf.get_collection('yp_feed')[0];
+yf_feed = tf.get_collection('yf_feed')[0];
+
+psiu = tf.get_collection('psiu')[0];
+u_control = tf.get_collection('u_control')[0];
+
+Kx = tf.get_collection('Kx')[0];
+Ku = tf.get_collection('Ku')[0];
+
+Kx_num = sess.run(Kx);
+Ku_num = sess.run(Ku);
+
+A = np.transpose(Kx_num); # Kx_num and Ku_num were defined using row multi. 
+B = np.transpose(Ku_num);
+C = np.eye(Kx_num.shape[0]); # assume full state measurements
+D = np.zeros((A.shape[0],B.shape[1]));
+
+print A;
+print B;
+
+#import control;
+#dt = 1.0;
+#sys = control.ss(A,B,C,D,dt);
+
+
+#Xo = control.dlyap(A,C.T*C);
+#Xc = control.dlyap(A,B*B.T);

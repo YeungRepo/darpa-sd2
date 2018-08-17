@@ -1,0 +1,367 @@
+
+
+
+\documentclass[journal,12pt,onecolumn,draftclsnofoot]{IEEEtran}
+
+
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{color}
+
+
+\renewcommand{\arraystretch}{1.3} 
+\newcommand{\diag}{\mathop{\mathrm{diag}}}
+\newcommand{\tabincell}[2]{\begin{tabular}{@{}#1@{}}#2\end{tabular}}  
+\newtheorem{remark}{Remark}
+
+
+
+% correct bad hyphenation here
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+
+\begin{document}
+
+\title{Connecting Power Market Dynamics with Power System Dynamics \\ \Large{Working Report}}
+
+
+\author{Pengcheng You \\  Oct 25 2017% <-this % stops a space
+%\thanks{M. Shell was with the Department
+%of Electrical and Computer Engineering, Georgia Institute of Technology, Atlanta,
+%GA, 30332 USA e-mail: (see http://www.michaelshell.org/contact.html).}% <-this % stops a space
+%\thanks{J. Doe and J. Doe are with Anonymous University.}% <-this % stops a space
+%\thanks{Manuscript received April 19, 2005; revised August 26, 2015.}
+}
+
+
+% make the title area
+\maketitle
+
+
+%\begin{abstract}
+%
+%\end{abstract}
+
+%
+%\begin{IEEEkeywords}
+%
+%\end{IEEEkeywords}
+
+
+\IEEEpeerreviewmaketitle
+
+
+
+\section{Frequency regulation}
+
+A power system ideally operates at a stable point where supply and demand is balanced and electricity energy is transmitted from generators to end users through the network in a way that is determined by Kirchoff's laws. However, in real time demand or supply may fluctuate around the expected values, thus causing power imbalance within the whole network. If not well managed, power imbalance will deviate the frequency of the power network far from its nominal value and finally disrupt the whole system. Therefore, frequency regulation is necessary for power systems to maintain the frequency tightly around its nominal value when instantaneous power imbalance occurs.
+
+Traditionally, frequency regulation consists of three mechanisms that work in concert at different timescales.
+\begin{itemize}
+\item The \emph{primary frequency control} works at a timescale up to low tens of seconds to rebalance power and stabilize the frequency.
+\item The \emph{second frequency control} works at a timescale up to around one minute to drive the frequency back to its nominal value and also the inter-area power flows to their scheduled values.
+\item \emph{Economic dispatch} works at a timescale of several minutes or up to schedule the output levels of online generators and the inter-area power flows. 
+\end{itemize}
+
+Suppose a power transmission network is characterized by a connected directed graph $(\mathbb{N},\mathbb{E})$ where $\mathbb{N}:=\{1,\dots,|\mathbb{N}|\}$ is the set of buses and $\mathbb{E}\subseteq \mathbb{N}\times \mathbb{N}$ is the set of transmission lines connecting the buses in $\mathbb{N}$. With an arbitrary orientation, if $(i,j)\in\mathbb{E}$ then $(j,i)\notin \mathbb{E}$. $(i,j)$ and $i\rightarrow j$ will be used interchangeably to denote a line in $\mathbb{E}$. $\mathbb{N}$ is partitioned as $\mathbb{N}=\mathbb{G} \cup \mathbb{L}$ where $\mathbb{G}$ and $\mathbb{L}$ are the set of generators (high inertia) and load (zero inertia) buses, respectively.
+
+Next I will summarize some control methods and their interpretation in an optimization view. All of them are based on the following three main assumptions:
+\begin{itemize}
+	\item The lines $(i,j)\in \mathbb{E}$ are lossless and characterized by their reactances $x_{ij}$.
+	\item The voltage magnitudes $|V_j|$ of buses $j\in\mathbb{N}$ are constants.
+	\item Reactive power injections on the buses and reactive power flows on the lines are both ignored.
+\end{itemize} 
+The above assumptions are similar to the DC approximation of power flows equations except that they don't require the phase angle differences should be small across all the lines. Below in TABLE~\ref{tab:nom} all the variables represent deviations from their nominal (scheduled) values, which are determined by the economic dispatch problem of the last step.  
+
+\begin{table}\centering
+	\caption{Nomenclature}\label{tab:nom}
+	\begin{tabular}{@{} ll @{}}\toprule
+	 Notations   &   Notes  \\ \midrule
+	  $\theta:=(\theta_i,i\in\mathbb{N})$  & deviations of bus voltage angles from their nominal values  \\
+	 $\omega:=(\omega_i,i\in\mathbb{N})$ & deviations of bus frequencies from their nominal values\\
+	 $r:=(r_i,i\mathbb{N})$ & simultaneous step changes in power injections on an arbitrary subset of the buses\\
+	 $p_G^M:=(p_i^M,i\in\mathbb{G})$ & mechanical power injections at generators\\
+	 $p_G:=(p_i,i\in\mathbb{G})$ & control commands at generators \\
+	 $T_G:=\diag(T_i,i\in\mathbb{G})$ & time constants that characterize time delay of turbines\\
+	 $D_i\omega_i, i \in\mathbb{N}$  & \tabincell{l}{aggregate power of generator friction and damping as well as frequency-dependent loads\\$D_G:=\diag(D_i,i\in\mathbb{G})$ and $D_L:=\diag(D_i,i\in\mathbb{L})$}\\
+	 $M_i>0,i\in\mathbb{G}$ & \tabincell{l}{inertia constant of generators \\ $M_G:=\diag(M_i,i\in\mathbb{G})$ and $M_i=0,i\in\mathbb{L}$}\\
+	 $P:=(P_{ij},ij\in\mathbb{E})$ & active line power flows\\
+	 $C\in\mathbb{R}^{|\mathbb{N}|\times|\mathbb{E}|}$ &  incidence matrix: $C_{j,e}=1$ if line $e=jk$, $C_{j,e}=-1$ if line $e=ij$ and $C_{j,e}=0$ otherwise.\\
+	 $B:=\diag(B_{ij},ij\in\mathbb{E})$ & line parameters: $B_{ij}:=\frac{|V_i||V_j|}{x_{ij}}\cos(\theta_i^0-\theta_j^0)$\\
+	 \bottomrule 
+   \end{tabular}
+\end{table}
+
+
+\subsection{Generation-side control}
+
+The power network dynamics are modeled as 
+\begin{subequations}
+\begin{eqnarray}
+\label{eq:powerdyn-1}
+ \dot \theta & = &  \omega \\
+ \label{eq:powerdyn-2}
+ M_G \dot \omega_G &  = & r_G + p_G^M - D_G \omega_G -  C_G P \\
+ \label{eq:powerdyn-3}
+ 0 & = & r_L - D_L \omega_L - C_L P\\
+ \label{eq:powerdyn-4}
+ P & = & BC^T \theta \\
+ \label{eq:powerdyn-5}
+ T_G \dot p_G^M  & = & -p_G^M + p_G ~~~ \mathrm{or~additionally~} - \frac{1}{R_j}\omega_j
+\end{eqnarray}\label{eq:powerdyn}%
+\end{subequations}
+where \eqref{eq:powerdyn-2} is the set of swing equations for generator buses, \eqref{eq:powerdyn-3} is the set of power balance equations for load buses, \eqref{eq:powerdyn-4} is the set of DC power flow equations, and \eqref{eq:powerdyn-5} models the turbine control while ignoring the govern dynamics. 
+
+\subsubsection{Primary frequency control (droop control) \cite{zhao2016unified}} 
+Define 
+\noindent
+\textbf{OP-1}
+\begin{subequations}
+\begin{eqnarray}
+   \min_{\theta, \omega, P, p_G} && \sum_{i\in\mathbb{G}} c_i(p_i) +\sum_{i\in\mathbb{N}} \frac{D_i (\omega_i)^2}{2} \\
+   \mathrm{s.t.} && r_G+p_G-D_G\omega_G-C_G P=0 \\
+   && r_L-D_L\omega_L-C_LP=0\\
+   && P=BC^T\theta\\
+   \label{eq:OP1-5}
+   && \underline{p}_i \le p_i \le \overline{p}_i \quad   i \in \mathbb{G}
+\end{eqnarray}\label{eq:OP1}%
+\end{subequations}
+OP-1 formalizes the goal of primary frequency control to rebalance power and stabilize frequencies at a common value in a way that minimizes the total control effort and a quadratic penalty on the steady-state frequency deviation.
+
+A feedback controller is formally designed as
+\begin{equation}\label{eq:genprictr}
+p_i(t)=p_i(\omega_i(t)):=\left\{
+\begin{split}
+& \overline{p}_i   \quad  \mathrm{if~}\omega_i(t) < -c_i'(\overline{p}_i)\\
+& \underline{p}_i   \quad \mathrm{if~} \omega_i(t) > -c_i'(\overline{p}_i) \\
+& (c_i')^{-1}(-\omega_i(t)) \quad \mathrm{otherwise}
+\end{split}\right.
+\end{equation}
+which is completely decentralized and only requires measuring local frequency deviation $\omega_i(t)$ to determine the control command $p_i(t)$.
+
+The controller \eqref{eq:genprictr} is able to drive the system \eqref{eq:powerdyn} to an equilibrium which exactly solves \eqref{eq:OP1} given that \emph{(a) the cost functions are quadratic, i.e., $c_i(p_i)=\frac{p_i^2}{2\alpha_i}$ for arbitrary constants $\alpha_i$; (b) the constraints \eqref{eq:OP1-5} are not binding.} (\textcolor{red}{Need to check the derivation details here why there is an additional condition on whether the capacity constraints are binding or not, compared with the similar load-side control. Guess it would be related to the consistence of the expression for certain derivatives. })
+
+\begin{remark}
+Under the above conditions, the controller \eqref{eq:genprictr} reduces to the traditional linear frequency-droop control at generators. The closed-loop system defined by \eqref{eq:powerdyn} \eqref{eq:genprictr} is derived as a variant of the standard first-order primal-dual algorithm to solve \eqref{eq:OP1} and its Lagrangian dual, which means the swing dynamics automatically realize the primal-dual algorithm over the network in real time.
+\end{remark}
+
+
+
+\subsubsection{ACE-based AGC \cite{li2016connecting}}
+ACE means area control errors, which is defined as
+\begin{equation}
+ACE_j=B_j\omega_j+\sum_{k:j\rightarrow k} P_{jk} -\sum_{i:i\rightarrow j} P_{ij}
+\end{equation}
+where $B_j$ is a constant. As shown later, actually $B_j=D_j$.
+ACE-based AGC measures the local ACE and automatically adjust the power command $p_G$ to drive the ACE to zero:
+\begin{equation}\label{eq:AGCctr}
+\dot p_j=-K_j\left(D_j\omega_j+\sum_{k:j\rightarrow k} P_{jk} -\sum_{i:i\rightarrow j} P_{ij}\right)
+\end{equation}
+where $K_j$ is a time constant.
+It can be shown that ACE-based control \eqref{eq:AGCctr} can drive the system \eqref{eq:powerdyn} to an equilibrium that solves the following problem:
+\noindent
+\textbf{OP-2}
+\begin{subequations}
+	\begin{eqnarray}
+	\min_{\theta, \omega, P, p_G} && \sum_{i\in\mathbb{G}} c_i(p_i) +\sum_{i\in\mathbb{N}} \frac{D_i (\omega_i)^2}{2} \\
+	\mathrm{s.t.} && r+p_G-D\omega-CP=0 \\
+	&& P=BC^T\theta\\
+	\label{eq:OP2-4}
+	&& r+p_G=0
+	\end{eqnarray}\label{eq:OP2}%
+\end{subequations}
+Note that here it is assumed that all buses are generator buses, thus \eqref{eq:powerdyn-3} is merged into \eqref{eq:powerdyn-2}. \eqref{eq:OP2-4} enforces that at the steady state the local imbalance is absorbed within each bus.
+
+\subsubsection{Economic AGC \cite{li2016connecting}}
+
+Based on the above reverse-engineering ACE-based AGC, it is natural to develop economic AGC by forward engineering, i.e., let the equilibrium of \eqref{eq:powerdyn} solve the following economic dispatch problem:
+\noindent
+\textbf{OP-3}
+\begin{subequations}
+	\begin{eqnarray}
+	\min_{\theta, \omega, P, p_G,\gamma} && \sum_{i\in\mathbb{G}} c_i(p_i) +\sum_{i\in\mathbb{N}} \frac{D_i (\omega_i)^2}{2} \\
+	\mathrm{s.t.} && r+p_G-D\omega-CP=0 \\
+	&& P=BC^T\theta\\
+	\label{eq:OP3-4}
+	&& r+p_G-C\gamma=0
+	\end{eqnarray}\label{eq:OP3}%
+\end{subequations}
+where $\gamma$ are auxiliary variables introduced to allow power flow interchanges among different buses, which can be deemed as "virtual flows". Correspondingly, by applying the primal-dual analysis, the new controller appears as
+\begin{equation}\label{eq:econAGCctr}
+\dot p_j=-K_j\left(D_j\omega_j+\sum_{k:j\rightarrow k} (P_{jk} - \gamma_{jk} )-\sum_{i:i\rightarrow j} (P_{ij} -\gamma_{ij} )\right)
+\end{equation}
+
+\subsubsection{Unified  control \cite{zhao2016unified}}
+The unified control covers primary \& secondary frequency control and congestion management, and its corresponding optimization problem is specified as 
+
+\noindent
+\textbf{OP-4}
+\begin{subequations}
+	\begin{eqnarray}
+	\min_{\theta, P, p_G} && \sum_{i\in\mathbb{G}} c_i(p_i)  \\ %+\sum_{i\in\mathbb{N}} \frac{D_i (\omega_i)^2}{2} \\
+	\mathrm{s.t.} && r_G+p_G-C_G P=0 \\
+	&& r_L-C_LP=0\\
+	&& P=BC^T\theta\\
+		\label{eq:OP4-5}
+	&& ECP=0 \\
+		\label{eq:OP4-6}
+	&& \underline{P}_{ij} \le P_{ij} \le \overline{P}_{ij}   \quad ij \in \mathbb{E} \\
+	\label{eq:OP4-7}
+	&& \underline{p}_i \le p_i \le \overline{p}_i \quad   i \in \mathbb{G}
+	\end{eqnarray}\label{eq:OP4}%
+\end{subequations}
+where \eqref{eq:OP4-5} imposes zero area control error and \eqref{eq:OP4-6} enforces line flow limits. Inter-area flow preservation and congestion management can also be incorporated in the controller by looking at the primal-dual algorithm to solve OP-4. The detailed controller designer is skipped here. 
+
+
+\subsection{Load-side control}
+
+The power network dynamics are modeled as
+\begin{subequations}
+	\begin{eqnarray}
+		\label{eq:powerdynload-1}
+		\dot \theta & = &  \omega \\
+		\label{eq:powerdynload-2}
+		M_G \dot \omega_G &  = & r_G  - D_G \omega_G  - d_G -  C_G P \\
+		\label{eq:powerdynload-3}
+		0 & = & r_L - D_L \omega_L  - d_L - C_L P\\
+		\label{eq:powerdynload-4}
+		P & = & BC^T \theta 
+	\end{eqnarray}\label{eq:powerdynload}%
+\end{subequations}
+where $d_G$ and $d_L$ are controllable loads on generator and load buses respectively.
+The key difference is that control comes from the action of loads instead of the turbine-govern mechanism.
+
+\subsubsection{Primary frequency control \cite{zhao2014design}}
+
+Define 
+\noindent
+\textbf{OP-5}
+\begin{subequations}
+	\begin{eqnarray}
+		\min_{\theta, \omega, P, d} && \sum_{i\in\mathbb{G}} c_i(d_i) +\sum_{i\in\mathbb{N}} \frac{D_i (\omega_i)^2}{2} \\
+		\mathrm{s.t.} && r-D\omega-d-C P=0 \\
+%		&& r_L-D_L\omega_L-d_L-C_LP=0\\
+		&& P=BC^T\theta\\
+		\label{eq:OP5-5}
+		&& \underline{d}_i \le d_i \le \overline{d}_i \quad   i \in \mathbb{G}
+	\end{eqnarray}\label{eq:OP5}%
+\end{subequations}
+OP-5 is quite similar to OP1. And also similarly, a controller that is implemented at each controllable load is designed as
+\begin{equation}\label{eq:priloadctr}
+d_j=\left[c_j^{-1}(w_j)\right]_{\underline{d}_i}^{\overline{d}_i} \quad j\in\mathbb{N}
+\end{equation}
+The controller \eqref{eq:priloadctr} will drive the system \eqref{eq:powerdynload} to an equilibrium which solves \eqref{eq:OP5} with general strictly convex cost functions $c_i(\cdot)$.
+
+\subsubsection{Secondary frequency control \cite{mallada2017optimal}}
+This is similar to the unified control at the load side, i.e., it rebalance supply and demand after disturbances, restore the nominal frequency, preserve inter-area power flows, and maintain line flows within thermal limits.
+
+\noindent
+\textbf{OP-6}
+\begin{subequations}
+	\begin{eqnarray}
+	\min_{\theta, \omega, P, d} && \sum_{i\in\mathbb{G}} c_i(d_i)  \\
+	\mathrm{s.t.} && r-D\omega-d-C P=0 \\
+	%		&& r_L-D_L\omega_L-d_L-C_LP=0\\
+	&& \omega=0 \\
+	&& P=BC^T\theta\\
+	\label{eq:OP6-5}
+	&&  \hat C P= \hat P   \\
+	&& \underline{ P} \le P \le \overline{ P}
+	\end{eqnarray}\label{eq:OP6}%
+\end{subequations}
+where \eqref{eq:OP6-5} preserves the inter-area power flows. Note that here the demand capacity constraints, i.e., $ \underline{d}_i \le d_i \le \overline{d}_i,~i \in \mathbb{G}$, are ignored by assuming the system is designed with enough capacity.
+OP-6 can be equivalently rewritten into a more familiar form:
+
+\noindent
+\textbf{OP-6-equivalent}
+\begin{subequations}
+	\begin{eqnarray}
+	\min_{\theta, \omega, P, d} && \sum_{i\in\mathbb{G}} c_i(d_i) +\sum_{i\in\mathbb{N}} \frac{D_i (\omega_i)^2}{2} \\
+	\mathrm{s.t.} && r-D\omega-d-C P=0 \\
+	%		&& r_L-D_L\omega_L-d_L-C_LP=0\\
+	 && r-d-C B C^T \phi =0 \\
+	&& \hat C BC^T\phi =  \hat P \\
+	&& \underline{ P} \le BC^T\phi  \le \overline{ P}
+	\end{eqnarray}\label{eq:OP6t}%
+\end{subequations}
+where $\phi:=(\phi_i, i\in\mathbb{N})$ represents virtual phases and $(BC^T\phi)_{ij}=B_{ij}(\phi_i-\phi_j) $ is the corresponding virtual flow through line $ij\in\mathbb{E}$. The trick is actually the same as that in the Economic AGC (OP-3), where also auxiliary variables are introduced to help achieve economic efficiency. Therefore, the controller here is kind of similar to that of Economic AGC on the load side, combined with inter-area flow preservation and congestion management. The detailed design is also skipped here.
+
+To be added, \cite{wang2017distributed1, wang2017distributed2} 
+
+\section{Market dynamics}
+
+Market mechanisms are widely used to determine generation dispatch, which seeks improved economic efficiency through rapid market updates. However, the fast proliferation of renewables nowadays raises the frequency of market-based dispatch updates. Inevitably, there will be an interaction between the market dynamics and the physical response of power systems.
+
+\cite{alvarado2001stability} presents a coupled dynamical model of power system and power market. Basically generators and consumers are market driven and their adjustment of generation or demand is characterized using simple first order differential equations:
+\begin{subequations}
+ \begin{eqnarray}
+ \label{eq:gendyn}
+ \tau_{gi} \dot{p}_{gi} = -b_{gi} -c_{gi} p_{gi} + \lambda, \quad  i=1,\dots,m \\
+ \label{eq:loaddyn}
+  \tau_{dj} \dot{p}_{dj} = b_{dj} - c_{dj} p_{dj} - \lambda, \quad  j=1,\dots,n
+ \end{eqnarray}\label{eq:respdyn}
+\end{subequations}
+where $b_{gi},c_{gi},b_{di},c_{di}>0$ is assumed, implying quadratic cost and utility functions for generators and consumers, respectively.
+
+Intuitively, \eqref{eq:gendyn} means a generator always acts to augment its production when the market price $\lambda$ exceeds its marginal production cost $b_{gi}+c_{gi}p_{gi}$,and \eqref{eq:loaddyn} describes that a load always act to increase its consumption when its marginal benefit $b_{di}+c_{di}p_{di}$ exceeds the price $\lambda$. 
+
+The proposed market dynamics (also market mechanism) is based on ACE, indicating that an excess of power supplied to the grid depresses the value of the power:
+\begin{subequations}
+	\begin{eqnarray}
+	\dot E=\sum_i p_{gi}-\sum_j p_{dj} \\ 
+	\tau_\lambda \dot \lambda = - k E - \lambda	
+	\end{eqnarray}\label{eq:mrkctr}
+\end{subequations}
+where $E$ is the system energy imbalance, and $\tau_\lambda$ and $k$ are all constants. However, in practice energy imbalance is abstract and not measurable.  A potential proxy for energy imbalance is the weighted sum of frequency deviations $\sum_i M_i\omega_i$, thus linking the power system dynamics with power market dynamics.
+
+\noindent
+\emph{Next steps}: 
+
+\noindent
+1. learn more about dynamic pricing mechanisms that base on real-time system states;
+
+\noindent
+2. find out if it is possible to design a basic market dynamical system that reflects the current market clearing mechanism (basically an economic dispatch problem);
+
+\noindent
+3. find out if there is a steady-state optimization problem that underlies the dynamical system consisting of swing dynamics and market dynamics. 
+
+\noindent
+\emph{More to explore}:
+
+\noindent
+1. the use of Koopman Gramians in decomposition of realistic nonlinear power system dynamics
+
+\noindent
+2. extend the analytical results on linear systems to nonlinear systems using Koopman Gramians
+
+
+%Obviously the equilibrium of the system \eqref{eq:respdyn} solves the following optimization problem:
+%\begin{subequations}
+%	\begin{eqnarray}
+%	    \min_{p_G,p_D}  && \sum_i C_i(p_{gi}) - \sum_j U_j(p_{dj}) \\
+%	    \mathrm{s.t.} &&  \sum_i p_{gi} = \sum_j p_{dj}
+%	\end{eqnarray}
+%\end{subequations}
+%where the cost function and utility function take the quadratic forms of $C_i(p_{gi}):=c_{gi}p_{gi}^2+b_{gi}p_{gi}$ and $U_j(p_{dj}):=-c_{dj}p_{dj}^2 + b_{dj}p_{dj} $, respectively.
+
+
+
+
+
+
+
+
+
+
+
+
+\bibliographystyle{IEEEtran}  
+\bibliography{bib}  
+
+
+\end{document}
+
+

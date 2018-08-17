@@ -1,0 +1,2 @@
+model_checkpoint_path: "exp_toggle_switch_M9CA.pickle.ckpt"
+all_model_checkpoint_paths: "exp_toggle_switch_M9CA.pickle.ckpt"

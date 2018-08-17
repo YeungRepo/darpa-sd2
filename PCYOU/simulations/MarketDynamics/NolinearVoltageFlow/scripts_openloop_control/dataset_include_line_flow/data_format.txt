@@ -1,0 +1,16 @@
+data format:
+
+rows-------time instants (501 in total: 0:0.1:50 seconds)
+
+columns----state + control (198 in total):
+
+col(1:10)-----frequencies at generator buses (deviation) in rad/s
+col(11:49)----bus phase angles in rad
+col(50:59)----governor valve positions in pu
+col(60:69)----mechanical power generations in pu
+col(70:108)---controllable loads in pu
+col(109:147)—-bus voltage magnitudes in pu
+
+col(148:193)—-line flows in pu
+
+col(194:198)—-constant price signals at five buses with generators or loads

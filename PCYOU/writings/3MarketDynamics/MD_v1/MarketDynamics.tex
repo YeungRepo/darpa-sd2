@@ -1,0 +1,374 @@
+
+
+
+\documentclass[journal,12pt,onecolumn,draftclsnofoot]{IEEEtran}
+
+
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{color}
+
+
+\renewcommand{\arraystretch}{1.3} 
+\newcommand{\diag}{\mathop{\mathrm{diag}}}
+\newcommand{\tabincell}[2]{\begin{tabular}{@{}#1@{}}#2\end{tabular}}  
+\newtheorem{remark}{Remark}
+\newtheorem{lemma}{Lemma}
+
+
+
+% correct bad hyphenation here
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+
+\begin{document}
+
+\title{\Large On Power Networks Coupled with Market Dynamics}
+
+
+\author{Pengcheng You \\  Nov 14 2017% <-this % stops a space
+%\thanks{M. Shell was with the Department
+%of Electrical and Computer Engineering, Georgia Institute of Technology, Atlanta,
+%GA, 30332 USA e-mail: (see http://www.michaelshell.org/contact.html).}% <-this % stops a space
+%\thanks{J. Doe and J. Doe are with Anonymous University.}% <-this % stops a space
+%\thanks{Manuscript received April 19, 2005; revised August 26, 2015.}
+}
+
+
+% make the title area
+\maketitle
+
+
+%\begin{abstract}
+%
+%\end{abstract}
+
+%
+%\begin{IEEEkeywords}
+%
+%\end{IEEEkeywords}
+
+
+\IEEEpeerreviewmaketitle
+
+\section{Introduction}
+
+The pervasive proliferation of distributed energy resources (DERs) closer to user ends is introducing a considerable number of low-inertia elements into the traditional bulk power system, which significantly mitigates the relatively ponderous response from mass electricity generations, e.g. coal-fired thermal power plants and hydroelectric power plants. The more vibrant system, however, is facing new challenges of fluctuating variations in power injections/withdrawals that are brought along with DERs. Ideally a power network operates at a nominal frequency and remain stable at an equilibrium where overall power production matches consumption. This becomes difficult to realize with the presence of erratic fluctuations. 
+
+Generally a power network is stabilized through three levels of frequency control that executes at different timescales. The primary frequency control, called droop control \cite{zhao2016unified}, works at a timescale up to low tens of seconds which rebalances power and stabilizes the frequency. The secondary frequency, called automatic generation control (AGC) \cite{li2016connecting}, operates at a timescale up to two or three minutes to restore the frequency back to its nominal value and maintain the scheduled inter-area power flows. Finally the tertiary level is economic dispatch that schedules coarse-grained generations and power flows at a timescale of minutes or tens of minutes. Recently there have also been emerging interests in designing frequency controllers from the load side \cite{zhao2014design,mallada2017optimal}. 
+
+Both the primary and secondary frequency control assumes direct control of generators or loads since these real-time regulation services usually have their capabilities acquired from an ancillary service market in advance. They don't have to interfere with real-time and day-ahead markets that are commonly settled at larger timescales. However, with fast-response DERs and cutting-edge information technologies merging into the power system, conceivably a real-time market can take advantage of the rapid response speed of new market participants and run at a higher frequency to eliminate short-time imbalance more efficiently. The collision between the operations of the power system and (real-time) power market is inevitable. On the one hand, real-time power imbalance in the power network can be potentially offset in the competitive power market, yielding a more economically efficient production and consumption. In particular, generators/loads in the power market always adjust productions/consumptions to match their marginal costs/benefits with market prices. On the other hand, real-time market updates that guide generators and loads to strike a balance have to take into account the physical dynamical response of the power system, rather than only determine the steady market clearing state. This calls for the modeling of market dynamics to be compatible with network dynamics.
+
+To this end, a dynamical market mechanism has to be carefully designed that can both embody the market nature and guarantee to stabilize the power system as a controller.
+
+     
+
+
+
+   
+
+\section{Model}
+
+Let $\mathbb{R}$ be the set of real numbers and $\mathbb{N}$ be the set of natural numbers. For a finite set $\mathcal{H} \subset \mathbb{N}$, its cardinality is denoted as $|\mathcal{H}|$. For a set of scalar variables $y_j$, $j\in\mathcal{H}$, its column vector is denoted as $y_{\mathcal{H}}$. Sometimes the subscript $\mathcal{H}$ is dropped if the set is clear from the context. For a matrix $Y$, $Y^T$ denotes its transpose. Let $Y_j$ be the $j$th row of $Y$ and $Y_\mathcal{H}$ be sub-matrix of $Y$ composed of all the rows $Y_j$, $j\in\mathcal{H}$. We use $\mathbf{1}_\mathcal{H}$ or $\mathbf{0}_{\mathcal{H}}$ to denote a $|\mathcal{H}|$-dimension column vector of all 1's or 0's. Similarly, if the subscript $\mathcal{H}$ is clear without ambiguity, it may be ignored. 
+
+\subsection{Power network}
+
+Consider a power network with a connected directed graph $(\mathcal{N},\mathcal{E})$, where $\mathcal{N}:=\{0,1,\dots,|\mathcal{N}|-1\}$ is the set of nodes and $\mathcal{E}\subset\mathcal{N}\times\mathcal{N}$ is the set of edges connecting all nodes. Each node represents a bus (or broadly a control area) and each edge is a transmission line (or broadly a tie line). The buses $\mathcal{N}$ are partitioned into three parts $\mathcal{N}=\mathcal{G}\cup\mathcal{L}\cup\{0\}$ where $\mathcal{G}$ and $\mathcal{L}$ are the sets of generator and load buses, respectively. Note that a generator bus could also have local loads. For notational convenience, bus 0 is assumed as a pure slack bus. Let $\mathcal{N}^+:=\mathcal{N}\backslash \{0\}=\mathcal{G}\cup\mathcal{L}$.
+We will use $(j,k)$ and $j\rightarrow k$ interchangeably to denote the line from bus $j$ to bus $k$. An arbitrary orientation is applied such that if $(j,k)\in\mathcal{E}$ then $(k,j)\notin\mathcal{E}$. Each line $(j,k)\in\mathcal{E}$ is endowed with an impedance $z_{jk}:=r_{jk}+ \mathrm{\textbf{i}} x_{jk}$, where the real part is a resistance while the imaginary part is a reactance. 
+
+Several standard assumptions for a linear transmission network model are applied:
+\begin{enumerate}
+	\item The voltage magnitude $|V_j|$ is constant for each bus $j\in\mathcal{N}$.
+	\item Each line $(j,k)\in\mathcal{E}$ is lossless, i.e., $r_{jk}=0$.
+	\item Reactive power injections and flows are all ignored.
+\end{enumerate}
+\begin{remark}
+	The above three assumptions are milder than the standard DC approximation of power flow equations in that the nominal phase angle difference across each line is not necessarily small.  
+\end{remark}
+
+On this premise, the network dynamics\footnote{The state variables $\theta$ and $\omega$ in this model denote deviations from their nominal values.} are characterized by
+\begin{subequations}
+	\begin{eqnarray}
+	   \label{eq:nwdym:1}
+	    \dot \theta_j  	& = &  \omega_j, \quad j\in\mathcal{N} \\
+	   \label{eq:nwdym:2}
+      	M_j \dot \omega_j & = & r_j+p_j - d_j -D_j \omega_j - \sum_{k:j\rightarrow k} B_{jk}(\theta_j-\theta_k) +\sum_{i:i\rightarrow j} B_{ij}(\theta_i-\theta_j)  , \quad j\in\mathcal{G} \\
+        \label{eq:nwdym:3}
+      	0 & = & r_j - d_j  -D_j \omega_j - \sum_{k:j\rightarrow k} B_{jk}(\theta_j-\theta_k) +\sum_{i:i\rightarrow j} B_{ij}(\theta_i-\theta_j) , \quad j\in\mathcal{L}  \\
+        \label{eq:nwdym:4}
+      	T_j^p \dot p_j & =  & -p_j + p_j^C-\frac{\omega_j}{R_j} , \quad j \in\mathcal{G} \\
+        \label{eq:nwdym:5}
+      	T_j^d \dot d_j & =  & -d_j + d_j^C , \quad j \in\mathcal{N}^+ 
+ 	\end{eqnarray}\label{eq:nwdym}%
+\end{subequations}
+where $\theta_j$ denotes the bus phase angle, $\omega_j$ denotes the bus frequency, $p_j$ denotes the output of a generator, and $d_j$ denotes an aggregate elastic load. $p_j^C$ and $d_j^C$ are control commands for a generator and a load, respectively. $M_j$ is a generator's inertia, $r_j$ is a constant step change of net power injection, $D_j$ is a constant factor that summarizes the generator damping and uncontrollable frequency-dependent loads, $B_{jk}$ is a line parameter that characterizes the sensitivity of a line flow to the corresponding phase angle difference (see its derivation in Appendix), $T_j^p$ and $T_j^d$ are time constants, and $R_j$ is the droop parameter. \eqref{eq:nwdym:1}-\eqref{eq:nwdym:3} describe the nodal frequency dynamics, \eqref{eq:nwdym:4} captures a simplified turbine dynamical model for each generator, and likewise \eqref{eq:nwdym:5} models the load dynamics that reflect user behavior. Assume the initial condition satisfies $\theta_j^0=0$ for all $j\in\mathcal{N}$ and $\theta_0 \equiv 0$ as a reference phase angle, thus $\omega_0 \equiv 0$. 
+
+Define the incidence matrix $C \in \mathbb{R}^{|\mathcal{N}|\times|\mathcal{E}|}$ for the network graph where its element $C_{j,e}=1$ if $e=(j,k)\in\mathcal{E}$, $C_{j,e}=-1$ if $e=(i,j)\in\mathcal{E}$ and $C_{j,e}=0$ otherwise. Meanwhile, define $\bar C \in \mathbb{R}^{(|\mathcal{N}|-1)\times|\mathcal{E}|}$ based on $C$ by eliminating the row that corresponds to the slack bus to remove dependency. 
+Therefore, \eqref{eq:nwdym} can be written in the vector form:
+  \begin{subequations}
+  	\begin{eqnarray}
+  	\label{eq:nwdymvec:1}
+  	\dot \theta 	& = &  \omega \\
+  	\label{eq:nwdymvec:2}
+  	M \dot \omega_\mathcal{G} & = & r_\mathcal{G} +p  - d_\mathcal{G}  -D_\mathcal{G}  \omega_\mathcal{G}  - C_{\mathcal{G}}B  \bar C^T \theta_{\mathcal{N}^+} \\
+  	\label{eq:nwdymvec:3}
+  	0 & = & r_{\mathcal{L}} - d_{\mathcal{L}}  -D_{\mathcal{L}} \omega_{\mathcal{L}} - C_{\mathcal{L}}B \bar C^T\theta_{\mathcal{N}^+} \\
+  	\label{eq:nwdymvec:4}
+  	T^p \dot p & =  & -p+ p^C-R^{-1}\omega_{\mathcal{G}}  \\
+  	\label{eq:nwdymvec:5}
+  	T^d \dot d & =  & -d + d^C 
+  	\end{eqnarray}\label{eq:nwdymvec}%
+  \end{subequations}
+where $M:=\diag(M_j,j\in\mathcal{G})$, $D:=\diag(D_j,j\in\mathcal{N}^+)$, $B:=\diag(B_{jk},(j,k)\in\mathcal{E})$, $T^p:=\diag(T^p_j,j\in\mathcal{G})$, $T^d:=\diag(T^d_j,j\in\mathcal{N}^+)$, and $R:=\diag(R_j, j\in\mathcal{G})$. The sub-matrices $D_\mathcal{G},D_{\mathcal{L}},C_{\mathcal{G}},C_{\mathcal{L}}$ are well defined accordingly.
+Let $\tilde {\theta}:= \bar C^T \theta_{\mathcal{N}^+}\in\mathbb{R}^{|\mathcal{E}|}$. Since $\bar C^T$ is full column rank, there is a bijection between $\theta$ and $\tilde{\theta}$. In the sequel we will use both interchangeably.
+
+
+\subsection{Power market}
+
+Instead of the conventional frequency regulation services, we resort to a dynamical real-time power market as a lever to eliminate power imbalance $r:=(r_j,j\in\mathcal{N})$ and meanwhile restore the frequency to its nominal value. We assume a fully competitive market, i.e., no strategic market participant is able to exercise market power. Such a market is economically efficient in terms of social welfare in nature since each participant, a generator or a load, always tries to maximize its own benefit by matching its marginal cost/utility with the market prices.    
+
+A power market is distinguished from other generic markets in that it is a networked market governed by Kirchhoff's laws. The commodity in the market, i.e., electricity, is indiscriminate itself but cannot freely be transmitted and distributed in a multilateral trade. The physical laws as well as transmission capabilities constrain the market operation and impose spatially variant values on electricity, i.e., locational marginal prices (LMPs). Specifically, a static power market tries to solve a DC economic dispatch problem (EDP) with line thermal constraints:
+
+\noindent
+\textbf{EDP-1}:
+\begin{subequations}
+	\begin{eqnarray}
+	\label{eq:ed:1}
+	 \min_{p,d, \theta_{\mathcal{N}^+}} &&   \sum_{j\in\mathcal{G}} C_j(p_j) - \sum_{j\in\mathcal{N}^+} U_j(d_j)   \\
+	 	\label{eq:ed:2}
+	 \mathrm{s.t.} &&   r_\mathcal{G} +p  - d_\mathcal{G}    - C_{\mathcal{G}}  B\bar C^T \theta_{\mathcal{N}^+} =0\\
+	 	\label{eq:ed:3}
+	 &&  r_{\mathcal{L}} - d_{\mathcal{L}}  - C_{\mathcal{L}}  B\bar C^T \theta_{\mathcal{N}^+}= 0  \\
+	 	\label{eq:ed:4}
+	 &&   \underline{F} \le  B\bar C^T \theta_{\mathcal{N}^+}  \le  \overline{F} 
+	\end{eqnarray}	\label{eq:ed}%
+\end{subequations}
+where $C_j(\cdot): \mathbb{R} \rightarrow \mathbb{R}$ and $U_j(\cdot): \mathbb{R} \rightarrow \mathbb{R}$ are the cost function of a generator and the utility function of a load, respectively. Assume $C_j(\cdot)$ is strictly convex and increasing while $U_j(\cdot)$ is strictly concave and increasing, meaning an increasing marginal cost for each generator and a decreasing marginal utility for each load, and both of them are twice continuously differentiable, i.e., $C_j''(p_j)>0$ and $U_j''(d_j)<0$. $\underline{F}$ and $\overline{F}$ are the lower and upper thermal limits on line flows, respectively. Basically \eqref{eq:ed:1} aims to minimize social cost (maximize social welfare) from a market point of view. 
+
+Define $\pi:=(\pi_j,j\in\mathcal{N}^+)$ as the bus net power injections. Accordingly $\pi_{\mathcal{G}}=r_\mathcal{G}+p-d_\mathcal{G}$ and $\pi_{\mathcal{L}}=r_\mathcal{L}-d_\mathcal{L}$. From \eqref{eq:ed:2} and \eqref{eq:ed:3}, $\pi_{\mathcal{N}^+}=\bar CB\bar{C}^T\theta_{\mathcal{N}^+}$, or equivalently $\theta_{\mathcal{N}^+}=(\bar CB\bar{C}^T)^{-1}\pi_{\mathcal{N}^+}$ since $B$ is diagonal and $\bar C^T$ is full column rank. Let $H^T:=B\bar C^T (\bar CB\bar{C}^T)^{-1}\in\mathbb{R}^{|\mathcal{E}|\times(|\mathcal{N}|-1)}$ be the \emph{power injection shift matrix} of the power network, then \eqref{eq:ed} can be rewritten as  
+
+\noindent
+\textbf{EDP-2}:
+\begin{subequations}
+	\begin{eqnarray}
+	\label{eq:ed2:1}
+	\min_{p,d} &&   \sum_{j\in\mathcal{G}} C_j(p_j) - \sum_{j\in\mathcal{N}^+} U_j(d_j)   \\
+	\label{eq:ed2:2}
+	\mathrm{s.t.} &&   \mathbf 1^T_\mathcal{G} (r_\mathcal{G}+p-d_\mathcal{G})  + \mathbf 1^T_\mathcal{L} (r_\mathcal{L}-d_\mathcal{L})  = 0 \\
+	\label{eq:ed2:3}
+	&&    H^T_{\mathcal{G}}(r_\mathcal{G}+p-d_\mathcal{G}) + H^T_\mathcal{L}(r_\mathcal{L}-d_\mathcal{L}) \ge \underline{F}  \\
+	\label{eq:ed2:4}
+	&&  H^T_{\mathcal{G}}(r_\mathcal{G}+p-d_\mathcal{G}) + H^T_\mathcal{L}(r_\mathcal{L}-d_\mathcal{L})  \le  \overline{F}
+	\end{eqnarray}	\label{eq:ed2}%
+\end{subequations}
+    
+Introduce dual variables $\lambda\in\mathbb{R}$, $\eta^-\in\mathbb{R}^{|\mathcal{E}|}$ and $\eta^+\in\mathbb{R}^{|\mathcal{E}|}$ for \eqref{eq:ed2:2}, \eqref{eq:ed2:3} and \eqref{eq:ed2:4}, respectively, where $\eta^-,\eta^+ \ge 0$ element-wise, and suppose $(p^*,d^*)$ and $(\lambda^*,\eta^{-*},\eta^{+*})$ are primal-dual optimum, then LMPs across buses $j\in\mathcal{N}^+$ are defined as $\lambda^* \mathbf{1}_{\mathcal{N}^+} - H \eta^{-*}   + H \eta^{+*}$, which can also be interpreted as \emph{weighted shadow prices} in terms of all the constraints \eqref{eq:ed2:2}-\eqref{eq:ed2:4}. Given these LMPs, $(p^*,d^*)$, an equilibrium that balances supply and demand as well as maximizes social welfare, can be achieved by individual market participants rationally.
+
+\subsection{Market dynamics as a controller}
+
+The control commands $p^C$ and $d^C$ in \eqref{eq:nwdymvec} are to be designed which should reflect the market behavior of individual generators and loads. Inspired by the function of LMPs, we now give our controller as 
+\begin{subequations}
+	\begin{eqnarray}
+	\label{eq:ctr:1}
+	\dot \lambda & = & \gamma^\lambda \left( - \mathbf 1^T_\mathcal{G} (r_\mathcal{G}+p-d_\mathcal{G})  - \mathbf 1^T_\mathcal{L} (r_\mathcal{L}-d_\mathcal{L}) \right) \\
+	\label{eq:ctr:2}
+	\dot \eta^- & = & \Gamma^{\eta^-} \left(\underline{F} - H^T_{\mathcal{G}}(r_\mathcal{G}+p-d_\mathcal{G}) - H^T_\mathcal{L}(r_\mathcal{L}-d_\mathcal{L})  \right)   \\
+	\label{eq:ctr:3}
+	\dot \eta^+ & = & \Gamma^{\eta^-} \left( H^T_{\mathcal{G}}(r_\mathcal{G}+p-d_\mathcal{G}) + H^T_\mathcal{L}(r_\mathcal{L}-d_\mathcal{L}) - \overline{F}  \right)   \\	
+	\label{eq:ctr:4}
+	\dot p_j^C  & =&	\gamma_j^{p^C} \left(  \lambda -  \omega_j   +  H_j \eta^- - H_j \eta^+ - C_j'(p_j)   \right) + p_j+\frac{\omega_j }{R_j}  ,\quad j\in\mathcal{G}  \\
+	\label{eq:ctr:5}
+	\dot d_j^C & = & \gamma_j^{d^C} \left(U_j'(d_j)  -  \lambda +  \omega_j - H_j \eta^- +  H_j\eta^+    \right) + d_j, \quad  j\in\mathcal{N}^+
+	\end{eqnarray}\label{eq:ctr}%
+\end{subequations}
+where $\gamma^\lambda$, $ \Gamma^{\eta^{-}}:=\diag(\gamma_j^{\eta^-}, j\in\mathcal{E})$, $ \Gamma^{\eta^{+}}:=\diag(\gamma_j^{\eta^+}, j\in\mathcal{E})$, $\gamma_j^{p^C}$ and $\gamma_j^{d^C}$ are constants (or diagonal constant matrices). \eqref{eq:ctr:1}-\eqref{eq:ctr:3} are the dynamics of dual Lagrange multipliers as a proxy for the cost of constraint violation. \eqref{eq:ctr:4}, \eqref{eq:ctr:5} are the adjustment of control commands for generators and loads based on market information updates. Specifically, we define $\lambda - \omega +H \eta^- - H\eta^+$ as \emph{dynamical locational marginal prices (DLMPs)}, where $\lambda$ prices global power imbalance, $-\omega$ prices local power imbalance, and $(H \eta^- - H\eta^+)$ prices line congestion. From \eqref{eq:nwdymvec:2} and \eqref{eq:ctr:1}-\eqref{eq:ctr:3}, DLMPs are temporally and spatially variant that characterize the dynamical market evolution in response to the real-time operational state of the power network. Then \eqref{eq:ctr:4}, \eqref{eq:ctr:5} combined with \eqref{eq:nwdymvec:4}, \eqref{eq:nwdymvec:5} reveal a direct economic interpretation that a generator (load) tends to augment (reduce) production (consumption) if the DLMP exceeds its marginal cost (utility); otherwise, it will curtail (increase) production (consumption). This matches exactly with the rational behavior of market participants.  
+
+\begin{remark}
+	To avoid measuring the power imbalance $r$, we can learn from \eqref{eq:nwdymvec:2}, \eqref{eq:nwdymvec:3} and find a replacement 
+\begin{subequations}
+	\begin{eqnarray}
+	 r_\mathcal{G} +p  - d_\mathcal{G}  & = & M \dot \omega_\mathcal{G}    + D_\mathcal{G}  \omega_\mathcal{G}  + C_{\mathcal{G}}B  \bar C^T \theta_{\mathcal{N}^+}   \\
+	 r_{\mathcal{L}} - d_{\mathcal{L}} & =& D_{\mathcal{L}} \omega_{\mathcal{L}} + C_{\mathcal{L}}B \bar C^T\theta_{\mathcal{N}^+} 
+	\end{eqnarray}\label{eq:rpc}
+\end{subequations}
+where $\theta$, $\omega$ and $\dot \omega$ are readily observable in the current power system operation.
+\end{remark}  
+
+We highlight the implementation of the market dynamics based controller: \eqref{eq:rpc} requires the local measurement of $\omega_j$, $\dot \omega_j$ and $\theta_j$ as well as $(\theta_k, k: j\rightarrow k \in\mathcal{E}~\mathrm{or}~k\rightarrow j \in\mathcal{E})$ from neighbors through neighborhood communications. \eqref{eq:ctr} necessitates the bidirectional communication between each bus and a central market operator to exchange system state information and DLMPs, which can build on the existing market communication networks. Note that by means of \eqref{eq:rpc} generators and loads don't have to report to the market operator individually, thus avoiding excessive interactions that may slow information updates.
+
+
+
+
+\subsection{Underlying algorithm} 
+
+The market dynamics based controller \eqref{eq:ctr} is inspired by a partial primal-dual algorithm applied to the following problem:
+
+\noindent
+\textbf{EDP-3}:
+\begin{subequations}
+	\begin{eqnarray}
+	\label{eq:ed3:1}
+	\min_{p,d, \tilde \theta,\omega_{\mathcal{N}^+}} &&   \sum_{j\in\mathcal{G}} C_j(p_j) - \sum_{j\in\mathcal{N}^+} U_j(d_j) + \sum_{j\in\mathcal{N}^+}\frac{D_j}{2} \omega_j^2  \\
+	\label{eq:ed3:2}
+	\mathrm{s.t.} &&   r_\mathcal{G} +p  - d_\mathcal{G}  - D_\mathcal{G}  \omega_{\mathcal{G}}   - C_{\mathcal{G}}  B  \tilde \theta =0\\
+	\label{eq:ed3:3}
+	&&  r_{\mathcal{L}} - d_{\mathcal{L}} - D_\mathcal{L} \omega_{\mathcal{L}} - C_{\mathcal{L}}  B   \tilde \theta = 0  \\
+	\label{eq:ed3:4}	
+	 &&   \mathbf 1^T_\mathcal{G} (r_\mathcal{G}+p-d_\mathcal{G})  + \mathbf 1^T_\mathcal{L} (r_\mathcal{L}-d_\mathcal{L})  = 0 \\
+	\label{eq:ed3:5}
+	&&    H^T_{\mathcal{G}}(r_\mathcal{G}+p-d_\mathcal{G}) + H^T_\mathcal{L}(r_\mathcal{L}-d_\mathcal{L}) \ge \underline{F}  \\
+	\label{eq:ed3:6}
+	&&  H^T_{\mathcal{G}}(r_\mathcal{G}+p-d_\mathcal{G}) + H^T_\mathcal{L}(r_\mathcal{L}-d_\mathcal{L})  \le  \overline{F}
+	\end{eqnarray}	\label{eq3:ed}%
+\end{subequations}
+At first sight, EDP-3 seems a combination of EDP-1 and EDP-2. 
+%Actually all the three EDPs turn out equivalent as we now show. 
+Similarly, we introduce dual variables $\mu_{\mathcal{G}}\in\mathbb{R}^{|\mathcal{G}|}$, $\mu_{\mathcal{L}}\in\mathbb{R}^{|\mathcal{L}|}$, $\lambda\in\mathbb{R}$, $\eta^- \in\mathbb{R}^{|\mathcal{E}|}$ and $\eta^+ \in\mathbb{R}^{|\mathcal{E}|}$ for \eqref{eq:ed3:2}-\eqref{eq:ed3:6}, respectively. For compactness, let $x:=(p,d,\tilde \theta,\omega_{\mathcal{N}^+})\in\mathbb{R}^{|\mathcal{G}|+2|\mathcal{N}|+|\mathcal{E}|-2}$ and $\nu:=(\mu,\lambda, \eta^-,\eta^+)\in\mathbb{R}^{|\mathcal{N}|+2|\mathcal{E}|}$. Then the Lagrangian of EDP-3 can be noted down as
+
+\begin{equation}
+\begin{split}
+L(x,\nu) := & \sum_{j\in\mathcal{G}} C_j(p_j) - \sum_{j\in\mathcal{N}^+} U_j(d_j) + \sum_{j\in\mathcal{N}^+}\frac{D_j}{2} \omega_j^2 + \mu_{\mathcal{G}}^T \left( r_\mathcal{G} +  p  - d_\mathcal{G}  -  D_\mathcal{G}  \omega_{\mathcal{G}}   - C_{\mathcal{G}}  B   \tilde \theta  \right) \\
+& +\mu_{\mathcal{L}}^T \left(  r_{\mathcal{L}} - d_{\mathcal{L}} - D_\mathcal{L} \omega_{\mathcal{L}} - C_{\mathcal{L}}  B  \tilde \theta \right) + \lambda \left(- \mathbf 1^T_\mathcal{G} (r_\mathcal{G}+p-d_\mathcal{G})  -  \mathbf 1^T_\mathcal{L} (r_\mathcal{L}-d_\mathcal{L}) \right)   \\
+& + \eta^{-T} \left(\underline{F}  -  H^T_{\mathcal{G}}(r_\mathcal{G}+p-d_\mathcal{G}) - H^T_\mathcal{L}(r_\mathcal{L}-d_\mathcal{L}) \right) \\
+&+ \eta^{+T} \left(H^T_{\mathcal{G}}(r_\mathcal{G}+p-d_\mathcal{G}) + H^T_\mathcal{L}(r_\mathcal{L}-d_\mathcal{L}) - \overline{F}\right)
+\end{split}
+\end{equation}
+
+As per the KKT conditions, the next lemma regarding optimality follows directly:
+
+\begin{lemma}\label{lm:opm}
+$(x^*,\nu^*)$ is a pair of primal-dual optimal solution to EDP-3 if and only if $p^*,d^*,\tilde \theta^*$ are primal feasible, $\eta^{-*},\eta^{+*} \ge 0$, and 
+\begin{subequations}
+\begin{eqnarray}
+\label{eq:opm:1}
+&& \mu^*=\omega^*_{\mathcal{N}^+}=\mathbf{0}	\\
+\label{eq:opm:2}
+&& p^*_j=C_j^{'-1}(\lambda^*-\omega^*_j+H_j\eta^{-*}-H_j\eta^{+*}),\quad j\in\mathcal{G}  \\
+\label{eq:opm:3}
+&& d^*_j=U_j^{'-1}(\lambda^*-\omega^*_j+H_j\eta^{-*}-H_j\eta^{+*}),\quad j\in\mathcal{N}^+  \\
+\label{eq:opm:4}
+&& \diag(\eta^{-*}) \left(\underline{F}  -  H^T_{\mathcal{G}}(r_\mathcal{G}+p^*-d^*_\mathcal{G}) - H^T_\mathcal{L}(r_\mathcal{L}-d^*_\mathcal{L}) \right) = \mathbf{0}   \\
+\label{eq:opm:5}
+&& \diag(\eta^{+*}) \left(H^T_{\mathcal{G}}(r_\mathcal{G}+p^*-d^*_\mathcal{G}) + H^T_\mathcal{L}(r_\mathcal{L}-d^*_\mathcal{L}) - \overline{F}\right) = \mathbf{0}
+\end{eqnarray}\label{eq:opm}%
+where $C_j^{'-1}(\cdot)$ and $U_j^{'-1}(\cdot)$ are the inverse functions of the derivatives of $C_j(\cdot)$ and $U_j(\cdot)$, respectively.
+\end{subequations}
+\end{lemma}
+
+With lemma \ref{lm:opm}, EDP-3 is indeed an equivalent combination of EDP-1 and EDP-2, which is formalized as 
+
+\begin{lemma}
+	Given a vector $(p^*,d^*,\tilde{\theta^*},\omega^*_{\mathcal{N}^+})$ that satisfies $\omega_{\mathcal{N}^+}=\mathbf{0}$, $\tilde \theta^* = \bar C^T \theta^*_{\mathcal{N}^+}$ and $\pi^*_{\mathcal{N}^+}=\bar CB\bar{C}^T\theta^*_{\mathcal{N}^+}$ where $\pi^*_{\mathcal{G}}=r_\mathcal{G}+p^*-d^*_\mathcal{G}$ and $\pi^*_{\mathcal{L}}=r_\mathcal{L}-d^*_\mathcal{L}$, the following statements are equivalent:
+	\begin{itemize}
+		\item $(p^*,d^*,{\theta^*_{\mathcal{N}^+}})$ is an optimal solution to EDP-1;
+		\item $(p^*,d^*)$ is an optimal solution to EDP-2;
+		\item $(p^*,d^*,\tilde{\theta^*},\omega^*_{\mathcal{N}^+})$ is an optimal solution to EDP-3.
+	\end{itemize}
+\end{lemma}
+
+A standard primal-dual algorithm applied to EDP-3 should be  
+\begin{subequations}
+\begin{eqnarray}
+\label{eq:pdalg:1}
+    \dot \lambda &=& \gamma^\lambda \nabla_\lambda  L(x,\nu)  \\
+    \label{eq:pdalg:2}    
+    \dot \eta^- &=&  \Gamma^{\eta^-} \left[\nabla_{\eta^-} L(x,\nu)\right]_{\eta^-}^+ \\
+    \label{eq:pdalg:3}
+    \dot \eta^+ &=&  \Gamma^{\eta^+} \left[\nabla_{\eta^+} L(x,\nu)\right]_{\eta^+}^+ \\
+    \label{eq:pdalg:4}
+    \dot \mu_\mathcal{G} &=& \Gamma^{\mu_\mathcal{G}} \nabla_{\mu_\mathcal{G}} L(x,\nu) \\
+    \label{eq:pdalg:5}
+    \dot \mu_\mathcal{L} &=& \Gamma^{\mu_\mathcal{L}} \nabla_{\mu_\mathcal{L}} L(x,\nu) \\    
+    \label{eq:pdalg:6}
+    \dot p &=&  - \Gamma^{p^C}  \nabla_p L(x,\nu)  \\
+    \label{eq:pdalg:7}
+    \dot d &=& - \Gamma^{d^C}  \nabla_d L(x,\nu) \\
+    \label{eq:pdalg:8}
+    \dot{\tilde \theta} & =& -\Gamma^{\tilde{\theta}} \nabla_{\tilde \theta} L(x,\nu) \\
+    \label{eq:pdalg:9}
+    \dot \omega_{\mathcal{N}^+} &=& -\Gamma^{ \omega_{\mathcal{N}^+}} \nabla_{ \omega_{\mathcal{N}^+}} L(x,\nu)
+\end{eqnarray}\label{eq:pdalg}%
+where $\Gamma^{\mu_{\mathcal{G}}}:=\diag(\gamma^{\mu}_j,j\in\mathcal{G})$, $\Gamma^{\mu_{\mathcal{L}}}:=\diag(\gamma^{\mu}_j,j\in\mathcal{L})$, $\Gamma^{p^C}:=\diag(\gamma^{p^C}_j,j\in\mathcal{G})$, $\Gamma^{d^C}:=\diag(\gamma^{d^C}_j,j\in\mathcal{N}^+)$, $\Gamma^{\tilde{\theta}}:=\diag(\gamma^{\tilde{\theta}}_{jk},(j,k)\in\mathcal{E})$ and $\Gamma^{ \omega_{\mathcal{N}^+}}:=\diag(\gamma^{ \omega},j\in{\mathcal{N}^+})$ are all diagonal constant matrices.
+An variance is to combine a dual algorithm partially, i.e., replace \eqref{eq:pdalg:5}, \eqref{eq:pdalg:8} with the followings:
+\begin{eqnarray}
+\label{eq:dalg:1}
+\mu_{\mathcal{L}}& = &\arg\max_{\mu_{\mathcal{L}}} L(x,\nu)  \\
+\label{eq:dalg:2}
+\omega_{\mathcal{N}^+} &= &\arg\min_{\omega_{\mathcal{N}^+}} L(x,\nu)  
+\end{eqnarray}
+\end{subequations}
+It is remarkable that the partial primal dual algorithm \eqref{eq:pdalg:1}-\eqref{eq:pdalg:4}, \eqref{eq:pdalg:6}-\eqref{eq:pdalg:8}, \eqref{eq:dalg:1}, \eqref{eq:dalg:2} used to solve EDP-3 well corresponds to the closed-loop system of \eqref{eq:nwdymvec} with our controller \eqref{eq:ctr}. In particular, \eqref{eq:pdalg:1}-\eqref{eq:pdalg:3} are exactly part of our controller \eqref{eq:ctr:1}-\eqref{eq:ctr:3}. \eqref{eq:pdalg:6}, \eqref{eq:pdalg:7} appear when the control commands \eqref{eq:ctr:4}, \eqref{eq:ctr:5} are applied to the generator and load dynamics \eqref{eq:nwdymvec:4}, \eqref{eq:nwdymvec:5}. \eqref{eq:dalg:2} basically sets $\omega_{\mathcal{N}^+} \equiv \mu$. As a result, \eqref{eq:pdalg:4}, \eqref{eq:dalg:1} and $\eqref{eq:pdalg:8}$ can be automatically carried out by the network dynamics \eqref{eq:nwdymvec:2}, \eqref{eq:nwdymvec:3} and \eqref{eq:nwdymvec:1} by setting $\gamma^\mu_j=M_j^{-1}$, $j\in\mathcal{G}$, and $\gamma^{\tilde{\theta}}_{jk}=B_{jk}^{-1}$, $(j,k)\in\mathcal{E}$.
+
+The closed-loop system of \eqref{eq:nwdymvec} and $\eqref{eq:ctr}$ is a typical representative of a cyber-physical system and jointly implements a partial primal dual algorithm that solves EDP-3, a variance of the market-clearing EDP-1. This embodies a market-aware controller design as \eqref{eq:ctr}.  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\newpage
+\appendix
+\section{Appendix}
+
+\subsection{Derivation of $B$}
+
+Here all variables are in their nominal values. Deviations will be represented by adding $\Delta$.
+Consider the generic expression for a real line flow $P_{jk}$:
+\begin{eqnarray}\label{eq:app:1}
+     P_{jk}= |V_j||V_k|\left(-g_{jk}\cos(\theta_j-\theta_k)-b_{jk}\sin(\theta_j-\theta_k)\right)
+\end{eqnarray} 
+where $g_{jk}:=\frac{r_{jk}}{r_{jk}^2+x_{jk}^2}$ and $b_{jk}:=\frac{-x_{jk}}{r_{jk}^2+x_{jk}^2}$ denote the corresponding conductance and susceptance of line $(j,k)$, respectively. By the second assumption, \eqref{eq:app:1} reduces to
+\begin{eqnarray}\label{eq:app:2}
+P_{jk}= \frac{|V_j||V_k|}{x_{jk}}\sin(\theta_j-\theta_k)
+\end{eqnarray} 
+If there is a disturbance in phase angels, the line flow evolves accordingly:
+\begin{eqnarray}\label{eq:app:3}
+P_{jk} + \Delta P_{jk}= \frac{|V_j||V_k|}{x_{jk}}\sin((\theta_j+\Delta \theta_j)-(\theta_k+\Delta \theta_k))
+\end{eqnarray} 
+By applying the Taylor series to the right-hand side at the nominal phase angles and ignoring the high-order terms, we can rewrite \eqref{eq:app:3} as 
+ \begin{eqnarray}\label{eq:app:4}
+  P_{jk} + \Delta P_{jk}= \frac{|V_j||V_k|}{x_{jk}}\left[\sin(\theta_j-\theta_k)+\cos(\theta_j-\theta_k)(\Delta \theta_j-\Delta \theta_k)\right]
+  \end{eqnarray} 
+Combining \eqref{eq:app:3} and \eqref{eq:app:4} leads to the linearized line flow model in \eqref{eq:nwdym}:
+ \begin{eqnarray}\label{eq:app:5}
+\Delta P_{jk}= \frac{|V_j||V_k|}{x_{jk}}\cos(\theta_j-\theta_k)(\Delta \theta_j-\Delta \theta_k)
+\end{eqnarray} 
+where $B_{jk}:=\frac{|V_j||V_k|}{x_{jk}}\cos(\theta_j-\theta_k)$.
+\qed
+
+
+
+\subsection{Lemma \ref{lm:opm}}
+
+\eqref{eq:opm} basically characterizes the KKT conditions except $\omega_{\mathcal{N}^+}^*=\mathbf{0}$ as we now prove. The stationarity conditions require
+\begin{equation}
+    \frac{\partial L}{\partial \tilde \theta_{jk} }(x^*,\nu^*) = B_{jk} (\mu_j^*-\mu_k^*)= 0,\quad (j,k)\in\mathcal{E}
+\end{equation}
+Note that if $j=0$ or $k=0$, then $\mu_j^*=0$ or $\mu_k^*=0$ as it is not defined\footnote{Actually here we can already obtain $\mu^*=\mathbf{0}$ ($\omega^*_{\mathcal{N}^+}=\mathbf{0}$) thanks to our assumption that $\theta_0=0$ at bus 0. However, we would like to show this property always holds even without the assumption.}.
+Considering $B_{jk} >0$, $\mu^*_j=\mu^*_k$, $(j,k)\in\mathcal{E}$. Since the graph $(\mathcal{N},\mathcal{E})$ is connected and $\mu^*=\omega^*_{\mathcal{N}^+}$, naturally $\omega^*_j=\omega^*_k=\bar \omega$, $j,k\in\mathcal{N}^+$, where $\bar{\omega}$ is a constant.
+
+From \eqref{eq:ed3:4} and the above conclusion, summing up \eqref{eq:ed3:2} and \eqref{eq:ed3:3} over rows leads to $\sum_{j\in\mathcal{N}^+} D_j\omega_j = \bar\omega \sum_{j\in\mathcal{N}^+} D_j=0$. Since $D_j>0$, $\bar \omega = 0$, i.e., $\omega_{\mathcal{N}^+}^*=\mathbf{0}$. This proves the lemma. \qed  
+
+
+\bibliographystyle{IEEEtran}  
+\bibliography{bib}  
+
+
+\end{document}
+
+

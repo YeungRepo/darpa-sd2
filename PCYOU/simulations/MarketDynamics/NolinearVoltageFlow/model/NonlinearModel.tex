@@ -1,0 +1,118 @@
+
+
+
+\documentclass[journal,12pt,onecolumn,draftclsnofoot]{IEEEtran}
+
+
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{color}
+\usepackage{epsfig}
+\usepackage{subfigure}
+\usepackage{graphicx}
+%\usepackage{caption}
+\usepackage{colortbl}
+
+\renewcommand{\arraystretch}{1.3} 
+\newcommand{\diag}{\mathop{\mathrm{diag}}}
+\newcommand{\tabincell}[2]{\begin{tabular}{@{}#1@{}}#2\end{tabular}}  
+
+\newtheorem{assumption}{\textbf{Assumption}}
+\newtheorem{definition}{\textbf{Definition}}
+\newtheorem{lemma}{\textbf{Lemma}}
+\newtheorem{theorem}{\textbf{Theorem}}
+\newtheorem{remark}{\textbf{Remark}}
+\newtheorem{proposition}{\textbf{Proposition}}
+\newtheorem{corollary}{\textbf{Corollary}}
+
+\def\ba{\begin{array}}
+	\def\ea{\end{array}}
+\newcommand{\beq}{\begin{equation}}
+\newcommand{\eeq}{\end{equation}}
+\newcommand{\bq}{\begin{eqnarray}}
+\newcommand{\eq}{\end{eqnarray}}
+\newcommand{\bqn}{\begin{eqnarray*}}
+	\newcommand{\eqn}{\end{eqnarray*}}
+\newcommand{\bee}{\begin{enumerate}}
+	\newcommand{\eee}{\end{enumerate}}
+\newcommand{\bi}{\begin{itemize}}
+	\newcommand{\ei}{\end{itemize}}
+%\newcommand{\qed}{\hfill{$\blacksquare$}}
+\newcommand{\ii}{\textbf{i}}
+
+\usepackage{comment}
+%\newboolean{showcomments}
+%\setboolean{showcomments}{true}
+\newcommand{\slow}[1]{\ifthenelse{\boolean{showcomments}}
+	{ \textcolor{red}{(SL:  #1)}}{}}
+\newcommand{\you}[1]{\ifthenelse{\boolean{showcomments}}
+	{ \textcolor{green}{(PCY:  #1)}}{}}
+\newcommand{\john}[1]{\ifthenelse{\boolean{showcomments}}
+	{ \textcolor{blue}{(jp:  #1)}}{}}
+
+
+% correct bad hyphenation here
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+
+\begin{document}
+
+%\title{Question}
+
+
+%\author{Pengcheng You \\  Nov 14 2017% <-this % stops a space
+%\thanks{M. Shell was with the Department
+%of Electrical and Computer Engineering, Georgia Institute of Technology, Atlanta,
+%GA, 30332 USA e-mail: (see http://www.michaelshell.org/contact.html).}% <-this % stops a space
+%\thanks{J. Doe and J. Doe are with Anonymous University.}% <-this % stops a space
+%\thanks{Manuscript received April 19, 2005; revised August 26, 2015.}
+%}
+
+
+% make the title area
+%\maketitle
+
+
+%\begin{abstract}
+%
+%\end{abstract}
+
+%
+%\begin{IEEEkeywords}
+%
+%\end{IEEEkeywords}
+
+
+\IEEEpeerreviewmaketitle
+For each bus $j$, the nonlinear dynamical model is as follows \cite{wang2017distributed,stegink2017unifying,stegink2016stabilization}:
+%\begin{subequations}
+\begin{small}
+\begin{eqnarray*}
+\dot \theta_j & = & \omega_j   \\
+M_j \dot \omega_j & = & r_j+p_j-d_j - D_j \omega_j -\sum_{k:j\rightarrow k}  {\color{red}   E'_{qj} E'_{qk}    }   B_{jk} \sin (\theta_j-\theta_k) +\sum_{i:i\rightarrow j}   {\color{red}   E'_{qi} E'_{qj}       }    B_{ij} \sin (\theta_i-\theta_j)   \\
+0 & = & r_j-d_j - D_j \omega_j -\sum_{k:j\rightarrow k}  {\color{red}   E'_{qj} E'_{qk}    }   B_{jk} \sin (\theta_j-\theta_k) +\sum_{i:i\rightarrow j}   {\color{red}   E'_{qi} E'_{qj}       }    B_{ij} \sin (\theta_i-\theta_j)   \\
+0 & = & r_j- D_j \omega_j -\sum_{k:j\rightarrow k}  {\color{red}   E'_{qj} E'_{qk}    }   B_{jk} \sin (\theta_j-\theta_k) +\sum_{i:i\rightarrow j}   {\color{red}   E'_{qi} E'_{qj}       }    B_{ij} \sin (\theta_i-\theta_j)   \\
+T'_{dj}    \dot E'_{qj} & = &  {\color{red}  E_{fj}   }  -  \left[1-({\color{red} x_{dj}}- {\color{red}x'_{dj}}) {\color{red} B_{jj}  } \right] E'_{qj}  +  (x_{dj}-x'_{dj})    \sum_{k\in \mathcal{N}(j)}  E'_{qk} B_{jk} \cos (\theta_j-\theta_k)   
+\end{eqnarray*}	\end{small}%
+%\end{subequations}%
+where $E'_{qj}$ is the $q$-axis transient internal voltage, $T'_{dj}$ is the $d$-axis transient time constant, $E_{fj}$ is the constant excitation voltage set to $1$, $x_{dj}$ and $x'_{dj}$ are the $d$-axis synchronous and transient reactances, respectively, and $\mathcal{N}(j)$ denotes the set of neighbor buses that are connected to bus $j$.  
+
+
+
+
+
+
+
+
+
+
+
+\bibliographystyle{IEEEtran}  
+\bibliography{bib}  
+
+
+\end{document}
+
+

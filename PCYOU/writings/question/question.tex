@@ -1,0 +1,121 @@
+
+
+
+\documentclass[journal,12pt,onecolumn,draftclsnofoot]{IEEEtran}
+
+
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{color}
+\usepackage{epsfig}
+\usepackage{subfigure}
+\usepackage{graphicx}
+%\usepackage{caption}
+\usepackage{colortbl}
+
+\renewcommand{\arraystretch}{1.3} 
+\newcommand{\diag}{\mathop{\mathrm{diag}}}
+\newcommand{\tabincell}[2]{\begin{tabular}{@{}#1@{}}#2\end{tabular}}  
+
+\newtheorem{assumption}{\textbf{Assumption}}
+\newtheorem{definition}{\textbf{Definition}}
+\newtheorem{lemma}{\textbf{Lemma}}
+\newtheorem{theorem}{\textbf{Theorem}}
+\newtheorem{remark}{\textbf{Remark}}
+\newtheorem{proposition}{\textbf{Proposition}}
+\newtheorem{corollary}{\textbf{Corollary}}
+
+\def\ba{\begin{array}}
+	\def\ea{\end{array}}
+\newcommand{\beq}{\begin{equation}}
+\newcommand{\eeq}{\end{equation}}
+\newcommand{\bq}{\begin{eqnarray}}
+\newcommand{\eq}{\end{eqnarray}}
+\newcommand{\bqn}{\begin{eqnarray*}}
+	\newcommand{\eqn}{\end{eqnarray*}}
+\newcommand{\bee}{\begin{enumerate}}
+	\newcommand{\eee}{\end{enumerate}}
+\newcommand{\bi}{\begin{itemize}}
+	\newcommand{\ei}{\end{itemize}}
+%\newcommand{\qed}{\hfill{$\blacksquare$}}
+\newcommand{\ii}{\textbf{i}}
+
+\usepackage{comment}
+%\newboolean{showcomments}
+%\setboolean{showcomments}{true}
+\newcommand{\slow}[1]{\ifthenelse{\boolean{showcomments}}
+	{ \textcolor{red}{(SL:  #1)}}{}}
+\newcommand{\you}[1]{\ifthenelse{\boolean{showcomments}}
+	{ \textcolor{green}{(PCY:  #1)}}{}}
+\newcommand{\john}[1]{\ifthenelse{\boolean{showcomments}}
+	{ \textcolor{blue}{(jp:  #1)}}{}}
+
+
+% correct bad hyphenation here
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+
+\begin{document}
+
+%\title{Question}
+
+
+%\author{Pengcheng You \\  Nov 14 2017% <-this % stops a space
+%\thanks{M. Shell was with the Department
+%of Electrical and Computer Engineering, Georgia Institute of Technology, Atlanta,
+%GA, 30332 USA e-mail: (see http://www.michaelshell.org/contact.html).}% <-this % stops a space
+%\thanks{J. Doe and J. Doe are with Anonymous University.}% <-this % stops a space
+%\thanks{Manuscript received April 19, 2005; revised August 26, 2015.}
+%}
+
+
+% make the title area
+%\maketitle
+
+
+%\begin{abstract}
+%
+%\end{abstract}
+
+%
+%\begin{IEEEkeywords}
+%
+%\end{IEEEkeywords}
+
+
+\IEEEpeerreviewmaketitle
+
+In your frequency regulation work, to deal with line congestion at equilibrium, a projection operator is introduced in the controller dynamics of the corresponding Lagrange multipliers. For example, a line thermal limit is $P\le \overline{P}$ where $P$ is line flow and $\overline{P}$ is the limit. Let the corresponding dual variable be $\eta \ge 0$. In the controller design, we will have 
+\begin{displaymath}
+\dot{\eta}=\gamma \left[  P-\overline{P}\right]^+_\eta
+\end{displaymath}
+where $\gamma$ is a constant and the projection $\left[  P-\overline{P}\right]^+_\eta= P-\overline{P}$ if $P-\overline{P} >0$ or $\eta>0$; otherwise, $\left[  P-\overline{P}\right]^+_\eta=0$.
+
+My problem arises when we try to prove that any equilibrium point of the closed-loop system is also an optimal solution to the specified underlying optimization problem. An optimal solution can be characterized by the KKT conditions, thus basically we need to show any equilibrium point satisfies the KKT conditions. 
+
+It is easy to verify the primal feasibility and stationarity conditions are satisfied. I have concerns when we try to justify that an arbitrary equilibrium point satisfies the conditions of dual feasibility and complementary slackness (mainly associated with the above $\eta$). For example, in \cite{mallada2017optimal}, the corresponding proof is simplified: it claims from $\dot{\eta}=0$ we can directly have $\eta \ge 0$, i.e., dual feasibility. 
+
+In my opinion, by the definition of the projection, $\eta(t) \ge 0$ for all $t\ge 0$ as long as $\eta(0)\ge 0$. With this initial condition, apparently $\dot{\eta}=0$ implies $\eta\ge 0$ and complementary slackness as well.
+However, the main result of \cite{mallada2017optimal} is global asymptotic stability for the closed-loop system. Then we should not rely on any specific initial condition in the proof, right? Without $\eta(0)\ge 0$, I find it is not straightforward to conclude $\eta \ge 0$. Is it possible that $\eta<0$ and meanwhile $P \le \overline{P}$ such that $\dot \eta =0$? I guess this case is impossible, but it seems we can not easily exclude this case from only the conditions of equilibrium points (I want to show that if $\eta<0$, then always $P>\overline{P}$. But this is not direct either because $P$ is also affected by many other variables). 
+
+Therefore, I'm writing to confirm this question. Did I miss anything that can easily show $\eta \ge 0$ from $\dot \eta =0$ for arbitrary initial points? Or Is there any other method to prove this statement rather than assume the initial condition of $\eta(0)\ge 0$ by which we cannot claim global asymptotic stability?
+
+
+
+
+
+
+
+
+
+
+
+\bibliographystyle{IEEEtran}  
+\bibliography{bib}  
+
+
+\end{document}
+
+

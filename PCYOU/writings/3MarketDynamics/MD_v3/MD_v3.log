@@ -1,0 +1,756 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.5.23)  8 DEC 2017 11:21
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**MD_v3.tex
+(./MD_v3.tex
+LaTeX2e <2017-04-15>
+Babel <3.10> and hyphenation patterns for 84 language(s) loaded.
+(./IEEEtran.cls
+Document Class: IEEEtran 2015/08/26 V1.8b by Michael Shell
+-- See the "IEEEtran_HOWTO" manual for usage information.
+-- http://www.michaelshell.org/tex/ieeetran/
+\@IEEEtrantmpdimenA=\dimen102
+\@IEEEtrantmpdimenB=\dimen103
+\@IEEEtrantmpdimenC=\dimen104
+\@IEEEtrantmpcountA=\count79
+\@IEEEtrantmpcountB=\count80
+\@IEEEtrantmpcountC=\count81
+\@IEEEtrantmptoksA=\toks14
+LaTeX Font Info:    Try loading font information for OT1+ptm on input line 503.
+
+(/usr/local/texlive/2017/texmf-dist/tex/latex/psnfss/ot1ptm.fd
+File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
+)
+-- Using 8.5in x 11in (letter) paper.
+-- Using PDF output.
+\@IEEEnormalsizeunitybaselineskip=\dimen105
+-- This is a 12 point document.
+\CLASSINFOnormalsizebaselineskip=\dimen106
+\CLASSINFOnormalsizeunitybaselineskip=\dimen107
+\IEEEnormaljot=\dimen108
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <6> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1090.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <6> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1090.
+
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1090.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <8> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1090.
+
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1090.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <9> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1090.
+
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1090.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <10> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1090.
+
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1090.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <12> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1090.
+
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1090.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <14> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1090.
+
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <20> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1090.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <20> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1090.
+
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <22> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1090.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <22> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1090.
+
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <24> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1090.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <24> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1090.
+
+\IEEEquantizedlength=\dimen109
+\IEEEquantizedlengthdiff=\dimen110
+\IEEEquantizedtextheightdiff=\dimen111
+\IEEEilabelindentA=\dimen112
+\IEEEilabelindentB=\dimen113
+\IEEEilabelindent=\dimen114
+\IEEEelabelindent=\dimen115
+\IEEEdlabelindent=\dimen116
+\IEEElabelindent=\dimen117
+\IEEEiednormlabelsep=\dimen118
+\IEEEiedmathlabelsep=\dimen119
+\IEEEiedtopsep=\skip41
+\c@section=\count82
+\c@subsection=\count83
+\c@subsubsection=\count84
+\c@paragraph=\count85
+\c@IEEEsubequation=\count86
+\abovecaptionskip=\skip42
+\belowcaptionskip=\skip43
+\c@figure=\count87
+\c@table=\count88
+\@IEEEeqnnumcols=\count89
+\@IEEEeqncolcnt=\count90
+\@IEEEsubeqnnumrollback=\count91
+\@IEEEquantizeheightA=\dimen120
+\@IEEEquantizeheightB=\dimen121
+\@IEEEquantizeheightC=\dimen122
+\@IEEEquantizeprevdepth=\dimen123
+\@IEEEquantizemultiple=\count92
+\@IEEEquantizeboxA=\box26
+\@IEEEtmpitemindent=\dimen124
+\IEEEPARstartletwidth=\dimen125
+\c@IEEEbiography=\count93
+\@IEEEtranrubishbin=\box27
+) (/usr/local/texlive/2017/texmf-dist/tex/latex/amscls/amsthm.sty
+Package: amsthm 2015/03/04 v2.20.2
+\thm@style=\toks15
+\thm@bodyfont=\toks16
+\thm@headfont=\toks17
+\thm@notefont=\toks18
+\thm@headpunct=\toks19
+\thm@preskip=\skip44
+\thm@postskip=\skip45
+\thm@headsep=\skip46
+\dth@everypar=\toks20
+)
+(/usr/local/texlive/2017/texmf-dist/tex/latex/amsmath/amsmath.sty
+Package: amsmath 2016/11/05 v2.16a AMS math features
+\@mathmargin=\skip47
+
+For additional information on amsmath, use the `?' option.
+(/usr/local/texlive/2017/texmf-dist/tex/latex/amsmath/amstext.sty
+Package: amstext 2000/06/29 v2.01 AMS text
+
+(/usr/local/texlive/2017/texmf-dist/tex/latex/amsmath/amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0 generic functions
+\@emptytoks=\toks21
+\ex@=\dimen126
+))
+(/usr/local/texlive/2017/texmf-dist/tex/latex/amsmath/amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d Bold Symbols
+\pmbraise@=\dimen127
+)
+(/usr/local/texlive/2017/texmf-dist/tex/latex/amsmath/amsopn.sty
+Package: amsopn 2016/03/08 v2.02 operator names
+)
+\inf@bad=\count94
+LaTeX Info: Redefining \frac on input line 213.
+\uproot@=\count95
+\leftroot@=\count96
+LaTeX Info: Redefining \overline on input line 375.
+\classnum@=\count97
+\DOTSCASE@=\count98
+LaTeX Info: Redefining \ldots on input line 472.
+LaTeX Info: Redefining \dots on input line 475.
+LaTeX Info: Redefining \cdots on input line 596.
+\Mathstrutbox@=\box28
+\strutbox@=\box29
+\big@size=\dimen128
+LaTeX Font Info:    Redeclaring font encoding OML on input line 712.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 713.
+\macc@depth=\count99
+\c@MaxMatrixCols=\count100
+\dotsspace@=\muskip10
+\c@parentequation=\count101
+\dspbrk@lvl=\count102
+\tag@help=\toks22
+\row@=\count103
+\column@=\count104
+\maxfields@=\count105
+\andhelp@=\toks23
+\eqnshift@=\dimen129
+\alignsep@=\dimen130
+\tagshift@=\dimen131
+\tagwidth@=\dimen132
+\totwidth@=\dimen133
+\lineht@=\dimen134
+\@envbody=\toks24
+\multlinegap=\skip48
+\multlinetaggap=\skip49
+\mathdisplay@stack=\toks25
+LaTeX Info: Redefining \[ on input line 2817.
+LaTeX Info: Redefining \] on input line 2818.
+)
+(/usr/local/texlive/2017/texmf-dist/tex/latex/amsfonts/amssymb.sty
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
+
+(/usr/local/texlive/2017/texmf-dist/tex/latex/amsfonts/amsfonts.sty
+Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
+))
+(/usr/local/texlive/2017/texmf-dist/tex/latex/booktabs/booktabs.sty
+Package: booktabs 2016/04/27 v1.618033 publication quality tables
+\heavyrulewidth=\dimen135
+\lightrulewidth=\dimen136
+\cmidrulewidth=\dimen137
+\belowrulesep=\dimen138
+\belowbottomsep=\dimen139
+\aboverulesep=\dimen140
+\abovetopsep=\dimen141
+\cmidrulesep=\dimen142
+\cmidrulekern=\dimen143
+\defaultaddspace=\dimen144
+\@cmidla=\count106
+\@cmidlb=\count107
+\@aboverulesep=\dimen145
+\@belowrulesep=\dimen146
+\@thisruleclass=\count108
+\@lastruleclass=\count109
+\@thisrulewidth=\dimen147
+)
+(/usr/local/texlive/2017/texmf-dist/tex/latex/graphics/color.sty
+Package: color 2016/07/10 v1.1e Standard LaTeX Color (DPC)
+
+(/usr/local/texlive/2017/texmf-dist/tex/latex/graphics-cfg/color.cfg
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package color Info: Driver file: pdftex.def on input line 147.
+
+(/usr/local/texlive/2017/texmf-dist/tex/latex/graphics-def/pdftex.def
+File: pdftex.def 2017/01/12 v0.06k Graphics/color for pdfTeX
+
+(/usr/local/texlive/2017/texmf-dist/tex/generic/oberdiek/infwarerr.sty
+Package: infwarerr 2016/05/16 v1.4 Providing info/warning/error messages (HO)
+)
+(/usr/local/texlive/2017/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
+Package: ltxcmds 2016/05/16 v1.23 LaTeX kernel commands for general use (HO)
+)
+\Gread@gobject=\count110
+))
+(/usr/local/texlive/2017/texmf-dist/tex/latex/graphics/epsfig.sty
+Package: epsfig 1999/02/16 v1.7a (e)psfig emulation (SPQR)
+
+(/usr/local/texlive/2017/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 2014/10/28 v1.0g Enhanced LaTeX Graphics (DPC,SPQR)
+
+(/usr/local/texlive/2017/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
+\KV@toks@=\toks26
+)
+(/usr/local/texlive/2017/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2017/04/14 v1.1b Standard LaTeX Graphics (DPC,SPQR)
+
+(/usr/local/texlive/2017/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
+)
+(/usr/local/texlive/2017/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: pdftex.def on input line 99.
+)
+\Gin@req@height=\dimen148
+\Gin@req@width=\dimen149
+)
+\epsfxsize=\dimen150
+\epsfysize=\dimen151
+)
+(/usr/local/texlive/2017/texmf-dist/tex/latex/subfigure/subfigure.sty
+Package: subfigure 2002/03/15 v2.1.5 subfigure package
+\subfigtopskip=\skip50
+\subfigcapskip=\skip51
+\subfigcaptopadj=\dimen152
+\subfigbottomskip=\skip52
+\subfigcapmargin=\dimen153
+\subfiglabelskip=\skip53
+\c@subfigure=\count111
+\c@lofdepth=\count112
+\c@subtable=\count113
+\c@lotdepth=\count114
+
+****************************************
+* Local config file subfigure.cfg used *
+****************************************
+(/usr/local/texlive/2017/texmf-dist/tex/latex/subfigure/subfigure.cfg)
+\subfig@top=\skip54
+\subfig@bottom=\skip55
+)
+(/usr/local/texlive/2017/texmf-dist/tex/latex/colortbl/colortbl.sty
+Package: colortbl 2012/02/13 v1.0a Color table columns (DPC)
+
+(/usr/local/texlive/2017/texmf-dist/tex/latex/tools/array.sty
+Package: array 2016/10/06 v2.4d Tabular extension package (FMi)
+\col@sep=\dimen154
+\extrarowheight=\dimen155
+\NC@list=\toks27
+\extratabsurround=\skip56
+\backup@length=\skip57
+)
+\everycr=\toks28
+\minrowclearance=\skip58
+)
+\c@assumption=\count115
+\c@definition=\count116
+\c@lemma=\count117
+\c@theorem=\count118
+\c@remark=\count119
+\c@proposition=\count120
+\c@corollary=\count121
+
+(/usr/local/texlive/2017/texmf-dist/tex/latex/comment/comment.sty
+\CommentStream=\write3
+
+Excluding comment 'comment') (./MD_v3.aux)
+\openout1 = `MD_v3.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 60.
+LaTeX Font Info:    ... okay on input line 60.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 60.
+LaTeX Font Info:    ... okay on input line 60.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 60.
+LaTeX Font Info:    ... okay on input line 60.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 60.
+LaTeX Font Info:    ... okay on input line 60.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 60.
+LaTeX Font Info:    ... okay on input line 60.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 60.
+LaTeX Font Info:    ... okay on input line 60.
+
+-- Lines per column: 32 (exact).
+(/usr/local/texlive/2017/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count122
+\scratchdimen=\dimen156
+\scratchbox=\box30
+\nofMPsegments=\count123
+\nofMParguments=\count124
+\everyMPshowfont=\toks29
+\MPscratchCnt=\count125
+\MPscratchDim=\dimen157
+\MPnumerator=\count126
+\makeMPintoPDFobject=\count127
+\everyMPtoPDFconversion=\toks30
+) (/usr/local/texlive/2017/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
+Package: pdftexcmds 2017/03/19 v0.25 Utility functions of pdfTeX for LuaTeX (HO
+)
+
+(/usr/local/texlive/2017/texmf-dist/tex/generic/oberdiek/ifluatex.sty
+Package: ifluatex 2016/05/16 v1.4 Provides the ifluatex switch (HO)
+Package ifluatex Info: LuaTeX not detected.
+)
+(/usr/local/texlive/2017/texmf-dist/tex/generic/oberdiek/ifpdf.sty
+Package: ifpdf 2017/03/15 v3.2 Provides the ifpdf switch
+)
+Package pdftexcmds Info: LuaTeX not detected.
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+)
+(/usr/local/texlive/2017/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
+Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
+
+(/usr/local/texlive/2017/texmf-dist/tex/latex/oberdiek/grfext.sty
+Package: grfext 2016/05/16 v1.2 Manage graphics extensions (HO)
+
+(/usr/local/texlive/2017/texmf-dist/tex/generic/oberdiek/kvdefinekeys.sty
+Package: kvdefinekeys 2016/05/16 v1.4 Define keys (HO)
+))
+(/usr/local/texlive/2017/texmf-dist/tex/latex/oberdiek/kvoptions.sty
+Package: kvoptions 2016/05/16 v3.12 Key value format for package options (HO)
+
+(/usr/local/texlive/2017/texmf-dist/tex/generic/oberdiek/kvsetkeys.sty
+Package: kvsetkeys 2016/05/16 v1.17 Key value parser (HO)
+
+(/usr/local/texlive/2017/texmf-dist/tex/generic/oberdiek/etexcmds.sty
+Package: etexcmds 2016/05/16 v1.6 Avoid name clashes with e-TeX commands (HO)
+Package etexcmds Info: Could not find \expanded.
+(etexcmds)             That can mean that you are not using pdfTeX 1.50 or
+(etexcmds)             that some package has redefined \expanded.
+(etexcmds)             In the latter case, load this package earlier.
+)))
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
+38.
+Package grfext Info: Graphics extension search list:
+(grfext)             [.png,.pdf,.jpg,.mps,.jpeg,.jbig2,.jb2,.PNG,.PDF,.JPG,.JPE
+G,.JBIG2,.JB2,.eps]
+(grfext)             \AppendGraphicsExtensions on input line 456.
+
+(/usr/local/texlive/2017/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
+e
+))
+[1{/usr/local/texlive/2017/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+LaTeX Font Info:    Try loading font information for U+msa on input line 108.
+
+(/usr/local/texlive/2017/texmf-dist/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Try loading font information for U+msb on input line 108.
+
+(/usr/local/texlive/2017/texmf-dist/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+)
+Overfull \hbox (4.81178pt too wide) in paragraph at lines 113--115
+[]\OT1/ptm/m/n/12 Consider a power net-work with a con-nected di-rected graph $
+\OT1/cmr/m/n/12 (\OMS/cmsy/m/n/12 N\OML/cmm/m/it/12 ; \OMS/cmsy/m/n/12 E\OT1/cm
+r/m/n/12 )$\OT1/ptm/m/n/12 , where $\OMS/cmsy/m/n/12 N \OT1/cmr/m/n/12 := \OMS/
+cmsy/m/n/12 f\OT1/cmr/m/n/12 0\OML/cmm/m/it/12 ; \OT1/cmr/m/n/12 1\OML/cmm/m/it
+/12 ; [] ; \OMS/cmsy/m/n/12 jNj ^^@
+ []
+
+[2] [3] [4] [5] [6] [7] [8] [9] [10]
+
+LaTeX Warning: No positions in optional float specifier.
+               Default added (so using `tbp') on input line 420.
+
+Package epstopdf Info: Source file: <figures/FrequencyWOC.eps>
+(epstopdf)                    date: 2017-12-01 13:24:45
+(epstopdf)                    size: 370255 bytes
+(epstopdf)             Output file: <figures/FrequencyWOC-eps-converted-to.pdf>
+
+(epstopdf)                    date: 2017-12-01 13:38:02
+(epstopdf)                    size: 124899 bytes
+(epstopdf)             Command: <repstopdf --outfile=figures/FrequencyWOC-eps-c
+onverted-to.pdf figures/FrequencyWOC.eps>
+(epstopdf)             \includegraphics on input line 426.
+Package epstopdf Info: Output file is already uptodate.
+<figures/FrequencyWOC-eps-converted-to.pdf, id=50, 562.1pt x 421.575pt>
+File: figures/FrequencyWOC-eps-converted-to.pdf Graphic file (type pdf)
+
+<use figures/FrequencyWOC-eps-converted-to.pdf>
+Package pdftex.def Info: figures/FrequencyWOC-eps-converted-to.pdf used on inpu
+t line 426.
+(pdftex.def)             Requested size: 140.92793pt x 105.69582pt.
+Package epstopdf Info: Source file: <figures/RelativeAngleWOC.eps>
+(epstopdf)                    date: 2017-12-01 13:24:12
+(epstopdf)                    size: 366606 bytes
+(epstopdf)             Output file: <figures/RelativeAngleWOC-eps-converted-to.
+pdf>
+(epstopdf)                    date: 2017-12-01 14:20:22
+(epstopdf)                    size: 131183 bytes
+(epstopdf)             Command: <repstopdf --outfile=figures/RelativeAngleWOC-e
+ps-converted-to.pdf figures/RelativeAngleWOC.eps>
+(epstopdf)             \includegraphics on input line 431.
+Package epstopdf Info: Output file is already uptodate.
+
+<figures/RelativeAngleWOC-eps-converted-to.pdf, id=51, 562.1pt x 421.575pt>
+File: figures/RelativeAngleWOC-eps-converted-to.pdf Graphic file (type pdf)
+
+<use figures/RelativeAngleWOC-eps-converted-to.pdf>
+Package pdftex.def Info: figures/RelativeAngleWOC-eps-converted-to.pdf used on 
+input line 431.
+(pdftex.def)             Requested size: 140.92793pt x 105.69582pt.
+Package epstopdf Info: Source file: <figures/LineFlowWOC.eps>
+(epstopdf)                    date: 2017-12-01 13:21:49
+(epstopdf)                    size: 1643723 bytes
+(epstopdf)             Output file: <figures/LineFlowWOC-eps-converted-to.pdf>
+(epstopdf)                    date: 2017-12-01 14:24:18
+(epstopdf)                    size: 505933 bytes
+(epstopdf)             Command: <repstopdf --outfile=figures/LineFlowWOC-eps-co
+nverted-to.pdf figures/LineFlowWOC.eps>
+(epstopdf)             \includegraphics on input line 436.
+Package epstopdf Info: Output file is already uptodate.
+
+<figures/LineFlowWOC-eps-converted-to.pdf, id=52, 562.1pt x 421.575pt>
+File: figures/LineFlowWOC-eps-converted-to.pdf Graphic file (type pdf)
+
+<use figures/LineFlowWOC-eps-converted-to.pdf>
+Package pdftex.def Info: figures/LineFlowWOC-eps-converted-to.pdf used on input
+ line 436.
+(pdftex.def)             Requested size: 140.92793pt x 105.69582pt.
+Package epstopdf Info: Source file: <figures/GenerationControlSignalWOC.eps>
+(epstopdf)                    date: 2017-12-01 13:22:29
+(epstopdf)                    size: 119021 bytes
+(epstopdf)             Output file: <figures/GenerationControlSignalWOC-eps-con
+verted-to.pdf>
+(epstopdf)                    date: 2017-12-01 14:23:25
+(epstopdf)                    size: 44327 bytes
+(epstopdf)             Command: <repstopdf --outfile=figures/GenerationControlS
+ignalWOC-eps-converted-to.pdf figures/GenerationControlSignalWOC.eps>
+(epstopdf)             \includegraphics on input line 441.
+Package epstopdf Info: Output file is already uptodate.
+
+<figures/GenerationControlSignalWOC-eps-converted-to.pdf, id=53, 562.1pt x 421.
+575pt>
+File: figures/GenerationControlSignalWOC-eps-converted-to.pdf Graphic file (typ
+e pdf)
+ <use figures/GenerationControlSignalWOC-eps-converted-to.pdf>
+Package pdftex.def Info: figures/GenerationControlSignalWOC-eps-converted-to.pd
+f used on input line 441.
+(pdftex.def)             Requested size: 140.92793pt x 105.69582pt.
+Package epstopdf Info: Source file: <figures/ValvePositionWOC.eps>
+(epstopdf)                    date: 2017-12-01 13:23:39
+(epstopdf)                    size: 119032 bytes
+(epstopdf)             Output file: <figures/ValvePositionWOC-eps-converted-to.
+pdf>
+(epstopdf)                    date: 2017-12-01 14:24:10
+(epstopdf)                    size: 43523 bytes
+(epstopdf)             Command: <repstopdf --outfile=figures/ValvePositionWOC-e
+ps-converted-to.pdf figures/ValvePositionWOC.eps>
+(epstopdf)             \includegraphics on input line 446.
+Package epstopdf Info: Output file is already uptodate.
+
+<figures/ValvePositionWOC-eps-converted-to.pdf, id=54, 562.1pt x 421.575pt>
+File: figures/ValvePositionWOC-eps-converted-to.pdf Graphic file (type pdf)
+
+<use figures/ValvePositionWOC-eps-converted-to.pdf>
+Package pdftex.def Info: figures/ValvePositionWOC-eps-converted-to.pdf used on 
+input line 446.
+(pdftex.def)             Requested size: 140.92793pt x 105.69582pt.
+Package epstopdf Info: Source file: <figures/MechanicalPowerWOC.eps>
+(epstopdf)                    date: 2017-12-01 13:22:55
+(epstopdf)                    size: 117464 bytes
+(epstopdf)             Output file: <figures/MechanicalPowerWOC-eps-converted-t
+o.pdf>
+(epstopdf)                    date: 2017-12-01 14:23:25
+(epstopdf)                    size: 43928 bytes
+(epstopdf)             Command: <repstopdf --outfile=figures/MechanicalPowerWOC
+-eps-converted-to.pdf figures/MechanicalPowerWOC.eps>
+(epstopdf)             \includegraphics on input line 451.
+Package epstopdf Info: Output file is already uptodate.
+
+<figures/MechanicalPowerWOC-eps-converted-to.pdf, id=55, 562.1pt x 421.575pt>
+File: figures/MechanicalPowerWOC-eps-converted-to.pdf Graphic file (type pdf)
+
+<use figures/MechanicalPowerWOC-eps-converted-to.pdf>
+Package pdftex.def Info: figures/MechanicalPowerWOC-eps-converted-to.pdf used o
+n input line 451.
+(pdftex.def)             Requested size: 140.92793pt x 105.69582pt.
+Package epstopdf Info: Source file: <figures/LoadControlSignalWOC.eps>
+(epstopdf)                    date: 2017-12-01 13:20:41
+(epstopdf)                    size: 81306 bytes
+(epstopdf)             Output file: <figures/LoadControlSignalWOC-eps-converted
+-to.pdf>
+(epstopdf)                    date: 2017-12-01 14:25:22
+(epstopdf)                    size: 31965 bytes
+(epstopdf)             Command: <repstopdf --outfile=figures/LoadControlSignalW
+OC-eps-converted-to.pdf figures/LoadControlSignalWOC.eps>
+(epstopdf)             \includegraphics on input line 456.
+Package epstopdf Info: Output file is already uptodate.
+
+<figures/LoadControlSignalWOC-eps-converted-to.pdf, id=56, 562.1pt x 421.575pt>
+File: figures/LoadControlSignalWOC-eps-converted-to.pdf Graphic file (type pdf)
+
+<use figures/LoadControlSignalWOC-eps-converted-to.pdf>
+Package pdftex.def Info: figures/LoadControlSignalWOC-eps-converted-to.pdf used
+ on input line 456.
+(pdftex.def)             Requested size: 140.92793pt x 105.69582pt.
+Package epstopdf Info: Source file: <figures/ControllableLoadWOC.eps>
+(epstopdf)                    date: 2017-12-01 13:21:31
+(epstopdf)                    size: 82908 bytes
+(epstopdf)             Output file: <figures/ControllableLoadWOC-eps-converted-
+to.pdf>
+(epstopdf)                    date: 2017-12-01 14:26:18
+(epstopdf)                    size: 32177 bytes
+(epstopdf)             Command: <repstopdf --outfile=figures/ControllableLoadWO
+C-eps-converted-to.pdf figures/ControllableLoadWOC.eps>
+(epstopdf)             \includegraphics on input line 461.
+Package epstopdf Info: Output file is already uptodate.
+
+<figures/ControllableLoadWOC-eps-converted-to.pdf, id=57, 562.1pt x 421.575pt>
+File: figures/ControllableLoadWOC-eps-converted-to.pdf Graphic file (type pdf)
+
+<use figures/ControllableLoadWOC-eps-converted-to.pdf>
+Package pdftex.def Info: figures/ControllableLoadWOC-eps-converted-to.pdf used 
+on input line 461.
+(pdftex.def)             Requested size: 140.92793pt x 105.69582pt.
+ [11]
+
+LaTeX Warning: No positions in optional float specifier.
+               Default added (so using `tbp') on input line 469.
+
+Package epstopdf Info: Source file: <figures/FrequencyWC.eps>
+(epstopdf)                    date: 2017-12-01 13:28:46
+(epstopdf)                    size: 222987 bytes
+(epstopdf)             Output file: <figures/FrequencyWC-eps-converted-to.pdf>
+(epstopdf)                    date: 2017-12-01 14:00:57
+(epstopdf)                    size: 66176 bytes
+(epstopdf)             Command: <repstopdf --outfile=figures/FrequencyWC-eps-co
+nverted-to.pdf figures/FrequencyWC.eps>
+(epstopdf)             \includegraphics on input line 475.
+Package epstopdf Info: Output file is already uptodate.
+<figures/FrequencyWC-eps-converted-to.pdf, id=61, 562.1pt x 421.575pt>
+File: figures/FrequencyWC-eps-converted-to.pdf Graphic file (type pdf)
+
+<use figures/FrequencyWC-eps-converted-to.pdf>
+Package pdftex.def Info: figures/FrequencyWC-eps-converted-to.pdf used on input
+ line 475.
+(pdftex.def)             Requested size: 140.92793pt x 105.69582pt.
+Package epstopdf Info: Source file: <figures/RelativeAngleWC.eps>
+(epstopdf)                    date: 2017-12-01 13:28:10
+(epstopdf)                    size: 220829 bytes
+(epstopdf)             Output file: <figures/RelativeAngleWC-eps-converted-to.p
+df>
+(epstopdf)                    date: 2017-12-01 14:36:00
+(epstopdf)                    size: 74116 bytes
+(epstopdf)             Command: <repstopdf --outfile=figures/RelativeAngleWC-ep
+s-converted-to.pdf figures/RelativeAngleWC.eps>
+(epstopdf)             \includegraphics on input line 480.
+Package epstopdf Info: Output file is already uptodate.
+
+<figures/RelativeAngleWC-eps-converted-to.pdf, id=62, 562.1pt x 421.575pt>
+File: figures/RelativeAngleWC-eps-converted-to.pdf Graphic file (type pdf)
+
+<use figures/RelativeAngleWC-eps-converted-to.pdf>
+Package pdftex.def Info: figures/RelativeAngleWC-eps-converted-to.pdf used on i
+nput line 480.
+(pdftex.def)             Requested size: 140.92793pt x 105.69582pt.
+Package epstopdf Info: Source file: <figures/GenerationControlSignalWC.eps>
+(epstopdf)                    date: 2017-12-01 13:26:55
+(epstopdf)                    size: 75448 bytes
+(epstopdf)             Output file: <figures/GenerationControlSignalWC-eps-conv
+erted-to.pdf>
+(epstopdf)                    date: 2017-12-01 14:36:01
+(epstopdf)                    size: 29088 bytes
+(epstopdf)             Command: <repstopdf --outfile=figures/GenerationControlS
+ignalWC-eps-converted-to.pdf figures/GenerationControlSignalWC.eps>
+(epstopdf)             \includegraphics on input line 485.
+Package epstopdf Info: Output file is already uptodate.
+
+<figures/GenerationControlSignalWC-eps-converted-to.pdf, id=63, 562.1pt x 421.5
+75pt>
+File: figures/GenerationControlSignalWC-eps-converted-to.pdf Graphic file (type
+ pdf)
+ <use figures/GenerationControlSignalWC-eps-converted-to.pdf>
+Package pdftex.def Info: figures/GenerationControlSignalWC-eps-converted-to.pdf
+ used on input line 485.
+(pdftex.def)             Requested size: 140.92793pt x 105.69582pt.
+Package epstopdf Info: Source file: <figures/ValvePositionWC.eps>
+(epstopdf)                    date: 2017-12-01 13:28:00
+(epstopdf)                    size: 75328 bytes
+(epstopdf)             Output file: <figures/ValvePositionWC-eps-converted-to.p
+df>
+(epstopdf)                    date: 2017-12-01 14:36:01
+(epstopdf)                    size: 28458 bytes
+(epstopdf)             Command: <repstopdf --outfile=figures/ValvePositionWC-ep
+s-converted-to.pdf figures/ValvePositionWC.eps>
+(epstopdf)             \includegraphics on input line 490.
+Package epstopdf Info: Output file is already uptodate.
+
+<figures/ValvePositionWC-eps-converted-to.pdf, id=64, 562.1pt x 421.575pt>
+File: figures/ValvePositionWC-eps-converted-to.pdf Graphic file (type pdf)
+
+<use figures/ValvePositionWC-eps-converted-to.pdf>
+Package pdftex.def Info: figures/ValvePositionWC-eps-converted-to.pdf used on i
+nput line 490.
+(pdftex.def)             Requested size: 140.92793pt x 105.69582pt.
+Package epstopdf Info: Source file: <figures/MechanicalPowerWC.eps>
+(epstopdf)                    date: 2017-12-01 13:27:07
+(epstopdf)                    size: 74561 bytes
+(epstopdf)             Output file: <figures/MechanicalPowerWC-eps-converted-to
+.pdf>
+(epstopdf)                    date: 2017-12-01 14:36:02
+(epstopdf)                    size: 28994 bytes
+(epstopdf)             Command: <repstopdf --outfile=figures/MechanicalPowerWC-
+eps-converted-to.pdf figures/MechanicalPowerWC.eps>
+(epstopdf)             \includegraphics on input line 495.
+Package epstopdf Info: Output file is already uptodate.
+
+<figures/MechanicalPowerWC-eps-converted-to.pdf, id=65, 562.1pt x 421.575pt>
+File: figures/MechanicalPowerWC-eps-converted-to.pdf Graphic file (type pdf)
+
+<use figures/MechanicalPowerWC-eps-converted-to.pdf>
+Package pdftex.def Info: figures/MechanicalPowerWC-eps-converted-to.pdf used on
+ input line 495.
+(pdftex.def)             Requested size: 140.92793pt x 105.69582pt.
+Package epstopdf Info: Source file: <figures/LineFlowWC.eps>
+(epstopdf)                    date: 2017-12-01 13:26:17
+(epstopdf)                    size: 976817 bytes
+(epstopdf)             Output file: <figures/LineFlowWC-eps-converted-to.pdf>
+(epstopdf)                    date: 2017-12-01 14:36:02
+(epstopdf)                    size: 301007 bytes
+(epstopdf)             Command: <repstopdf --outfile=figures/LineFlowWC-eps-con
+verted-to.pdf figures/LineFlowWC.eps>
+(epstopdf)             \includegraphics on input line 500.
+Package epstopdf Info: Output file is already uptodate.
+
+<figures/LineFlowWC-eps-converted-to.pdf, id=66, 562.1pt x 421.575pt>
+File: figures/LineFlowWC-eps-converted-to.pdf Graphic file (type pdf)
+
+<use figures/LineFlowWC-eps-converted-to.pdf>
+Package pdftex.def Info: figures/LineFlowWC-eps-converted-to.pdf used on input 
+line 500.
+(pdftex.def)             Requested size: 140.92793pt x 105.69582pt.
+Package epstopdf Info: Source file: <figures/LoadControlSignalWC.eps>
+(epstopdf)                    date: 2017-12-01 13:25:40
+(epstopdf)                    size: 54278 bytes
+(epstopdf)             Output file: <figures/LoadControlSignalWC-eps-converted-
+to.pdf>
+(epstopdf)                    date: 2017-12-01 14:36:03
+(epstopdf)                    size: 21813 bytes
+(epstopdf)             Command: <repstopdf --outfile=figures/LoadControlSignalW
+C-eps-converted-to.pdf figures/LoadControlSignalWC.eps>
+(epstopdf)             \includegraphics on input line 505.
+Package epstopdf Info: Output file is already uptodate.
+
+<figures/LoadControlSignalWC-eps-converted-to.pdf, id=67, 562.1pt x 421.575pt>
+File: figures/LoadControlSignalWC-eps-converted-to.pdf Graphic file (type pdf)
+
+<use figures/LoadControlSignalWC-eps-converted-to.pdf>
+Package pdftex.def Info: figures/LoadControlSignalWC-eps-converted-to.pdf used 
+on input line 505.
+(pdftex.def)             Requested size: 140.92793pt x 105.69582pt.
+Package epstopdf Info: Source file: <figures/ControllableLoadWC.eps>
+(epstopdf)                    date: 2017-12-01 13:26:08
+(epstopdf)                    size: 53363 bytes
+(epstopdf)             Output file: <figures/ControllableLoadWC-eps-converted-t
+o.pdf>
+(epstopdf)                    date: 2017-12-01 14:36:03
+(epstopdf)                    size: 21909 bytes
+(epstopdf)             Command: <repstopdf --outfile=figures/ControllableLoadWC
+-eps-converted-to.pdf figures/ControllableLoadWC.eps>
+(epstopdf)             \includegraphics on input line 510.
+Package epstopdf Info: Output file is already uptodate.
+
+<figures/ControllableLoadWC-eps-converted-to.pdf, id=68, 562.1pt x 421.575pt>
+File: figures/ControllableLoadWC-eps-converted-to.pdf Graphic file (type pdf)
+
+<use figures/ControllableLoadWC-eps-converted-to.pdf>
+Package pdftex.def Info: figures/ControllableLoadWC-eps-converted-to.pdf used o
+n input line 510.
+(pdftex.def)             Requested size: 140.92793pt x 105.69582pt.
+ [12 <./figures/FrequencyWOC-eps-converted-to.pdf> <./figures/RelativeAngleWOC-
+eps-converted-to.pdf> <./figures/LineFlowWOC-eps-converted-to.pdf> <./figures/G
+enerationControlSignalWOC-eps-converted-to.pdf> <./figures/ValvePositionWOC-eps
+-converted-to.pdf> <./figures/MechanicalPowerWOC-eps-converted-to.pdf> <./figur
+es/LoadControlSignalWOC-eps-converted-to.pdf> <./figures/ControllableLoadWOC-ep
+s-converted-to.pdf>]
+** WARNING: Ignoring useless \section in Appendix (line 524).
+[13 <./figures/FrequencyWC-eps-converted-to.pdf> <./figures/RelativeAngleWC-eps
+-converted-to.pdf> <./figures/GenerationControlSignalWC-eps-converted-to.pdf> <
+./figures/ValvePositionWC-eps-converted-to.pdf> <./figures/MechanicalPowerWC-ep
+s-converted-to.pdf> <./figures/LineFlowWC-eps-converted-to.pdf> <./figures/Load
+ControlSignalWC-eps-converted-to.pdf> <./figures/ControllableLoadWC-eps-convert
+ed-to.pdf>] [14] [15] [16] [17] [18] (./MD_v3.bbl) [19] (./MD_v3.aux) ) 
+Here is how much of TeX's memory you used:
+ 3991 strings out of 492995
+ 61133 string characters out of 6132704
+ 132350 words of memory out of 5000000
+ 7441 multiletter control sequences out of 15000+600000
+ 42444 words of font info for 92 fonts, out of 8000000 for 9000
+ 1144 hyphenation exceptions out of 8191
+ 39i,18n,26p,1858b,270s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/lo
+cal/texlive/2017/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/texlive/201
+7/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2017
+/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2017/
+texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/texlive/2017/t
+exmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/local/texlive/2017/tex
+mf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2017/texmf
+-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/local/texlive/2017/texmf-d
+ist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2017/texmf-dis
+t/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texlive/2017/texmf-dist/f
+onts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2017/texmf-dist/font
+s/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2017/texmf-dist/fonts
+/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2017/texmf-dist/fonts/t
+ype1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2017/texmf-dist/fonts/typ
+e1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2017/texmf-dist/fonts
+/type1/urw/times/utmb8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/urw
+/times/utmr8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/urw/times/utm
+ri8a.pfb>
+Output written on MD_v3.pdf (19 pages, 1704996 bytes).
+PDF statistics:
+ 228 PDF objects out of 1000 (max. 8388607)
+ 157 compressed objects within 2 object streams
+ 0 named destinations out of 1000 (max. 500000)
+ 81 words of extra memory for PDF output out of 10000 (max. 10000000)
+

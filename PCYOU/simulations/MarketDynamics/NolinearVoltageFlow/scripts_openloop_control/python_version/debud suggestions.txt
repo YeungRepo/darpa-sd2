@@ -1,0 +1,25 @@
+1. where is steady state data in xlsx?
+
+2. wrong definitions of L and l 
+
+3. Line 93 94, is it the same w or w/o np.ix_ ?
+
+4. Line 143, limitlink should -1
+
+5. Ef=1.0？Maybe it doesn't matter.
+
+6. Line 176， G_controlled should -1 
+
+7. Line 178, the expression could cause error? Besides, it should be PFd[0:2]?
+
+8. Line 190, bus_controlled and L_controlled should -1?
+
+9. Line 197, G_controlled should -1
+
+10. Line 218, reshape((g,1)) to be more general
+
+11. Line 226, the second np.multiply should be np.matmul?
+
+12. Line 238, 239, the first np.matmul should be np.multiply or just *? Just curious whether this will raise error?
+
+13. Line 241, the first and last E(G) should G-1
