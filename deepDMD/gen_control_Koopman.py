@@ -557,7 +557,7 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
 # # # - - - Begin Script - - - # # #
 
 
-pre_examples_switch =  5; 
+pre_examples_switch =  4; 
 
 ### Randomly generated oscillator system with control
 
