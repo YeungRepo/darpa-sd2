@@ -46,8 +46,8 @@ colors = np.asarray(colors); # defines a color palette
 
 ###  Deep Learning Optimization Parameters ### 
 
-lambd = 0.00001;
-step_size_val = 0.05#.025;
+lambd = 0.00000;
+step_size_val = 0.1#.025;
 
 batchsize =20#30#900;
 eval_size = batchsize;
@@ -557,7 +557,7 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
 # # # - - - Begin Script - - - # # #
 
 
-pre_examples_switch =  4; 
+pre_examples_switch =  5; 
 
 ### Randomly generated oscillator system with control
 
@@ -713,7 +713,7 @@ uf_all_training = Yf_final_train;
 
 print("[INFO] up_all_training.shape: ") + repr(up_all_training.shape);
 
-deep_dict_size = 10;#3 works well 
+deep_dict_size = 50;#3 works well 
 n_outputs =num_bas_obs;
 n_inputs = num_bas_obs;
 
@@ -735,8 +735,8 @@ else:
 
 ### Define Neural Network Sweep Parameters: 
   
-max_depth =10;  # max_depth 3 works well  
-max_width_limit =20 ;# max width_limit -4 works well 
+max_depth = 7;  # max_depth 3 works well  
+max_width_limit =50 ;# max width_limit -4 works well 
 
 min_width_limit = max_width_limit;# use regularization and dropout to trim edges for now. 
 min_width_limit_control =10;
