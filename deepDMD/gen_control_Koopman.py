@@ -27,12 +27,12 @@ matplotlib.use('Agg'); # for seamless execution in Linux environments with Tenso
 
 import matplotlib.pyplot as plt;
 matplotlib.rcParams.update({'font.size':22}) # default font size on (legible) figures
-
+import control;
 
 
 ### Process Control Flags : User Defined (dev-note: run as a separate instance of code?) 
 #with_control = 1;  # This activates the closed-loop deep Koopman learning algorithm; requires input and state data, historical model parameter.  Now it is specified along with the dataset file path below.  
-plot_deep_basis = 1;  # This activates plotting of deep basis functions as a function of training iterations.
+plot_deep_basis = 0;  # This activates plotting of deep basis functions as a function of training iterations.
 single_series = 0;  # Useful if you're analyzing a system with only a single time-series (requires extremely high temporal resolution). 
 debug_splash = 0;
 phase_space_stitching = 0;
@@ -56,7 +56,7 @@ colors = np.asarray(colors); # defines a color palette
 lambd = 0.00000;
 step_size_val = 0.025#.025;
 
-batchsize =200#30#900;
+batchsize =6#30#900;
 eval_size = batchsize;
 
 use_crelu = 0;
@@ -101,12 +101,13 @@ def quick_nstep_predict(Y_p_old,u_control_all_training,with_control,num_bas_obs,
   Yf_final_test_ep_nn.append(psiyp_Ycurr.tolist()[0][0:num_bas_obs]); # append the initial seed state value.
 
   for i in range(0,n_points_pred):
+    print(i)
     if with_control:
       if len(U_test[i,:])==1:
         U_temp_mat = np.reshape(Uf_final_test_stack_nn[i,:],(1,1));
         psiyp_Ycurr = sess.run(forward_prediction_control, feed_dict={yp_feed:psiyp_Ycurr[:,0:num_bas_obs],u_control:U_temp_mat});#
       else:
-        U_temp_mat = np.reshape(Uf_final_test_stack[i,:],(1,n_inputs_control));
+        U_temp_mat = np.reshape(Uf_final_test_stack_nn[i,:],(1,n_inputs_control));
         psiyp_Ycurr = sess.run(forward_prediction_control, feed_dict={yp_feed:psiyp_Ycurr[:,0:num_bas_obs],u_control:U_temp_mat});# 
     else:
       psiyp_Ycurr = sess.run(forward_prediction,feed_dict={yp_feed:psiyp_Ycurr[:,0:num_bas_obs]});
@@ -221,7 +222,7 @@ def load_pickle_data(file_path,has_control):
            file_path: 
 
         '''     
-        file_obj = file(file_path,'rb');
+        file_obj = open(file_path,'rb');
         output_vec = pickle.load(file_obj);
 
         Yp = output_vec[0]; # list of baseline observables, len(Yp) = (n_samps-1) 
@@ -574,7 +575,7 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
 # # # - - - Begin Koopman Model Script - - - # # #
 
 
-pre_examples_switch =  5; 
+pre_examples_switch =  12; 
 
 ### Randomly generated oscillator system with control
 
@@ -642,6 +643,11 @@ if pre_examples_switch == 11:
   data_suffix = 'fourstate_mak.pickle'
   with_control = 0;
   phase_space_stitching = 0;
+
+if pre_examples_switch == 12:
+  data_suffix = 'SRI_ribo.pickle';
+  with_control = 1;
+  phase_space_stitching = 0;
   
 data_file = data_directory + data_suffix;
 
@@ -650,8 +656,8 @@ if with_control:
 else:
   Yp,Yf,Y_whole,temp_var = load_pickle_data(data_file,with_control);
     
-print("[INFO] Number of total samples: ") + repr(len(Yp));
-print("[INFO] Observable dimension of a sample: ") + repr(len(Yp[0]));
+print("[INFO] Number of total samples: " + repr(len(Yp)));
+print("[INFO] Observable dimension of a sample: " + repr(len(Yp[0])));
 num_bas_obs = len(Yp[0]);
 num_all_samples = len(Yp);
 
@@ -669,8 +675,8 @@ for i in range(0,len(rand_indices) ):
     if with_control:
       u_control_all_training[i] = u_control_all_training_old[curr_index];                          
 
-print("[INFO] Yp.shape (E-DMD): ") + repr(Yp.shape);
-print("[INFO] Yf.shape (E-DMD): ") + repr(Yf.shape);
+print("[INFO] Yp.shape (E-DMD): " + repr(Yp.shape));
+print("[INFO] Yf.shape (E-DMD): " + repr(Yf.shape));
 
 
 ## Train/Test Split for Benchmarking Forecasting Later
@@ -682,7 +688,10 @@ print("[INFO] Yf.shape (E-DMD): ") + repr(Yf.shape);
 #Yf_train_old = Yf[0:train_range];
 ## End Old Code for Train/Test Split
 
-num_trains = 430#len(Yp)*5/10;
+num_trains = np.int(len(Yp)/2);
+
+
+
 train_indices = np.arange(0,num_trains,1);#np.random.randint(0,len(Yp),num_trains)
 test_indices = np.arange(num_trains,len(Yp),1);#np.random.randint(0,len(Yp),len(Yp)-num_trains);
 
@@ -748,7 +757,7 @@ if with_control:
 if with_control:
   #print("[INFO TYPE]" + repr(type(u_control_all_training_old[0]));
   if type(u_control_all_training_old[0])==np.ndarray:
-    print("[DEBUG]")  + repr(u_control_all_training_old[0]);
+    print("[DEBUG]"  + repr(u_control_all_training_old[0]));
     n_inputs_control =u_control_all_training_old[0].shape[0];
     
   else:
@@ -800,7 +809,7 @@ for n_depth_reciprocal in range(1,2):#max_depth-2): #2
       
       hidden_vars_list[-1] = deep_dict_size;
       
-      print("[INFO] hidden_vars_list: ") +repr(hidden_vars_list);
+      print("[INFO] hidden_vars_list: " +repr(hidden_vars_list));
       while good_start==0 and try_num < max_tries:
           try_num +=1;
           if debug_splash:
@@ -825,7 +834,7 @@ for n_depth_reciprocal in range(1,2):#max_depth-2): #2
 
             if phase_space_stitching and (not with_control):
               try:
-                Kmatrix_file_obj = file('phase_space_stitching/raws/Kmatrix_file.pickle','rb');
+                Kmatrix_file_obj = open('phase_space_stitching/raws/Kmatrix_file.pickle','rb');
                 this_pickle_file_list = pickle.load(Kmatrix_file_obj);
                 Kx_num  = this_pickle_file_list[0];
                 Kx = tf.constant(Kx_num); # this is assuming a row space (pre-multiplication) Koopman
@@ -898,7 +907,7 @@ Kx_num = sess.run(Kx);
 
 eig_val, eig_vec = np.linalg.eig(Kx_num) 
 
-file_obj_swing = file('constrainedNN-Model.pickle','wb');
+file_obj_swing = open('constrainedNN-Model.pickle','wb');
 Wy_list_num = [sess.run(W_temp) for W_temp in Wy_list];
 by_list_num = [sess.run(b_temp) for b_temp in by_list];
 
@@ -913,7 +922,7 @@ file_obj_swing.close();
 
 
 if (not phase_space_stitching) and (not with_control):
-  file_obj_phase = file('phase_space_stitching/raws/Kmatrix_file.pickle','wb');
+  file_obj_phase = open('phase_space_stitching/raws/Kmatrix_file.pickle','wb');
   pickle.dump([Kx_num],file_obj_phase);
   file_obj_phase.close();
 
