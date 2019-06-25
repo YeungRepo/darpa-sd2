@@ -1,2 +1,2 @@
-model_checkpoint_path: "glycol.pickle.ckpt"
-all_model_checkpoint_paths: "glycol.pickle.ckpt"
+model_checkpoint_path: "SRI_ribo.pickle.ckpt"
+all_model_checkpoint_paths: "SRI_ribo.pickle.ckpt"

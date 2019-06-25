@@ -528,7 +528,7 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
           
     if ((iter>20000) and iter%10) :
 
-      valid_gradient = np.gradient(np.asarray(validation_error_history_nocovar[iter/samplerate*7/10:]));
+      valid_gradient = np.gradient(np.asarray(validation_error_history_nocovar[np.int(iter/samplerate*3/10):]) );
       mu_gradient = np.mean(valid_gradient);
 
       if ((iter <1000) and (mu_gradient >= 5e-1)): # eventually update this to be 1/10th the mean of batch data, or mean of all data handed as input param to func
@@ -874,7 +874,7 @@ for n_depth_reciprocal in range(1,2):#max_depth-2): #2
           training_error_history_withcovar  = all_histories[3];
           validation_error_history_withcovar = all_histories[4];
           test_error_history_withcovar = all_histories[5];
-          print("[INFO] Initialization was successful: ") + repr(good_start==1);
+          print("[INFO] Initialization was successful: " + repr(good_start==1));
           
           accuracy = deep_koopman_loss;#;
           if with_control:
@@ -891,10 +891,10 @@ for n_depth_reciprocal in range(1,2):#max_depth-2): #2
               best_width = min_width;
 
               if debug_splash:
-                print("[DEBUG]: Regularization penalty: ") + repr(sess.run(reg_term(Wy_list)));
+                print("[DEBUG]: Regularization penalty: " + repr(sess.run(reg_term(Wy_list))));
               np.set_printoptions(precision=2,suppress=True);
               if debug_splash:
-                print("[DEBUG]: ") + repr(np.asarray(sess.run(Wy_list[0]).tolist()));
+                print("[DEBUG]: " + repr(np.asarray(sess.run(Wy_list[0]).tolist())));
           if debug_splash:
             print("[Result]: Training Error: ");
             print(train_accuracy);
@@ -947,7 +947,7 @@ tf.add_to_collection('yf_feed',yf_feed);
 save_path = saver.save(sess, data_suffix + '.ckpt')
 
 Koopman_dim = Kx_num.shape[0];
-print("[INFO] Koopman_dim:") + repr(Kx_num.shape);
+print("[INFO] Koopman_dim:" + repr(Kx_num.shape));
 
 if single_series:
   if pre_examples_switch ==3:
@@ -957,22 +957,18 @@ if single_series:
 
 
   if not( Kx_num.shape[1]==Kx_num.shape[0]):
-      print("Warning! Estimated Koopman operator is not square with dimensions : ") + repr(Kx_num.shape);
+      print("Warning! Estimated Koopman operator is not square with dimensions : " + repr(Kx_num.shape));
 
   train_range = len(Y_p_old)/2; # define upper limits of training data 
 
   if debug_splash:
-    print("[DEBUG] train_range: ") + repr(train_range);
+    print("[DEBUG] train_range: " + repr(train_range));
 
-  #print("Y_p_old.shape") + repr(Y_p_old.shape);
-  #print("Y_f_old.shape") + repr(Y_f_old.shape);
 
 
   test_range = len(Y_p_old); # define upper limits of test data 
-  #Yp_test = Yp[0:test_range];
-  #Yf_test = Yf[0:test_range];
 
-  print("[DEBUG] test_range: ") + repr(test_range);
+  print("[DEBUG] test_range: " + repr(test_range));
   Yp_test = Y_p_old[train_range:test_range];
   Yf_test = Y_f_old[train_range:test_range];
 
@@ -1038,7 +1034,7 @@ for i in range(0,n_points_pred):
       U_temp_mat = np.reshape(Uf_final_test_stack_nn[i,:],(1,1));
       psiyp_Ycurr = sess.run(forward_prediction_control, feed_dict={yp_feed:psiyp_Ycurr[:,0:num_bas_obs],u_control:U_temp_mat});#
     else:
-      U_temp_mat = np.reshape(Uf_final_test_stack[i,:],(1,n_inputs_control));
+      U_temp_mat = np.reshape(Uf_final_test_stack_nn[i,:],(1,n_inputs_control));
       psiyp_Ycurr = sess.run(forward_prediction_control, feed_dict={yp_feed:psiyp_Ycurr[:,0:num_bas_obs],u_control:U_temp_mat});# 
   else:
     psiyp_Ycurr = sess.run(forward_prediction,feed_dict={yp_feed:psiyp_Ycurr[:,0:num_bas_obs]});
