@@ -92,7 +92,7 @@ time = 10
 X,Xt = glycol(tsteps=full_steps,time=time,init=[1,.19,.2,.1,.3,.14,.05],train_steps=train_steps,plot_channels=plot_channels)
 
 
-print X.shape
+print(X.shape)
 #Yf = X[:,1:];
 #Yp = X[:,0:-1];
 
@@ -102,9 +102,9 @@ Yp = X[0:obs_channels,0:-1];
 
 import pickle
 
-file_obj = file('koopman_data/glycol.pickle','wb');
+file_obj = open('koopman_data/glycol.pickle','wb');
 
-print Yp.shape
+print(Yp.shape)
 pickle.dump([list(np.transpose(Yp)),list(np.transpose(Yf))],file_obj);
 file_obj.close();
 

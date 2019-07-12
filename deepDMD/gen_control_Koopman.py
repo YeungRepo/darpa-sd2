@@ -575,7 +575,7 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
 # # # - - - Begin Koopman Model Script - - - # # #
 
 
-pre_examples_switch =  12; 
+pre_examples_switch =  5; 
 
 ### Randomly generated oscillator system with control
 
@@ -648,6 +648,62 @@ if pre_examples_switch == 12:
   data_suffix = 'SRI_ribo.pickle';
   with_control = 1;
   phase_space_stitching = 0;
+
+
+## Inline Inputs
+### Define Neural Network Hyperparameters
+  
+deep_dict_size =20;
+
+
+if with_control:
+  deep_dict_size_control = 5;
+  
+
+if with_control:
+  #print("[INFO TYPE]" + repr(type(u_control_all_training_old[0]));
+  if type(u_control_all_training_old[0])==np.ndarray:
+    print("[DEBUG]"  + repr(u_control_all_training_old[0]));
+    n_inputs_control =u_control_all_training_old[0].shape[0];
+    
+  else:
+    n_inputs_control = 1;
+else:
+  n_inputs_control = 0;
+  
+max_depth = 7;  # max_depth 3 works well  
+max_width_limit =20 ;# max width_limit -4 works well 
+
+min_width_limit = max_width_limit;# use regularization and dropout to trim edges for now. 
+min_width_limit_control =10;
+max_depth_control =3;
+
+best_test_error = np.inf;
+best_depth = max_depth;
+best_width = min_width_limit;
+### End Neural Network Sweep Parameters
+
+
+## CMD Line Argument (Override) Inputs:
+
+import sys
+
+if len(sys.argv)>1:
+  data_suffix = sys.argv[1];
+if len(sys.argv)>2:
+  max_depth = np.int(sys.argv[2]);
+if len(sys.argv)>3:
+  max_width_limit = np.int(sys.argv[3]);
+if len(sys.argv)>4:
+  deep_dict_size = np.int(sys.argv[4]);
+if len(sys.argv)>5 and with_control:
+  max_depth_control = np.int(sys.argv[5]);
+if len(sys.argv)>5 and with_control:
+  deep_dict_size_control = np.int(sys.argv[6]);
+  
+if len(sys.argv)>6 and with_control:
+  plot_deep_basis = np.int(sys.argv[7]);
+  
   
 data_file = data_directory + data_suffix;
 
@@ -660,6 +716,9 @@ print("[INFO] Number of total samples: " + repr(len(Yp)));
 print("[INFO] Observable dimension of a sample: " + repr(len(Yp[0])));
 num_bas_obs = len(Yp[0]);
 num_all_samples = len(Yp);
+n_outputs =num_bas_obs;
+n_inputs = num_bas_obs;
+
 
 Y_p_old = Yp;
 Y_f_old = Yf;
@@ -744,39 +803,6 @@ if debug_splash:
 
   print("[INFO] up_all_training.shape: ") + repr(up_all_training.shape);
 
-### Define Neural Network Hyperparameters
-  
-deep_dict_size =20;#3 works well 
-n_outputs =num_bas_obs;
-n_inputs = num_bas_obs;
-
-if with_control:
-  deep_dict_size_control = 5;#3 works well 
-  
-
-if with_control:
-  #print("[INFO TYPE]" + repr(type(u_control_all_training_old[0]));
-  if type(u_control_all_training_old[0])==np.ndarray:
-    print("[DEBUG]"  + repr(u_control_all_training_old[0]));
-    n_inputs_control =u_control_all_training_old[0].shape[0];
-    
-  else:
-    n_inputs_control = 1;
-else:
-  n_inputs_control = 0;
-  
-max_depth = 7;  # max_depth 3 works well  
-max_width_limit =20 ;# max width_limit -4 works well 
-
-min_width_limit = max_width_limit;# use regularization and dropout to trim edges for now. 
-min_width_limit_control =10;
-max_depth_control =3;
-
-best_test_error = np.inf;
-best_depth = max_depth;
-best_width = min_width_limit;
-
-### End Neural Network Sweep Parameters
 
 
 
