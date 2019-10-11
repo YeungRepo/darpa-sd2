@@ -261,7 +261,7 @@ def vae_loss(y_model,y_true):
 
 input_dim_parameter = 2; 
 #label_dim = 1; 
-intermediate_dim = 500
+intermediate_dim = 4000
 output_dim = Ydata.shape[1];
 batch_size_parameter=200;#4000 for howard's e. coli dataset
 debug_splash = 0;
