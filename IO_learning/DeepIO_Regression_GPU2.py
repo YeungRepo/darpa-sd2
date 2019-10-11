@@ -251,7 +251,7 @@ def train_net(y_all_training,y_feed,u_all_training,u_feed,obj_func,optimizer,u_c
 
 
 def vae_loss(y_model,y_true):
-    return tf.norm(y_true - y_model,axis=[0,1],ord='fro')#/tf.norm(y_true,axis=[0,1],ord='fro');
+    return tf.norm(y_true - y_model,axis=[0,1],ord='fro')/tf.norm(y_true,axis=[0,1],ord='fro');
 
 
 
