@@ -156,7 +156,7 @@ def initialize_Wblist(n_u,hv_list):
 def train_net(y_all_training,y_feed,u_all_training,u_feed,obj_func,optimizer,u_control_all_training=None,valid_error_thres=1e-2,test_error_thres=1e-2,max_iters=100000,step_size_val=0.01,batchsize=10):
 
   iter = 0;
-  samplerate = 5000;
+  samplerate = 500;
   good_start = 1;
   valid_error = 100.0;
   test_error = 100.0;
@@ -265,7 +265,7 @@ intermediate_dim = 1000
 output_dim = Ydata.shape[1];
 batch_size_parameter=200;#4000 for howard's e. coli dataset
 debug_splash = 0;
-this_step_size_val = 2.5;
+this_step_size_val = 0.25;
 
 sess = tf.InteractiveSession();
 
