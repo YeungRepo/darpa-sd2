@@ -261,7 +261,7 @@ def vae_loss(y_model,y_true):
 
 input_dim_parameter = 2; 
 #label_dim = 1; 
-intermediate_dim = 4000
+intermediate_dim = 6000
 output_dim = Ydata.shape[1];
 batch_size_parameter=200;#4000 for howard's e. coli dataset
 debug_splash = 0;
@@ -269,7 +269,9 @@ this_step_size_val = 0.025;
 
 sess = tf.InteractiveSession();
 
-hidden_vars_list = [input_dim_parameter,intermediate_dim,intermediate_dim,intermediate_dim,output_dim];
+hideen_vars_list = [input_dim_parameter] + [intermediate_dim]*5 + [output_dim];
+
+
 
 this_u = tf.placeholder(tf.float32, shape=[None,input_dim_parameter],name="InputInducers");
 for d in ['hello']:
