@@ -269,7 +269,7 @@ this_step_size_val = 0.025;
 
 sess = tf.InteractiveSession();
 
-hideen_vars_list = [input_dim_parameter] + [intermediate_dim]*5 + [output_dim];
+hidden_vars_list = [input_dim_parameter] + [intermediate_dim]*5 + [output_dim];
 
 
 
