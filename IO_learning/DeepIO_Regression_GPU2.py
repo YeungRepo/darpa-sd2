@@ -265,7 +265,7 @@ intermediate_dim = 1000
 output_dim = Ydata.shape[1];
 batch_size_parameter=200;#4000 for howard's e. coli dataset
 debug_splash = 0;
-this_step_size_val = 0.25;
+this_step_size_val = 0.025;
 
 sess = tf.InteractiveSession();
 
