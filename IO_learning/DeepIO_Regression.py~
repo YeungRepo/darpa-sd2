@@ -276,7 +276,7 @@ for d in ['hello']:
 #for d in ['/device:GPU:2', '/device:GPU:3']:
 
     #with tf.device(d):
-    with tf.device('/gpu:0'):
+    with tf.device('/cpu:0'):
         this_W_list,this_b_list = initialize_Wblist(input_dim_parameter,hidden_vars_list);
         this_y_out,all_layers = network_assemble(this_u,this_W_list,this_b_list,keep_prob=1.0,
                                                  activation_flag=2,res_net=0)
