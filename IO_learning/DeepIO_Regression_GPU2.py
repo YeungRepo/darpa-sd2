@@ -265,7 +265,7 @@ intermediate_dim = 6000
 output_dim = Ydata.shape[1];
 batch_size_parameter=200;#4000 for howard's e. coli dataset
 debug_splash = 0;
-this_step_size_val = 0.25;
+this_step_size_val = 2.5;
 
 sess = tf.InteractiveSession();
 
@@ -281,7 +281,7 @@ for d in ['hello']:
     with tf.device('/gpu:2'):
         this_W_list,this_b_list = initialize_Wblist(input_dim_parameter,hidden_vars_list);
         this_y_out,all_layers = network_assemble(this_u,this_W_list,this_b_list,keep_prob=1.0,
-                                                 activation_flag=2,res_net=0)
+                                                 activation_flag=1,res_net=0)
 
         this_y_true = tf.placeholder(tf.float32,shape=[None,output_dim],name="Groundtruth_Transcriptome")    
         this_output_layer = all_layers[-3]
