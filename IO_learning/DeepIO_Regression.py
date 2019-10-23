@@ -11,7 +11,6 @@ import matplotlib.pyplot as plt;
 import pickle
 import sklearn.preprocessing as preprocessing
 
-
 file_obj = open('NAND_Titration_IO_data_empty_landing_pads_full.pickle','rb')
 #file_obj = open('NAND_Titration_IO_data_MG1655_empty_landing_pads.pickle','rb')
 #file_obj = open('NAND_Titration_IO_data_MG1655_NAND_Circuit.pickle','rb')
@@ -21,16 +20,28 @@ Ydata_raw = allVars[1]  #Input Data
 print("Ydata shape:" + repr(Ydata_raw.shape));
 print("Udata shape:" + repr(Udata_raw.shape));
 
-Ydata_raw = np.asarray(Ydata_raw,dtype=np.float32)
+Ydata_raw = np.log2(np.asarray(Ydata_raw,dtype=np.float32)+1e-15)
 
-Udata_raw = np.asarray(Udata_raw,dtype=np.float32)
+Udata_raw = np.log2(np.asarray(Udata_raw,dtype=np.float32)+1e-15)
 
-YmmS = preprocessing.MinMaxScaler(feature_range=(-1,1));
-UmmS = preprocessing.MinMaxScaler(feature_range=(0,1));
-Ydata = YmmS.fit_transform(Ydata_raw)
-Udata = UmmS.fit_transform(Udata_raw)
+
+YmmS = preprocessing.StandardScaler();
+UmmS = preprocessing.Normalizer();
+Ydata = YmmS.fit_transform(Ydata_raw.T)
+Udata = UmmS.fit_transform(Udata_raw.T)*-1e1
 #UmmS.inverse_transform(....)
+Ydata = Ydata;
 
+import seaborn as sns 
+sns.heatmap(Udata)
+print(Udata[0:10])
+
+print(Udata.shape)
+print(Ydata.shape)
+K = np.dot(Ydata,np.linalg.pinv(Udata))
+#K = np.dot(np.linalg.pinv(Udata),Ydata)
+#print(K.shape)
+np.linalg.norm(Ydata - np.dot(K,Udata),ord=2)/np.linalg.norm(Ydata,ord=2)
 
 def expose_deep_basis(z_list,num_bas_obs,deep_dict_size,iter_num,u):
     basis_hooks = z_list[-1]; #[-1] is y  = K *\phi; -2 is \phi(yk)
@@ -206,7 +217,8 @@ def train_net(y_all_training,y_feed,u_all_training,u_feed,obj_func,optimizer,u_c
 #    y_test_train = embed_feed.eval(feed_dict={u_feed:u_test_train});
     u_batch = np.asarray(u_batch);
     y_batch = np.asarray(y_batch);
-    
+    #print("u_feed:" + repr(u_feed));
+    #print("y_feed:" + repr(y_feed));
     optimizer.run(feed_dict={u_feed:u_batch,y_feed:y_batch,step_size:step_size_val});
     valid_error = obj_func.eval(feed_dict={u_feed:u_valid,y_feed:y_valid});
     test_error = obj_func.eval(feed_dict={u_feed:u_test_train,y_feed:y_test_train});
@@ -249,47 +261,43 @@ def train_net(y_all_training,y_feed,u_all_training,u_feed,obj_func,optimizer,u_c
   plt.close();
   return all_histories,good_start;
 
-
 def vae_loss(y_model,y_true):
-    return tf.norm(y_true - y_model,axis=[0,1],ord='fro')#/tf.norm(y_true,axis=[0,1],ord='fro');
+        return tf.norm(y_true - y_model,axis=[0,1],ord='fro')/tf.norm(y_true,axis=[0,1],ord='fro');
 
-
-
-
-### Begin Main Script ###
-
-
+Ydata = Ydata.T;
+Udata = Udata.T;
+    
 input_dim_parameter = 2; 
 #label_dim = 1; 
-intermediate_dim = 1000
+intermediate_dim = 30
 output_dim = Ydata.shape[1];
 batch_size_parameter=200;#4000 for howard's e. coli dataset
 debug_splash = 0;
-this_step_size_val = 2.5;
+this_step_size_val = 0.25;
 
 sess = tf.InteractiveSession();
 
-hidden_vars_list = [input_dim_parameter,intermediate_dim,output_dim];
+hidden_vars_list = [input_dim_parameter] + [intermediate_dim]*3 + [output_dim];
 
 this_u = tf.placeholder(tf.float32, shape=[None,input_dim_parameter],name="InputInducers");
-for d in ['hello']:
-#for d in ['/device:GPU:2', '/device:GPU:3']:
+#for d in ['/device:cpu:0']:#, '/device:CPU:3']:
 
     #with tf.device(d):
-    with tf.device('/gpu:0'):
-        this_W_list,this_b_list = initialize_Wblist(input_dim_parameter,hidden_vars_list);
-        this_y_out,all_layers = network_assemble(this_u,this_W_list,this_b_list,keep_prob=1.0,
-                                                 activation_flag=2,res_net=0)
+with tf.device('/cpu:0'):
+    this_W_list,this_b_list = initialize_Wblist(input_dim_parameter,hidden_vars_list);
+    this_y_out,all_layers = network_assemble(this_u,this_W_list,this_b_list,keep_prob=1.0,
+                                             activation_flag=2,res_net=0)
 
-        this_y_true = tf.placeholder(tf.float32,shape=[None,output_dim],name="Groundtruth_Transcriptome")    
-        this_output_layer = all_layers[-3]
+    this_y_true = tf.placeholder(tf.float32,shape=[None,output_dim],name="Groundtruth_Transcriptome")    
+    this_output_layer = all_layers[-3]
 
-        result = sess.run(tf.global_variables_initializer())
-        this_io_loss = vae_loss(this_y_out,this_y_true)
-        this_optim = tf.train.AdagradOptimizer(learning_rate=this_step_size_val).minimize(this_io_loss)
-        step_size = tf.placeholder(tf.float32,shape=[],name="StepSizePlaceholder");
-        result = sess.run(tf.global_variables_initializer())
-        #this_embed_loss = embed_loss(this_u,this_embedding);
+    result = sess.run(tf.global_variables_initializer())
+    this_io_loss = vae_loss(this_y_out,this_y_true)
+    this_optim = tf.train.AdagradOptimizer(learning_rate=this_step_size_val).minimize(this_io_loss)
+    step_size = tf.placeholder(tf.float32,shape=[],name="StepSizePlaceholder");
+    result = sess.run(tf.global_variables_initializer())
+    #this_embed_loss = embed_loss(this_u,this_embedding);
 
-        train_net(Ydata,this_y_true,Udata,this_u,this_io_loss,this_optim,
-                  batchsize = batch_size_parameter,step_size_val = this_step_size_val,max_iters=5e4)
+    train_net(Ydata,this_y_true,Udata,this_u,this_io_loss,this_optim,
+              batchsize = batch_size_parameter,step_size_val = this_step_size_val,max_iters=5e4)
+
