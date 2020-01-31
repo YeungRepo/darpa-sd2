@@ -55,7 +55,7 @@ colors = np.asarray(colors); # defines a color palette
 lambd = 0.00000;
 step_size_val = 0.025#.025;
 
-batchsize =30#900;
+batchsize =6#30#900;
 eval_size = batchsize;
 
 use_crelu = 0;
@@ -65,7 +65,7 @@ valid_error_threshold = .00001;
 test_error_threshold = .00001;
 
 ### Deep Learning Metaparameters ###
-keep_prob = 1.0; #keep_prob = 1-dropout probability 
+keep_prob = 1.0; #keep_prob = 1-dr opout probability 
 res_net = 0;   # Boolean condition on whether to use a resnet connection. 
 
 # # #  PARAMS END # # # 
@@ -406,7 +406,7 @@ def Deep_Control_Koopman_Objective(psiyp,psiyf,Kx,psiu,Ku,step_size,learn_contro
   
 def Deep_Direct_Koopman_Objective(psiyp,psiyf,Kx,step_size,convex_basis=0,u=None):
   
-   forward_prediction = tf.matmul(psiyp,Kx)
+   forward_prediction = tf.matmul(psiyp,Kx) 
    tf_koopman_loss = tf.reduce_mean(tf.norm(forward_prediction-psiyf,axis=[0,1],ord='fro') )#/tf.reduce_mean(tf.norm(psiyf,axis=[0,1],ord='fro'));
    if convex_basis == 1:
      lagrange_multiplier_convex = 10.0;
