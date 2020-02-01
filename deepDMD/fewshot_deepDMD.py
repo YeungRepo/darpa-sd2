@@ -406,8 +406,15 @@ def Deep_Control_Koopman_Objective(psiyp,psiyf,Kx,psiu,Ku,step_size,learn_contro
   
 def Deep_Direct_Koopman_Objective(psiyp,psiyf,Kx,step_size,convex_basis=0,u=None):
   
-   forward_prediction = tf.matmul(psiyp,Kx) 
+   forward_prediction = tf.matmul(psiyp,Kx)
+   siamese_term = 0.0; 
+   for col_j in range(1,int(psiyp.get_shape()[1])):
+     exp_term = tf.reduce_mean(tf.norm(tf.matmul(tf.concat( [psiyp[:,col_j:] , psiyp[:,0:col_j]],axis=1),Kx)-psiyf,axis=[0,1],ord='fro'));
+     siamese_term = siamese_term + tf.math.exp(-exp_term);  
+    
+     
    tf_koopman_loss = tf.reduce_mean(tf.norm(forward_prediction-psiyf,axis=[0,1],ord='fro') )#/tf.reduce_mean(tf.norm(psiyf,axis=[0,1],ord='fro'));
+   tf_koopman_loss = tf_koopman_loss + siamese_term; 
    if convex_basis == 1:
      lagrange_multiplier_convex = 10.0;
      tf_koopman_loss = tf_koopman_loss + lagrange_multiplier_convex*jensen_term(psiyp,1e6,u)
@@ -1079,8 +1086,8 @@ matplotlib.rcParams.update({'font.size':20})
 
 
 ### Make a Prediction Plot
-x_range = np.arange(0,350,1)
-#x_range = np.arange(0,Yf_final_test_stack_nn.shape[1],1);
+#x_range = np.arange(0,350,1)
+x_range = np.arange(0,Yf_final_test_stack_nn.shape[1],1);
 for i in range(0,3):#num_bas_obs):
     plt.plot(x_range,Yf_final_test_ep_nn[i,0:len(x_range)],'--',color=colors[i,:]);
     plt.plot(x_range,Yf_final_test_stack_nn[i,0:len(x_range)],'*',color=colors[i,:]);

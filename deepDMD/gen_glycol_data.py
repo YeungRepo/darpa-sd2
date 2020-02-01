@@ -70,7 +70,7 @@ def glycol(tsteps=101,time=5,init=[.15,.19,.04,.1,.08,.14,.05],train_steps=50,pl
     ax.set_ylabel('Magnitude')
     for i in range(plot_channels):
         alabel = 'x'+str(i)
-        ax.plot(tspan,Y[i,:],label=alabel);
+        ax.plot(tspan,Y[i,:],'.',label=alabel);
 
     ax.legend(loc='upper right', shadow=True, fontsize='smaller')
 
@@ -83,10 +83,10 @@ def glycol(tsteps=101,time=5,init=[.15,.19,.04,.1,.08,.14,.05],train_steps=50,pl
 
 obs_channels = 7
 plot_channels =4
-full_steps=1000
-train_steps = 200
-est_steps = 50
-time = 10
+full_steps=90;
+train_steps = 20
+est_steps = 20
+time = 5.0
     
 #init=[.15-1.6,.19-2.16,.04-.2,.1-.35,.08-.3,.14-2.67,.05-.1]
 X,Xt = glycol(tsteps=full_steps,time=time,init=[1,.19,.2,.1,.3,.14,.05],train_steps=train_steps,plot_channels=plot_channels)
