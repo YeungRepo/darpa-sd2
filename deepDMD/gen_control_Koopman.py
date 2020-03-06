@@ -215,7 +215,7 @@ def compute_covar(x1,x2):
     covar = sum_x1x2/(1.0*len(x1))- sum_x1/(1.0*len(x1))*sum_x2/(1.0*len(x1));
     return covar;
 
-def load_pickle_data(file_path,has_control):
+def load_pickle_data(file_path,has_control,has_output):
         '''load pickle data file for deep Koopman dynamic mode decomposition. 
         Args: 
            file_path: 
@@ -223,31 +223,48 @@ def load_pickle_data(file_path,has_control):
         '''     
         file_obj = open(file_path,'rb');
         output_vec = pickle.load(file_obj);
-
-        Yp = output_vec[0]; # list of baseline observables, len(Yp) = (n_samps-1) 
-        Yf = output_vec[1]; # list of baseline observables, len(Yf) = (n_samps-1) 
-
-        #print("DEBUG:") + repr(len(output_vec));
-        if has_control:
-          u_control_all_training = output_vec[2];
-          #print u_control_all_training[0:10]
-        else:
-          u_control_all_training = None;
+        Yp = None;
+        Yf = None;
+        Up = None;
+        
+        if type(output_vec) == list:
+          Xp = output_vec[0]; # list of baseline observables, len(Yp) = (n_samps-1) 
+          Xf = output_vec[1]; # list of baseline observables, len(Yf) = (n_samps-1)
+          if has_control:
+            Up = output_vec[2];
+          if has_output:
+            Yp = output_vec[3];
+            Yf = output_vec[4]; 
+            #print(Up[0:10]
+        
+        if type(output_vec) == dict():
+          Xp = output_vec['Xp'];
+          Xf = output_vec['Xf'];
+          Yp = output_vec['Yp'];
+          Yf = output_vec['Yf'];
+          if has_control:
+            Up = output_vec['Up'];
+          if has_output:
+            Yp = output_vec['Yp'];
+            Yf = output_vec['Yf']; 
+            
           
-        if len(Yp)<2:
+        #print("DEBUG:") + repr(len(output_vec));
+          
+        if len(Xp)<2:
             print("Warning: the time-series data provided has no more than 2 points.")
     
-        Y_whole = [None]*(len(Yp)+1);
+        X_whole = [None]*(len(Xp)+1);
         
-        for i in range(0,len(Yp)+1):
-            if i == len(Yp):
-                Y_whole[i] = Yf[i-1];
+        for i in range(0,len(Xp)+1):
+            if i == len(Xp):
+                X_whole[i] = Xf[i-1];
             else:
-                Y_whole[i] = Yp[i];
+                X_whole[i] = Xp[i];
 
-        Y_whole = np.asarray(Y_whole);
+        X_whole = np.asarray(X_whole);
         
-        return np.asarray(Yp),np.asarray(Yf),Y_whole,u_control_all_training;
+        return np.asarray(Xp),np.asarray(Xf),X_whole,Up,Yp,Yf
         
       
 def xavier_init(n_inputs, n_outputs, uniform=True):
@@ -574,7 +591,7 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
 # # # - - - Begin Koopman Model Script - - - # # #
 
 
-pre_examples_switch =  5; 
+pre_examples_switch = 5; 
 
 ### Randomly generated oscillator system with control
 
@@ -584,69 +601,88 @@ pre_examples_switch =  5;
 data_directory = 'koopman_data/'
 if pre_examples_switch == 0:
   data_suffix = 'rand_osc.pickle';  
-  with_control = 1; 
+  with_control = 1
+  with_output = 0;
   phase_space_stitching = 0;
 
 if pre_examples_switch == 1:
   data_suffix = 'cons_law.pickle';
   with_control = 0;
+  with_output = 0;
   phase_space_stitching = 0;
 
 if pre_examples_switch == 2:
   data_suffix = '50bus.pickle';
   with_control = 1;
+  with_output = 0;
   phase_space_stitching = 0;
 
 if pre_examples_switch == 3:
   data_suffix = 'zhang_control.pickle';
   with_control = 1;
+  with_output = 0;
   phase_space_stitching = 0;
 
   
 if pre_examples_switch == 4:
   data_suffix = 'deltaomega-series.pickle'; ### IEEE 39 bus swing model 
-  with_control = 1; 
+  with_control = 1;
+  with_output = 0;
   phase_space_stitching = 0;
   
 if pre_examples_switch == 5:
   data_suffix = 'glycol.pickle';
-  with_control = 0; 
+  with_control = 0;
+  with_output = 0;
   phase_space_stitching = 0;
   
 if pre_examples_switch == 6:
   data_suffix = 'exp_toggle_switch.pickle';
-  with_control = 0; 
+  with_control = 0;
+  with_output = 0;
   phase_space_stitching = 0;
   
 if pre_examples_switch == 7:
   data_suffix ='MD.pickle';
-  with_control = 1; 
+  with_control = 1;
+  with_output = 0;
   phase_space_stitching = 0;
   
 if pre_examples_switch == 8:
   data_suffix = 'phase_space_stitching/sim_toggle_switch_phase1.pickle';
   with_control = 0;
+  with_output = 0;
   phase_space_stitching = 0;
 
 if pre_examples_switch == 9:
   data_suffix = 'phase_space_stitching/sim_toggle_switch_phase2.pickle';
   with_control = 0;
+  with_output = 0;
   phase_space_stitching = 1;
   
 if pre_examples_switch ==10:
   data_suffix = 'exp_toggle_switch_M9CA.pickle';
-  with_control=0; 
+  with_control=0;
+  with_output = 0;
   phase_space_stitching = 0;
 
 if pre_examples_switch == 11:
   data_suffix = 'fourstate_mak.pickle'
   with_control = 0;
+  with_output = 0;
   phase_space_stitching = 0;
 
 if pre_examples_switch == 12:
   data_suffix = 'SRI_ribo.pickle';
   with_control = 1;
+  with_output = 0;
   phase_space_stitching = 0;
+
+if pre_examples_switch == 13:
+  data_suffix = 'X8SS_Pputida_RNASeqDATA.pickle';
+  with_control = 1;
+  with_output = 1;
+  phase_space_stitching = 0; 
 
 
 ## Inline Inputs
@@ -706,10 +742,8 @@ if len(sys.argv)>6 and with_control:
   
 data_file = data_directory + data_suffix;
 
-if with_control:
-  Yp,Yf,Y_whole,u_control_all_training = load_pickle_data(data_file,with_control)
-else:
-  Yp,Yf,Y_whole,temp_var = load_pickle_data(data_file,with_control);
+Yp,Yf,Y_whole,Up,Yp_output,Yf_output = load_pickle_data(data_file,with_control,with_output);
+
     
 print("[INFO] Number of total samples: " + repr(len(Yp)));
 print("[INFO] Observable dimension of a sample: " + repr(len(Yp[0])));
@@ -976,9 +1010,9 @@ print("[INFO] Koopman_dim:" + repr(Kx_num.shape));
 
 if single_series:
   if pre_examples_switch ==3:
-     Y_p_old,Y_f_old,Y_whole,u_control_all_training = load_pickle_data('koopman_data/zhang_control.pickle');
+     Y_p_old,Y_f_old,Y_whole,u_control_all_training = load_pickle_data('koopman_data/zhang_control.pickle',with_control,with_output);
   if pre_examples_switch == 4:
-     Y_p_old,Y_f_old,Y_whole,u_control_all_training = load_pickle_data('koopman_data/deltaomega-singleseries.pickle'); 
+     Y_p_old,Y_f_old,Y_whole,u_control_all_training = load_pickle_data('koopman_data/deltaomega-singleseries.pickle',with_control,with_output); 
 
 
   if not( Kx_num.shape[1]==Kx_num.shape[0]):
@@ -1079,7 +1113,7 @@ matplotlib.rcParams.update({'font.size':20})
 
 
 ### Make a Prediction Plot
-x_range = np.arange(0,350,1)
+x_range = np.arange(0,30,1)
 #x_range = np.arange(0,Yf_final_test_stack_nn.shape[1],1);
 for i in range(0,3):#num_bas_obs):
     plt.plot(x_range,Yf_final_test_ep_nn[i,0:len(x_range)],'--',color=colors[i,:]);
