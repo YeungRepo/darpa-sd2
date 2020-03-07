@@ -223,6 +223,9 @@ def load_pickle_data(file_path,has_control,has_output):
         '''     
         file_obj = open(file_path,'rb');
         output_vec = pickle.load(file_obj);
+        print(type(output_vec))
+        Xp = None;
+        Xf = None;
         Yp = None;
         Yf = None;
         Up = None;
@@ -236,8 +239,10 @@ def load_pickle_data(file_path,has_control,has_output):
             Yp = output_vec[3];
             Yf = output_vec[4]; 
             #print(Up[0:10]
-        
-        if type(output_vec) == dict():
+          if len(Xp)<2:
+            print("Warning: the time-series data provided has no more than 2 points.")
+            
+        if type(output_vec) == dict:
           Xp = output_vec['Xp'];
           Xf = output_vec['Xf'];
           Yp = output_vec['Yp'];
@@ -247,13 +252,13 @@ def load_pickle_data(file_path,has_control,has_output):
           if has_output:
             Yp = output_vec['Yp'];
             Yf = output_vec['Yf']; 
-            
+          if len(Xp)<2:
+            print("Warning: the time-series data provided has no more than 2 points.")
+    
           
         #print("DEBUG:") + repr(len(output_vec));
           
-        if len(Xp)<2:
-            print("Warning: the time-series data provided has no more than 2 points.")
-    
+
         X_whole = [None]*(len(Xp)+1);
         
         for i in range(0,len(Xp)+1):
@@ -399,6 +404,38 @@ def initialize_stateinclusive_tensorflow_graph(n_u,deep_dict_size,hv_list,W_list
 #  print("[DEBUG] y.get_shape(): " + repr(y.get_shape()) + " y_.get_shape(): " + repr(y_.get_shape());
   return z_list,y,u;#,u_control;
 
+
+# Output Koopman Input Objective Function that Implements S. Balakrishnan's Algorithm for Output-Constrained Deep-DMD 
+def Deep_Output_KIC_Objective(psiyp,psiyf,Kx,psiu,Ku,step_size,Yf,Yp,Wh,learn_controllable_Koopman=0):
+   
+
+  
+   forward_prediction_control = (tf.matmul(psiyp,Kx) + tf.matmul(psiu,Ku));
+   output_prediction_fw = tf.matmul(psiyf,Wh);
+   output_prediction_prev = tf.matmul(psiyp,Wh);
+   
+   
+   if learn_controllable_Koopman:
+     n = np.int(Kx.get_shape()[0]);
+     Kut = tf.transpose(Ku);
+     Kxt = tf.transpose(Kx);
+     ctrb_matrix = Kut;
+     for ind in range(1,n):
+        ctrb_matrix = tf.concat([ctrb_matrix,tf.matmul(tf.pow(Kxt,ind),Kut)],axis=1);
+     ctrbTctrb = tf.matmul(ctrb_matrix,tf.transpose(ctrb_matrix) );
+     print(ctrbTctrb.get_shape())
+     ctrb_s,ctrb_v = tf.self_adjoint_eig(ctrbTctrb);
+     print(tf.norm(ctrb_s,1))
+   
+   tf_koopman_loss =  tf.reduce_mean(tf.norm(psiyf - forward_prediction_control,axis=[0,1],ord='fro')) + tf.reduce_mean(tf.norm(Yf-output_prediction_fw,axis=[0,1],ord='fro')) + tf.reduce_mean(tf.norm(Yp-output_prediction_prev,axis=[0,1],ord='fro')); 
+
+
+   #/tf.reduce_mean(tf.norm(psiyp,axis=[0,1],ord='fro'));   
+   optimizer = tf.train.AdagradOptimizer(step_size).minimize(tf_koopman_loss);
+   result = sess.run(tf.global_variables_initializer());
+   
+   return tf_koopman_loss,optimizer,forward_prediction_control,output_prediction_fw,output_prediction_prev;
+
 def Deep_Control_Koopman_Objective(psiyp,psiyf,Kx,psiu,Ku,step_size,learn_controllable_Koopman=0):
 
    forward_prediction_control = (tf.matmul(psiyp,Kx) + tf.matmul(psiu,Ku));
@@ -447,8 +484,13 @@ def instantiate_comp_graph(params_list):
   psiyzlist, psiy, yfeed = initialize_stateinclusive_tensorflow_graph(n_outputs,deep_dict_size,hidden_vars_list,Wy_list,by_list,keep_prob,activation_flag,res_net);
   return psiyzlist, psiy, yfeed;
  
+def instantiate_output_variables(Output_Dim,Koopman_Dim):
+  Wh_var = weight_variable([Koopman_Dim,Output_Dim]);
+  y_output_p_var = tf.placeholder(tf.float32,shape=[None,Output_Dim])
+  y_output_f_var = tf.placeholder(tf.float32,shape=[None,Output_Dim])
+  return y_output_f_var,y_output_p_var, Wh_var;
 
-def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_control_all_training=None,valid_error_thres=1e-2,test_error_thres=1e-2,max_iters=100000,step_size_val=0.01):
+def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_control_all_training=None,Output_p_batch=None,Output_f_batch=None,valid_error_thres=1e-2,test_error_thres=1e-2,max_iters=100000,step_size_val=0.01):
   iter = 0;
   samplerate = 5000;
   good_start = 1;
@@ -469,9 +511,9 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
     iter+=1;
     
     all_ind = set(np.arange(0,len(u_all_training)));
-    select_ind = np.random.randint(0,len(u_all_training),size=batchsize);
-    valid_ind = list(all_ind -set(select_ind))[0:batchsize];
-    select_ind_test = list(all_ind - set(valid_ind) - set(select_ind))[0:batchsize];
+    select_ind = np.random.randint(0,len(u_all_training),size=batchsize); # select indices for training 
+    valid_ind = list(all_ind -set(select_ind))[0:batchsize];  # select indices for validation 
+    select_ind_test = list(all_ind - set(valid_ind) - set(select_ind))[0:batchsize]; # select indices for test 
 
     
     u_batch =[];
@@ -484,32 +526,59 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
     u_control_train = [];
     y_test_train= [];
     u_control_test_train = [];
+    output_batch_p = [];
+    output_batch_valid_p = [];
+    output_batch_test_train_p = [];  
+    output_batch_f = [];
+    output_batch_valid_f = [];
+    output_batch_test_train_f = [];  
+    
+
     
     for j in range(0,len(select_ind)):
       u_batch.append(u_all_training[select_ind[j]]);
       y_batch.append(y_all_training[select_ind[j]]);
       if with_control:
           u_control_batch.append(u_control_all_training[select_ind[j]]);
-          
+      if with_output:
+          output_batch_p.append(Output_p_batch[select_ind[j]]);
+          output_batch_f.append(Output_f_batch[select_ind[j]]);
+         
     for k in range(0,len(valid_ind)):
       u_valid.append(u_all_training[valid_ind[k]]);
       y_valid.append(y_all_training[valid_ind[k]]);
       if with_control:
           u_control_valid.append(u_control_all_training[valid_ind[k]]);
 
+      if with_output:
+          output_batch_valid_p.append(Output_p_batch[valid_ind[k]]);
+          output_batch_valid_f.append(Output_f_batch[valid_ind[k]]);
+      
+
     for k in range(0,len(select_ind_test)):
       u_test_train.append(u_all_training[select_ind_test[k]]);
       y_test_train.append(y_all_training[select_ind_test[k]]);
       if with_control:
           u_control_test_train.append(u_control_all_training[select_ind_test[k]]);
+      if with_output:
+          output_batch_test_train_p.append(Output_p_batch[select_ind_test[k]]);
+          output_batch_test_train_f.append(Output_f_batch[select_ind_test[k]]);
 
+          
 
-    if with_control:
+    if with_control and (not with_output):
       optimizer.run(feed_dict={yp_feed:u_batch,yf_feed:y_batch,u_control:u_control_batch,step_size:step_size_val});
       valid_error = mean_diff_nocovar.eval(feed_dict={yp_feed:u_valid,yf_feed:y_valid,u_control:u_control_valid});
       test_error = mean_diff_nocovar.eval(feed_dict={yp_feed:u_test_train,yf_feed:y_test_train,u_control:u_control_test_train});
 
-    else:
+    if with_control and with_output:
+      optimizer.run(feed_dict={yp_feed:u_batch,yf_feed:y_batch,u_control:u_control_batch,step_size:step_size_val,y_output_p:output_batch_p,y_output_f:output_batch_f});
+      train_error = mean_diff_nocovar.eval(feed_dict={yp_feed:u_batch,yf_feed:y_batch,u_control:u_control_batch,step_size:step_size_val,y_output_p:output_batch_p,y_output_f:output_batch_f});
+      valid_error = mean_diff_nocovar.eval(feed_dict={yp_feed:u_valid,yf_feed:y_valid,u_control:u_control_valid,y_output_p:output_batch_valid_p,y_output_f:output_batch_valid_f});
+      test_error = mean_diff_nocovar.eval(feed_dict={yp_feed:u_test_train,yf_feed:y_test_train,u_control:u_control_test_train,y_output_p:output_batch_test_train_p,y_output_f:output_batch_test_train_f});
+
+      
+    if (not with_control) and (not with_output):
       optimizer.run(feed_dict={yp_feed:u_batch,yf_feed:y_batch,step_size:step_size_val});
       valid_error = mean_diff_nocovar.eval(feed_dict={yp_feed:u_valid,yf_feed:y_valid});
       test_error = mean_diff_nocovar.eval(feed_dict={yp_feed:u_test_train,yf_feed:y_test_train});
@@ -517,11 +586,16 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
 
     
     if iter%samplerate==0:
-      if with_control:
+      if with_control and (not with_output):
         training_error_history_nocovar.append(mean_diff_nocovar.eval(feed_dict={yp_feed:u_batch,yf_feed:y_batch,u_control:u_control_batch}));
         validation_error_history_nocovar.append(mean_diff_nocovar.eval(feed_dict={yp_feed:u_valid,yf_feed:y_valid,u_control:u_control_valid}));
         test_error_history_nocovar.append(mean_diff_nocovar.eval(feed_dict={yp_feed:u_test_train,yf_feed:y_test_train,u_control:u_control_test_train}));
-      else:
+      if with_control and with_output:
+        training_error_history_nocovar.append(train_error);
+        validation_error_history_nocovar.append(valid_error);
+        test_error_history_nocovar.append(test_error);
+        
+      if (not with_control) and (not with_output):
         training_error_history_nocovar.append(mean_diff_nocovar.eval(feed_dict={yp_feed:u_batch,yf_feed:y_batch}));
         validation_error_history_nocovar.append(mean_diff_nocovar.eval(feed_dict={yp_feed:u_valid,yf_feed:y_valid}));
         test_error_history_nocovar.append(mean_diff_nocovar.eval(feed_dict={yp_feed:u_test_train,yf_feed:y_test_train}));
@@ -533,12 +607,16 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
           fig_hand = expose_deep_basis(psiypz_list,num_bas_obs,deep_dict_size,iter,yp_feed);
           fig_hand = quick_nstep_predict(Y_p_old,u_control_all_training,with_control,num_bas_obs,iter);
 
-        if with_control:  
+        if with_control and (not with_output):        
           print ("step %d , validation error %g"%(iter, mean_diff_nocovar.eval(feed_dict={yp_feed:u_valid,yf_feed:y_valid,u_control:u_control_valid})));
           print ("step %d , test error %g"%(iter, mean_diff_nocovar.eval(feed_dict={yp_feed:u_test_train,yf_feed:y_test_train,u_control:u_control_test_train})));
 
+        if with_control and with_output:
+          print ("step %d , validation error %g"%(iter, valid_error));
+          print ("step %d , test error %g"%(iter, test_error));
+
             #print ( test_synthesis(sess.run(Kx).T,sess.run(Ku).T ))
-        else:
+        if (not with_control) and (not with_output):        
           print ("step %d , validation error %g"%(iter, mean_diff_nocovar.eval(feed_dict={yp_feed:u_valid,yf_feed:y_valid})));
           print ("step %d , test error %g"%(iter, mean_diff_nocovar.eval(feed_dict={yp_feed:u_test_train,yf_feed:y_test_train})));
           
@@ -591,7 +669,7 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
 # # # - - - Begin Koopman Model Script - - - # # #
 
 
-pre_examples_switch = 5; 
+pre_examples_switch = 13; 
 
 ### Randomly generated oscillator system with control
 
@@ -695,17 +773,6 @@ if with_control:
   deep_dict_size_control = 5;
   
 
-if with_control:
-  #print("[INFO TYPE]" + repr(type(u_control_all_training_old[0]));
-  if type(u_control_all_training_old[0])==np.ndarray:
-    print("[DEBUG]"  + repr(u_control_all_training_old[0]));
-    n_inputs_control =u_control_all_training_old[0].shape[0];
-    
-  else:
-    n_inputs_control = 1;
-else:
-  n_inputs_control = 0;
-  
 max_depth = 7;  # max_depth 3 works well  
 max_width_limit =20 ;# max width_limit -4 works well 
 
@@ -743,6 +810,8 @@ if len(sys.argv)>6 and with_control:
 data_file = data_directory + data_suffix;
 
 Yp,Yf,Y_whole,Up,Yp_output,Yf_output = load_pickle_data(data_file,with_control,with_output);
+u_control_all_training = Up;
+
 
     
 print("[INFO] Number of total samples: " + repr(len(Yp)));
@@ -758,10 +827,23 @@ Y_f_old = Yf;
 
 if with_control:
   u_control_all_training_old = u_control_all_training ;
-rand_indices = np.arange(0,len(Yp),1).tolist();
+  print("[INFO TYPE]" + repr(type(u_control_all_training_old[0])));
+  print("[INFO TYPE]" + repr(u_control_all_training_old.shape));
+  u_control_all_training = u_control_all_training_old - u_control_all_training_old;
+  if type(u_control_all_training_old[0])==np.ndarray:
+    print("[DEBUG]"  + repr(u_control_all_training_old[0]));
+    n_inputs_control =u_control_all_training_old[0].shape[0];
     
-for i in range(0,len(rand_indices) ):
-    curr_index = rand_indices[i];
+  else:
+    n_inputs_control = 1;
+else:
+  n_inputs_control = 0;
+  
+  
+rand_indices = np.arange(0,len(Yp),1).tolist();
+
+for i in range(0,len(Yp)):
+    curr_index = i;
     Yp[i] = Y_p_old[curr_index];
     Yf[i] = Y_f_old[curr_index];
     if with_control:
@@ -793,7 +875,10 @@ test_indices = np.arange(num_trains,len(Yp),1);#np.random.randint(0,len(Yp),len(
 Yp_train = Yp[train_indices];
 Yf_train = Yf[train_indices];
 Yp_test = Yp[test_indices];
-Yf_test = Yf[test_indices]; 
+Yf_test = Yf[test_indices];
+
+
+
 
 print("Number of training snapshots: " + repr(len(train_indices)));
 print("Number of test snapshots: " + repr(len(test_indices)));
@@ -814,6 +899,19 @@ if with_control:
 else:
   U_train = None;
   U_test = None;
+if with_output:
+  Out_p_train = Yp_output[train_indices];
+  Out_f_train = Yf_output[train_indices];
+  Out_p_test = Yp_output[test_indices];
+  Out_f_test = Yf_output[test_indices];
+else:
+  Out_f_train = None;
+  Out_p_train = None;
+  Out_f_test = None;
+  Out_p_test = None; 
+
+
+  
 Yp_train = np.asarray(Yp_train);
 Yf_train = np.asarray(Yf_train);
 Yp_test = np.asarray(Yp_test);
@@ -881,7 +979,8 @@ for n_depth_reciprocal in range(1,2):#max_depth-2): #2
             
             psiypz_list,psiyp,yp_feed =  instantiate_comp_graph(params_list); 
             psiyfz_list,psiyf,yf_feed = instantiate_comp_graph(params_list);
-            
+            if with_output:
+              y_output_f,y_output_p,Wh = instantiate_output_variables(Yf_output.shape[1],deep_dict_size+num_bas_obs); 
             if with_control:
               Wu_list,bu_list = initialize_Wblist(n_inputs_control,hidden_vars_list_control);
               
@@ -906,8 +1005,13 @@ for n_depth_reciprocal in range(1,2):#max_depth-2): #2
                 Kx = weight_variable([deep_dict_size+n_outputs,deep_dict_size+n_outputs]);
             
             if with_control:
-              Ku = weight_variable([deep_dict_size_control+n_inputs_control,deep_dict_size+n_outputs]);  # [NOTE: generalize to vary deep_dict_size (first dim, num of lifted inputs)             
-              deep_koopman_loss,optimizer,forward_prediction_control = Deep_Control_Koopman_Objective(psiyp,psiyf,Kx,psiu,Ku,step_size);    
+              if with_output:
+                Ku = weight_variable([deep_dict_size_control+n_inputs_control,deep_dict_size+n_outputs]);
+                deep_koopman_loss,optimizer,forward_prediction_control,out_pred_f,out_pred_p = Deep_Output_KIC_Objective(psiyp,psiyf,Kx,psiu,Ku,step_size,y_output_f,y_output_p,Wh);
+              else:
+                Ku = weight_variable([deep_dict_size_control+n_inputs_control,deep_dict_size+n_outputs]);  # [NOTE: generalize to vary deep_dict_size (first dim, num of lifted inputs)             
+                deep_koopman_loss,optimizer,forward_prediction_control = Deep_Control_Koopman_Objective(psiyp,psiyf,Kx,psiu,Ku,step_size);
+              
             else:
               deep_koopman_loss,optimizer,forward_prediction = Deep_Direct_Koopman_Objective(psiyp,psiyf,Kx,step_size,convex_basis=0,u=yp_feed);
               
@@ -923,8 +1027,8 @@ for n_depth_reciprocal in range(1,2):#max_depth-2): #2
 
 
             
-            all_histories,good_start  = train_net(up_all_training,uf_all_training,deep_koopman_loss,optimizer,U_train,valid_error_threshold,test_error_threshold,max_iters,step_size_val);
-            all_histories,good_start  = train_net(up_all_training,uf_all_training,deep_koopman_loss,optimizer,U_train,valid_error_threshold*.1,test_error_threshold*.1,max_iters,step_size_val/10);
+            all_histories,good_start  = train_net(up_all_training,uf_all_training,deep_koopman_loss,optimizer,U_train,Out_p_train,Out_f_train,valid_error_threshold,test_error_threshold,max_iters,step_size_val);
+            all_histories,good_start  = train_net(up_all_training,uf_all_training,deep_koopman_loss,optimizer,U_train,Out_p_train,Out_f_train,valid_error_threshold*.1,test_error_threshold*.1,max_iters,step_size_val/10);
             #all_histories,good_start  = train_net(up_all_training,uf_all_training,deep_koopman_loss,optimizer,U_train,valid_error_threshold*.025,test_error_threshold*.025,max_iters,step_size_val/100);
 
           training_error_history_nocovar = all_histories[0];
@@ -936,11 +1040,16 @@ for n_depth_reciprocal in range(1,2):#max_depth-2): #2
           print("[INFO] Initialization was successful: " + repr(good_start==1));
           
           accuracy = deep_koopman_loss;#;
-          if with_control:
+
+          if with_control and (with_output):
+            train_accuracy = accuracy.eval(feed_dict={yp_feed:up_all_training,yf_feed:uf_all_training,u_control:U_train,y_output_f:Out_f_train,y_output_p:Out_p_train});
+            test_accuracy = accuracy.eval(feed_dict={yp_feed:Yp_test,yf_feed:Yf_test,u_control:U_test,y_output_f:Out_f_test,y_output_p:Out_p_test});
+          
+          if with_control and (not with_output):
             train_accuracy = accuracy.eval(feed_dict={yp_feed:up_all_training,yf_feed:uf_all_training,u_control:U_train});
             test_accuracy = accuracy.eval(feed_dict={yp_feed:Yp_test,yf_feed:Yf_test,u_control:U_test});
-      
-          else:
+            
+          if (not with_control) and (not with_output):
             train_accuracy = accuracy.eval(feed_dict={yp_feed:up_all_training,yf_feed:uf_all_training});
             test_accuracy = accuracy.eval(feed_dict={yp_feed:Yp_test,yf_feed:Yf_test});
       
@@ -1055,10 +1164,14 @@ Yf_final_train = Yf_train;
 
 #print("[DEBUG]: Yp_train.shape") + repr(Yp_train.shape);
 
-if with_control:
+if with_control and (not with_output):
   training_error = accuracy.eval(feed_dict={yp_feed:list(Yp_train),yf_feed:list(Yf_train),u_control:list(U_train)});
   test_error = accuracy.eval(feed_dict={yp_feed:list(Yp_test),yf_feed:list(Yf_test),u_control:list(U_test)});
-else:
+if with_control and with_output:
+  training_error = accuracy.eval(feed_dict={yp_feed:up_all_training,yf_feed:uf_all_training,u_control:U_train,y_output_f:Out_f_train,y_output_p:Out_p_train});
+  test_error = accuracy.eval(feed_dict={yp_feed:Yp_test,yf_feed:Yf_test,u_control:U_test,y_output_f:Out_f_test,y_output_p:Out_p_test});
+  
+if (not with_control) and (not with_output):
   training_error = accuracy.eval(feed_dict={yp_feed:list(Yp_train),yf_feed:list(Yf_train)});
   test_error = accuracy.eval(feed_dict={yp_feed:list(Yp_test),yf_feed:list(Yf_test)});
   
