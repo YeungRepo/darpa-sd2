@@ -1,0 +1,16 @@
+<class 'list'>
+[INFO] Number of total samples: 9900
+[INFO] Observable dimension of a sample: 5
+[INFO TYPE]<class 'numpy.ndarray'>
+[INFO TYPE](9900, 2)
+[DEBUG]array([0.62836464, 0.95789442])
+[INFO] Yp.shape (E-DMD): (9900, 5)
+[INFO] Yf.shape (E-DMD): (9900, 5)
+Number of training snapshots: 4950
+Number of test snapshots: 4950
+[INFO] hidden_vars_list: array([20, 20, 20, 20, 20, 20, 20])
+[INFO] Initialization was successful: True
+[INFO] Koopman_dim:(25, 25)
+[COMP] Training error: 15.215128
+[COMP] Test error: 16.150831
+[RESULT] n-step Prediction error: 0.348798

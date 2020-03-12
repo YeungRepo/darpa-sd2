@@ -1,2 +1,2 @@
-model_checkpoint_path: "glycol.pickle.ckpt"
-all_model_checkpoint_paths: "glycol.pickle.ckpt"
+model_checkpoint_path: "incoherent_ff_loop.pickle.ckpt"
+all_model_checkpoint_paths: "incoherent_ff_loop.pickle.ckpt"

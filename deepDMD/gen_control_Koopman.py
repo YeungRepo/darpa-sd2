@@ -60,7 +60,7 @@ eval_size = batchsize;
 
 use_crelu = 0;
 activation_flag = 2; # sets the activation function type to RELU, ELU, SELU (initialized a certain way,dropout has to be done differently) , or tanh() 
-max_iters = 20000;#10000#200000 #1000000;
+max_iters = 200;#10000#200000 #1000000;
 valid_error_threshold = .00001;
 test_error_threshold = .00001;
 
@@ -669,7 +669,7 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
 # # # - - - Begin Koopman Model Script - - - # # #
 
 
-pre_examples_switch = 13; 
+pre_examples_switch = 14; 
 
 ### Randomly generated oscillator system with control
 
@@ -760,7 +760,13 @@ if pre_examples_switch == 13:
   data_suffix = 'X8SS_Pputida_RNASeqDATA.pickle';
   with_control = 1;
   with_output = 1;
-  phase_space_stitching = 0; 
+  phase_space_stitching = 0;
+
+if pre_examples_switch == 14:
+  data_suffix = 'incoherent_ff_loop.pickle';
+  with_control = 1;
+  with_output = 0;
+  phase_space_stitching = 0;    
 
 
 ## Inline Inputs
@@ -973,7 +979,7 @@ for n_depth_reciprocal in range(1,2):#max_depth-2): #2
             print("\n Initialization attempt number: ") + repr(try_num);
             print("\n \t Initializing Tensorflow Residual ELU Network with ") + repr(n_inputs) + (" inputs and ") + repr(n_outputs) + (" outputs and ") + repr(len(hidden_vars_list)) + (" layers");
 
-          with tf.device('/gpu:0'):
+          with tf.device('/cpu:0'):
             Wy_list,by_list = initialize_Wblist(n_inputs,hidden_vars_list);
             params_list = [ n_outputs, deep_dict_size, hidden_vars_list,Wy_list,by_list,keep_prob,activation_flag, res_net ]
             
@@ -1206,7 +1212,7 @@ for i in range(0,n_points_pred):
       U_temp_mat = np.reshape(Uf_final_test_stack_nn[i,:],(1,1));
       psiyp_Ycurr = sess.run(forward_prediction_control, feed_dict={yp_feed:psiyp_Ycurr[:,0:num_bas_obs],u_control:U_temp_mat});#
     else:
-      U_temp_mat = np.reshape(Uf_final_test_stack_nn[i,:],(1,n_inputs_control));
+      U_temp_mat = np.reshape(Uf_final_test_stack_nn.T[i,:],(1,n_inputs_control));
       psiyp_Ycurr = sess.run(forward_prediction_control, feed_dict={yp_feed:psiyp_Ycurr[:,0:num_bas_obs],u_control:U_temp_mat});# 
   else:
     psiyp_Ycurr = sess.run(forward_prediction,feed_dict={yp_feed:psiyp_Ycurr[:,0:num_bas_obs]});
