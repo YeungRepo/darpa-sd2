@@ -60,7 +60,7 @@ eval_size = batchsize;
 
 use_crelu = 0;
 activation_flag = 2; # sets the activation function type to RELU, ELU, SELU (initialized a certain way,dropout has to be done differently) , or tanh() 
-max_iters = 10000;#10000#200000 #1000000;
+max_iters = 400000 
 valid_error_threshold = .00001;
 test_error_threshold = .00001;
 
@@ -772,19 +772,19 @@ if pre_examples_switch == 14:
 ## Inline Inputs
 ### Define Neural Network Hyperparameters
   
-deep_dict_size =20;
+deep_dict_size = 30;
 
 
 if with_control:
-  deep_dict_size_control = 5;
+  deep_dict_size_control =5;
   
 
 max_depth = 7;  # max_depth 3 works well  
-max_width_limit =20 ;# max width_limit -4 works well 
+max_width_limit =30 ;# max width_limit -4 works well 
 
 min_width_limit = max_width_limit;# use regularization and dropout to trim edges for now. 
-min_width_limit_control =10;
-max_depth_control =3;
+min_width_limit_control =15;
+max_depth_control =5;
 
 best_test_error = np.inf;
 best_depth = max_depth;

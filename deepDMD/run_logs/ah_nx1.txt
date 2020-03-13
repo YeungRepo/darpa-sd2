@@ -14,3 +14,495 @@ Number of test snapshots: 4950
 [COMP] Training error: 15.215128
 [COMP] Test error: 16.150831
 [RESULT] n-step Prediction error: 0.348798
+<class 'list'>
+[INFO] Number of total samples: 9900
+[INFO] Observable dimension of a sample: 5
+[INFO TYPE]<class 'numpy.ndarray'>
+[INFO TYPE](9900, 2)
+[DEBUG]array([0.62836464, 0.95789442])
+[INFO] Yp.shape (E-DMD): (9900, 5)
+[INFO] Yf.shape (E-DMD): (9900, 5)
+Number of training snapshots: 4950
+Number of test snapshots: 4950
+[INFO] hidden_vars_list: array([20, 20, 20, 20, 20, 20, 20])
+step 5000 , validation error 0.142032
+step 5000 , test error 0.0848914
+step 10000 , validation error 0.0949835
+step 10000 , test error 0.0450814
+step 15000 , validation error 0.071904
+step 15000 , test error 0.0374991
+step 20000 , validation error 0.0537516
+step 20000 , test error 0.0365719
+step 25000 , validation error 0.0566648
+step 25000 , test error 0.0466707
+step 30000 , validation error 0.0413189
+step 30000 , test error 0.0334689
+step 35000 , validation error 0.0396753
+step 35000 , test error 0.0405836
+step 40000 , validation error 0.0440863
+step 40000 , test error 0.031489
+step 45000 , validation error 0.0400123
+step 45000 , test error 0.0322201
+step 50000 , validation error 0.0341269
+step 50000 , test error 0.0237254
+step 55000 , validation error 0.0358402
+step 55000 , test error 0.0253402
+step 60000 , validation error 0.0306154
+step 60000 , test error 0.024446
+step 65000 , validation error 0.0270694
+step 65000 , test error 0.0230083
+step 70000 , validation error 0.0295132
+step 70000 , test error 0.0228849
+<class 'list'>
+[INFO] Number of total samples: 9900
+[INFO] Observable dimension of a sample: 5
+[INFO TYPE]<class 'numpy.ndarray'>
+[INFO TYPE](9900, 2)
+[DEBUG]array([0.62836464, 0.95789442])
+[INFO] Yp.shape (E-DMD): (9900, 5)
+[INFO] Yf.shape (E-DMD): (9900, 5)
+Number of training snapshots: 4950
+Number of test snapshots: 4950
+[INFO] hidden_vars_list: array([20, 20, 20, 20, 20, 20, 20])
+step 5000 , validation error 0.0925712
+step 5000 , test error 0.0670367
+step 10000 , validation error 0.0671684
+step 10000 , test error 0.0553509
+step 15000 , validation error 0.0627026
+step 15000 , test error 0.0557216
+step 20000 , validation error 0.04802
+step 20000 , test error 0.0461279
+step 25000 , validation error 0.0395676
+step 25000 , test error 0.0298218
+step 30000 , validation error 0.0481712
+step 30000 , test error 0.0461089
+step 35000 , validation error 0.0394909
+step 35000 , test error 0.0285382
+step 40000 , validation error 0.0369693
+step 40000 , test error 0.0319682
+step 45000 , validation error 0.0279918
+step 45000 , test error 0.0259397
+step 50000 , validation error 0.0380551
+step 50000 , test error 0.0342874
+step 55000 , validation error 0.0312361
+step 55000 , test error 0.0297183
+step 60000 , validation error 0.0381025
+step 60000 , test error 0.0356215
+step 65000 , validation error 0.0354371
+step 65000 , test error 0.0313264
+step 70000 , validation error 0.0284157
+step 70000 , test error 0.0235925
+step 75000 , validation error 0.0271528
+step 75000 , test error 0.0246255
+step 80000 , validation error 0.0286825
+step 80000 , test error 0.0313214
+step 85000 , validation error 0.0284722
+step 85000 , test error 0.0159902
+step 90000 , validation error 0.0256117
+step 90000 , test error 0.0213059
+step 95000 , validation error 0.026454
+step 95000 , test error 0.0272131
+step 100000 , validation error 0.0234474
+step 100000 , test error 0.0271568
+step 105000 , validation error 0.0258149
+step 105000 , test error 0.020751
+step 110000 , validation error 0.0214712
+step 110000 , test error 0.0168123
+step 115000 , validation error 0.019065
+step 115000 , test error 0.0179165
+step 120000 , validation error 0.0193459
+step 120000 , test error 0.0166838
+step 125000 , validation error 0.0173607
+step 125000 , test error 0.0226873
+step 130000 , validation error 0.0155537
+step 130000 , test error 0.0146891
+step 135000 , validation error 0.0176535
+step 135000 , test error 0.0123726
+step 140000 , validation error 0.0171857
+step 140000 , test error 0.0122875
+step 145000 , validation error 0.0148539
+step 145000 , test error 0.0155078
+step 150000 , validation error 0.0128498
+step 150000 , test error 0.0141549
+step 155000 , validation error 0.0191236
+step 155000 , test error 0.020662
+step 160000 , validation error 0.0121927
+step 160000 , test error 0.0120752
+step 165000 , validation error 0.0136584
+step 165000 , test error 0.0121942
+step 170000 , validation error 0.0153058
+step 170000 , test error 0.0130603
+step 175000 , validation error 0.0154126
+step 175000 , test error 0.0163529
+step 180000 , validation error 0.0149162
+step 180000 , test error 0.0165883
+step 185000 , validation error 0.0183553
+step 185000 , test error 0.0078603
+step 190000 , validation error 0.0158896
+step 190000 , test error 0.01706
+step 195000 , validation error 0.0111747
+step 195000 , test error 0.0139384
+step 200000 , validation error 0.0140097
+step 200000 , test error 0.0142912
+step 5000 , validation error 0.0100828
+step 5000 , test error 0.0101567
+step 10000 , validation error 0.0100973
+step 10000 , test error 0.0110602
+step 15000 , validation error 0.0107878
+step 15000 , test error 0.00994641
+step 20000 , validation error 0.010738
+step 20000 , test error 0.0104402
+step 25000 , validation error 0.0104031
+step 25000 , test error 0.010762
+step 30000 , validation error 0.0112226
+step 30000 , test error 0.00927162
+step 35000 , validation error 0.0100932
+step 35000 , test error 0.00942812
+step 40000 , validation error 0.0101912
+step 40000 , test error 0.00972449
+step 45000 , validation error 0.0104183
+step 45000 , test error 0.0107528
+step 50000 , validation error 0.0107359
+step 50000 , test error 0.0104118
+step 55000 , validation error 0.01028
+step 55000 , test error 0.0104181
+step 60000 , validation error 0.0104648
+step 60000 , test error 0.010333
+step 65000 , validation error 0.0104907
+step 65000 , test error 0.0099261
+step 70000 , validation error 0.0103302
+step 70000 , test error 0.0098393
+step 75000 , validation error 0.0102609
+step 75000 , test error 0.00966592
+step 80000 , validation error 0.010561
+step 80000 , test error 0.00990652
+step 85000 , validation error 0.0105971
+step 85000 , test error 0.0101816
+step 90000 , validation error 0.0109371
+step 90000 , test error 0.00865812
+step 95000 , validation error 0.010094
+step 95000 , test error 0.00992975
+step 100000 , validation error 0.0104134
+step 100000 , test error 0.0110595
+step 105000 , validation error 0.0100716
+step 105000 , test error 0.0101494
+step 110000 , validation error 0.0102048
+step 110000 , test error 0.010361
+step 115000 , validation error 0.010437
+step 115000 , test error 0.010419
+step 120000 , validation error 0.0100769
+step 120000 , test error 0.00951792
+step 125000 , validation error 0.0105539
+step 125000 , test error 0.00848687
+step 130000 , validation error 0.0107799
+step 130000 , test error 0.0102209
+step 135000 , validation error 0.0102765
+step 135000 , test error 0.00954515
+step 140000 , validation error 0.00997971
+step 140000 , test error 0.00885026
+step 145000 , validation error 0.0103357
+step 145000 , test error 0.0100891
+step 150000 , validation error 0.0103672
+step 150000 , test error 0.00909968
+step 155000 , validation error 0.010426
+step 155000 , test error 0.00922755
+step 160000 , validation error 0.0101159
+step 160000 , test error 0.00963367
+step 165000 , validation error 0.0108382
+step 165000 , test error 0.0109848
+step 170000 , validation error 0.0102788
+step 170000 , test error 0.0089141
+step 175000 , validation error 0.0105189
+step 175000 , test error 0.0103205
+step 180000 , validation error 0.00997658
+step 180000 , test error 0.0101769
+step 185000 , validation error 0.0102705
+step 185000 , test error 0.00809961
+step 190000 , validation error 0.00989052
+step 190000 , test error 0.00847155
+step 195000 , validation error 0.00989376
+step 195000 , test error 0.0102094
+step 200000 , validation error 0.0100468
+step 200000 , test error 0.010093
+[INFO] Initialization was successful: True
+[INFO] Koopman_dim:(25, 25)
+[COMP] Training error: 0.195714
+[COMP] Test error: 0.250701
+[RESULT] n-step Prediction error: 0.457727
+<class 'list'>
+[INFO] Number of total samples: 9900
+[INFO] Observable dimension of a sample: 5
+[INFO TYPE]<class 'numpy.ndarray'>
+[INFO TYPE](9900, 2)
+[DEBUG]array([0.62836464, 0.95789442])
+[INFO] Yp.shape (E-DMD): (9900, 5)
+[INFO] Yf.shape (E-DMD): (9900, 5)
+Number of training snapshots: 4950
+Number of test snapshots: 4950
+[INFO] hidden_vars_list: array([30, 30, 30, 30, 30, 30, 30])
+step 5000 , validation error 0.129562
+step 5000 , test error 0.095104
+step 10000 , validation error 0.0847295
+step 10000 , test error 0.0784225
+step 15000 , validation error 0.0554289
+step 15000 , test error 0.0524574
+step 20000 , validation error 0.0665636
+step 20000 , test error 0.0585125
+step 25000 , validation error 0.0538002
+step 25000 , test error 0.036425
+step 30000 , validation error 0.0364707
+step 30000 , test error 0.0339336
+step 35000 , validation error 0.0432937
+step 35000 , test error 0.0374468
+step 40000 , validation error 0.0370503
+step 40000 , test error 0.037809
+step 45000 , validation error 0.0283204
+step 45000 , test error 0.0242959
+step 50000 , validation error 0.0219317
+step 50000 , test error 0.0203177
+step 55000 , validation error 0.0298257
+step 55000 , test error 0.0292266
+step 60000 , validation error 0.0313277
+step 60000 , test error 0.0306065
+step 65000 , validation error 0.0204421
+step 65000 , test error 0.0217851
+step 70000 , validation error 0.0199639
+step 70000 , test error 0.0213389
+step 75000 , validation error 0.0187939
+step 75000 , test error 0.0217543
+step 80000 , validation error 0.0233517
+step 80000 , test error 0.0245441
+step 85000 , validation error 0.0176093
+step 85000 , test error 0.0159879
+step 90000 , validation error 0.0203676
+step 90000 , test error 0.0222754
+step 95000 , validation error 0.0161702
+step 95000 , test error 0.0135893
+step 100000 , validation error 0.0204864
+step 100000 , test error 0.0238276
+step 105000 , validation error 0.020725
+step 105000 , test error 0.01807
+step 110000 , validation error 0.0165677
+step 110000 , test error 0.0123264
+step 115000 , validation error 0.0206927
+step 115000 , test error 0.0167037
+step 120000 , validation error 0.0153566
+step 120000 , test error 0.0131324
+<class 'list'>
+[INFO] Number of total samples: 9900
+[INFO] Observable dimension of a sample: 5
+[INFO TYPE]<class 'numpy.ndarray'>
+[INFO TYPE](9900, 2)
+[DEBUG]array([0.62836464, 0.95789442])
+[INFO] Yp.shape (E-DMD): (9900, 5)
+[INFO] Yf.shape (E-DMD): (9900, 5)
+Number of training snapshots: 4950
+Number of test snapshots: 4950
+[INFO] hidden_vars_list: array([30, 30, 30, 30, 30, 30, 30])
+step 5000 , validation error 0.140981
+step 5000 , test error 0.087842
+step 10000 , validation error 0.0666538
+step 10000 , test error 0.0545718
+step 15000 , validation error 0.0794489
+step 15000 , test error 0.0569391
+step 20000 , validation error 0.0572028
+step 20000 , test error 0.0430645
+step 25000 , validation error 0.043333
+step 25000 , test error 0.0354912
+step 30000 , validation error 0.0517557
+step 30000 , test error 0.0403839
+step 35000 , validation error 0.0374351
+step 35000 , test error 0.0312384
+step 40000 , validation error 0.0277655
+step 40000 , test error 0.0243496
+step 45000 , validation error 0.0372106
+step 45000 , test error 0.0379152
+step 50000 , validation error 0.0269564
+step 50000 , test error 0.0239784
+step 55000 , validation error 0.0166111
+step 55000 , test error 0.0192732
+step 60000 , validation error 0.0251795
+step 60000 , test error 0.0181049
+step 65000 , validation error 0.0281255
+step 65000 , test error 0.0246776
+step 70000 , validation error 0.0278358
+step 70000 , test error 0.0241199
+step 75000 , validation error 0.0264981
+step 75000 , test error 0.0278212
+step 80000 , validation error 0.0295258
+step 80000 , test error 0.0258832
+step 85000 , validation error 0.0248803
+step 85000 , test error 0.0218399
+step 90000 , validation error 0.019486
+step 90000 , test error 0.0168397
+step 95000 , validation error 0.0236824
+step 95000 , test error 0.0165535
+step 100000 , validation error 0.0262817
+step 100000 , test error 0.014823
+step 105000 , validation error 0.032614
+step 105000 , test error 0.0202814
+step 110000 , validation error 0.0247992
+step 110000 , test error 0.0167732
+step 115000 , validation error 0.0282494
+step 115000 , test error 0.0276477
+step 120000 , validation error 0.0224662
+step 120000 , test error 0.0190235
+step 125000 , validation error 0.0183073
+step 125000 , test error 0.0203467
+step 130000 , validation error 0.0202843
+step 130000 , test error 0.0180594
+step 135000 , validation error 0.0212561
+step 135000 , test error 0.0227383
+step 140000 , validation error 0.0176056
+step 140000 , test error 0.0162989
+step 145000 , validation error 0.0179739
+step 145000 , test error 0.00989387
+step 150000 , validation error 0.0148369
+step 150000 , test error 0.0141843
+step 155000 , validation error 0.0160184
+step 155000 , test error 0.0150286
+step 160000 , validation error 0.0195488
+step 160000 , test error 0.0201497
+step 165000 , validation error 0.0181133
+step 165000 , test error 0.0148505
+step 170000 , validation error 0.0149329
+step 170000 , test error 0.0140717
+step 175000 , validation error 0.017967
+step 175000 , test error 0.0136272
+step 180000 , validation error 0.0146462
+step 180000 , test error 0.0126519
+step 185000 , validation error 0.0159136
+step 185000 , test error 0.0164907
+step 190000 , validation error 0.0186815
+step 190000 , test error 0.0115344
+step 195000 , validation error 0.0135821
+step 195000 , test error 0.0152389
+step 200000 , validation error 0.0237002
+step 200000 , test error 0.0229086
+step 205000 , validation error 0.0129983
+step 205000 , test error 0.00966283
+step 210000 , validation error 0.0203118
+step 210000 , test error 0.0180947
+step 215000 , validation error 0.0164842
+step 215000 , test error 0.0149139
+step 220000 , validation error 0.0151135
+step 220000 , test error 0.015378
+step 225000 , validation error 0.0109216
+step 225000 , test error 0.0112758
+step 230000 , validation error 0.0157979
+step 230000 , test error 0.0155652
+step 235000 , validation error 0.0141941
+step 235000 , test error 0.0126588
+step 240000 , validation error 0.0153244
+step 240000 , test error 0.0121346
+step 245000 , validation error 0.0145707
+step 245000 , test error 0.0147089
+step 250000 , validation error 0.0136427
+step 250000 , test error 0.0109868
+step 255000 , validation error 0.0152797
+step 255000 , test error 0.0155582
+step 260000 , validation error 0.014465
+step 260000 , test error 0.0118536
+step 265000 , validation error 0.0181643
+step 265000 , test error 0.0187442
+step 270000 , validation error 0.0154197
+step 270000 , test error 0.012683
+step 275000 , validation error 0.0127626
+step 275000 , test error 0.00978867
+step 280000 , validation error 0.0150092
+step 280000 , test error 0.0119037
+step 285000 , validation error 0.0118316
+step 285000 , test error 0.0125422
+step 290000 , validation error 0.0126649
+step 290000 , test error 0.0117565
+step 295000 , validation error 0.0152962
+step 295000 , test error 0.0135776
+step 300000 , validation error 0.0149222
+step 300000 , test error 0.0124476
+step 305000 , validation error 0.0156285
+step 305000 , test error 0.011773
+step 310000 , validation error 0.00968479
+step 310000 , test error 0.00825684
+step 315000 , validation error 0.0117245
+step 315000 , test error 0.0100566
+step 320000 , validation error 0.0128976
+step 320000 , test error 0.0113535
+step 325000 , validation error 0.019696
+step 325000 , test error 0.0186293
+step 330000 , validation error 0.0142761
+step 330000 , test error 0.014643
+step 335000 , validation error 0.0127716
+step 335000 , test error 0.0138191
+step 340000 , validation error 0.0117452
+step 340000 , test error 0.00805738
+step 345000 , validation error 0.0117
+step 345000 , test error 0.0098022
+step 350000 , validation error 0.0137105
+step 350000 , test error 0.0123111
+step 355000 , validation error 0.0136047
+step 355000 , test error 0.0134058
+step 360000 , validation error 0.012926
+step 360000 , test error 0.0121147
+step 365000 , validation error 0.0139298
+step 365000 , test error 0.0129224
+step 370000 , validation error 0.0112816
+step 370000 , test error 0.0110293
+step 375000 , validation error 0.0175414
+step 375000 , test error 0.0144999
+step 380000 , validation error 0.0100435
+step 380000 , test error 0.00729521
+step 385000 , validation error 0.0151328
+step 385000 , test error 0.0119883
+step 390000 , validation error 0.0120086
+step 390000 , test error 0.0103383
+step 395000 , validation error 0.0108812
+step 395000 , test error 0.00997302
+step 400000 , validation error 0.013086
+step 400000 , test error 0.0113342
+step 405000 , validation error 0.0179347
+step 405000 , test error 0.0156607
+step 410000 , validation error 0.0134397
+step 410000 , test error 0.0133136
+step 415000 , validation error 0.0095904
+step 415000 , test error 0.00687651
+step 420000 , validation error 0.0145146
+step 420000 , test error 0.0128725
+step 425000 , validation error 0.0145082
+step 425000 , test error 0.0129429
+step 430000 , validation error 0.0129332
+step 430000 , test error 0.0123026
+step 435000 , validation error 0.0103422
+step 435000 , test error 0.00986154
+step 440000 , validation error 0.0147345
+step 440000 , test error 0.0134418
+step 445000 , validation error 0.0120113
+step 445000 , test error 0.0108552
+step 450000 , validation error 0.0128448
+step 450000 , test error 0.0116259
+step 455000 , validation error 0.00996209
+step 455000 , test error 0.00814867
+step 460000 , validation error 0.0135687
+step 460000 , test error 0.0110092
+step 465000 , validation error 0.0125446
+step 465000 , test error 0.0106563
+step 470000 , validation error 0.0152353
+step 470000 , test error 0.0145095
+step 475000 , validation error 0.0142685
+step 475000 , test error 0.0106216
+step 480000 , validation error 0.0163064
+step 480000 , test error 0.013702
+step 485000 , validation error 0.0124127
+step 485000 , test error 0.0105492
+step 490000 , validation error 0.00839514
+step 490000 , test error 0.0092728
+step 495000 , validation error 0.0102198
+step 495000 , test error 0.00771002
+step 500000 , validation error 0.0130082
+step 500000 , test error 0.0111168
+step 5000 , validation error 0.0101097
+step 5000 , test error 0.00878163
+step 10000 , validation error 0.0109166
+step 10000 , test error 0.00978912
+step 15000 , validation error 0.010855
+step 15000 , test error 0.00964234
+step 20000 , validation error 0.0104973
