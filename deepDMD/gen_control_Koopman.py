@@ -35,6 +35,7 @@ plot_deep_basis = 0;  # This activates plotting of deep basis functions as a fun
 single_series = 0;  # Useful if you're analyzing a system with only a single time-series (requires extremely high temporal resolution). 
 debug_splash = 0;
 phase_space_stitching = 0;
+
 ### Support Vars: 
 
 colors =[[ 0.68627453,  0.12156863,  0.16470589],
@@ -757,7 +758,7 @@ if pre_examples_switch == 12:
   phase_space_stitching = 0;
 
 if pre_examples_switch == 13:
-  data_suffix = 'SIM1SHARA_Combinatorial_Promoters_with_input';#'X8SS_Pputida_RNASeqDATA.pickle';
+  data_suffix = 'Pputida_GrowthHarness_RNAseq.pickle'#'SIM1SHARA_Combinatorial_Promoters_with_input';#'X8SS_Pputida_RNASeqDATA.pickle';
   with_control = 1;
   with_output = 0;
   phase_space_stitching = 0;
