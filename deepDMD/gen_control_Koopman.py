@@ -428,7 +428,7 @@ def Deep_Output_KIC_Objective(psiyp,psiyf,Kx,psiu,Ku,step_size,Yf,Yp,Wh,learn_co
      ctrb_s,ctrb_v = tf.self_adjoint_eig(ctrbTctrb);
      print(tf.norm(ctrb_s,1))
    
-   tf_koopman_loss =  tf.reduce_mean(tf.norm(psiyf - forward_prediction_control,axis=[0,1],ord='fro')) + tf.reduce_mean(tf.norm(Yf-output_prediction_fw,axis=[0,1],ord='fro')) + tf.reduce_mean(tf.norm(Yp-output_prediction_prev,axis=[0,1],ord='fro')); 
+   tf_koopman_loss =  tf.reduce_mean(tf.norm(psiyf - forward_prediction_control,axis=[0,1],ord='fro'))/tf.reduce_mean(tf.norm(psiyf,axis=[0,1],ord='fro')) + tf.reduce_mean(tf.norm(Yf-output_prediction_fw,axis=[0,1],ord='fro'))/tf.reduce_mean(tf.norm(psiyf,axis=[0,1],ord='fro')) + tf.reduce_mean(tf.norm(Yp-output_prediction_prev,axis=[0,1],ord='fro'))/tf.reduce_mean(tf.norm(Yp,axis=[0,1],ord='fro')); 
 
 
    #/tf.reduce_mean(tf.norm(psiyp,axis=[0,1],ord='fro'));   
@@ -785,7 +785,7 @@ max_width_limit = 50 ;# max width_limit -4 works well
 
 min_width_limit = max_width_limit;# use regularization and dropout to trim edges for now. 
 min_width_limit_control =15;
-max_depth_control =5;
+max_depth_control =3;
 
 best_test_error = np.inf;
 best_depth = max_depth;
