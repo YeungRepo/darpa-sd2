@@ -776,15 +776,15 @@ if pre_examples_switch == 14:
 ## Inline Inputs
 ### Define Neural Network Hyperparameters
   
-deep_dict_size = 30;
+deep_dict_size = 50;
 
 
 if with_control:
   deep_dict_size_control =5;
   
 
-max_depth = 7;  # max_depth 3 works well  
-max_width_limit =30 ;# max width_limit -4 works well 
+max_depth = 4;  # max_depth 3 works well  
+max_width_limit = 50 ;# max width_limit -4 works well 
 
 min_width_limit = max_width_limit;# use regularization and dropout to trim edges for now. 
 min_width_limit_control =15;
@@ -810,10 +810,9 @@ if len(sys.argv)>4:
   deep_dict_size = np.int(sys.argv[4]);
 if len(sys.argv)>5 and with_control:
   max_depth_control = np.int(sys.argv[5]);
-if len(sys.argv)>5 and with_control:
-  deep_dict_size_control = np.int(sys.argv[6]);
-  
 if len(sys.argv)>6 and with_control:
+  deep_dict_size_control = np.int(sys.argv[6]);
+if len(sys.argv)>7 and with_control:
   plot_deep_basis = np.int(sys.argv[7]);
   
   
