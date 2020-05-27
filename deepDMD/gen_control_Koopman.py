@@ -758,7 +758,7 @@ if pre_examples_switch == 12:
   phase_space_stitching = 0;
 
 if pre_examples_switch == 13:
-  data_suffix = 'Pputida_GrowthHarness_RNAseq_deepDMD.pickle'#'SIM1SHARA_Combinatorial_Promoters_with_input';#'X8SS_Pputida_RNASeqDATA.pickle';
+  data_suffix = 'Pputida_GrowthHarness_RNAseq_DeepDMD.pickle'#'SIM1SHARA_Combinatorial_Promoters_with_input';#'X8SS_Pputida_RNASeqDATA.pickle';
   with_control = 1;
   with_output = 1;
   phase_space_stitching = 0;
