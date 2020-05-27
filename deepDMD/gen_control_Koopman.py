@@ -428,9 +428,9 @@ def Deep_Output_KIC_Objective(psiyp,psiyf,Kx,psiu,Ku,step_size,Yf,Yp,Wh,learn_co
      ctrb_s,ctrb_v = tf.self_adjoint_eig(ctrbTctrb);
      print(tf.norm(ctrb_s,1))
 
-   tf_koopman_loss =  tf.reduce_mean(tf.norm(psiyf - forward_prediction_control,axis=[0,1],ord='fro')) + tf.reduce_mean(tf.norm(Yf-output_prediction_fw,axis=[0,1],ord='fro')) + tf.reduce_mean(tf.norm(Yp-output_prediction_prev,axis=[0,1],ord='fro')); 
+   #tf_koopman_loss =  tf.reduce_mean(tf.norm(psiyf - forward_prediction_control,axis=[0,1],ord='fro')) + tf.reduce_mean(tf.norm(Yf-output_prediction_fw,axis=[0,1],ord='fro')) + tf.reduce_mean(tf.norm(Yp-output_prediction_prev,axis=[0,1],ord='fro')); 
      
-#   tf_koopman_loss =  tf.reduce_mean(tf.norm(psiyf - forward_prediction_control,axis=[0,1],ord='fro'))/tf.reduce_mean(tf.norm(psiyf,axis=[0,1],ord='fro')) + tf.reduce_mean(tf.norm(Yf-output_prediction_fw,axis=[0,1],ord='fro'))/tf.reduce_mean(tf.norm(psiyf,axis=[0,1],ord='fro')) + tf.reduce_mean(tf.norm(Yp-output_prediction_prev,axis=[0,1],ord='fro'))/tf.reduce_mean(tf.norm(Yp,axis=[0,1],ord='fro')); 
+   tf_koopman_loss =  tf.reduce_mean(tf.norm(psiyf - forward_prediction_control,axis=[0,1],ord='fro'))/tf.reduce_mean(tf.norm(psiyf,axis=[0,1],ord='fro')) + tf.reduce_mean(tf.norm(Yf-output_prediction_fw,axis=[0,1],ord='fro'))/tf.reduce_mean(tf.norm(psiyf,axis=[0,1],ord='fro')) + tf.reduce_mean(tf.norm(Yp-output_prediction_prev,axis=[0,1],ord='fro'))/tf.reduce_mean(tf.norm(Yp,axis=[0,1],ord='fro')); 
 
 
    #/tf.reduce_mean(tf.norm(psiyp,axis=[0,1],ord='fro'));   
@@ -1093,8 +1093,18 @@ if with_control:
   Wu_list_num = [sess.run(W_temp) for W_temp in Wu_list];
   bu_list_num = [sess.run(b_temp) for b_temp in bu_list];
   Ku_num = sess.run(Ku);
-  pickle.dump([Wy_list_num,by_list_num,Wu_list_num,bu_list_num,Kx_num,Ku_num],file_obj_swing);
+  if with_output:
+    Wh_num = sess.run(Wh);
+    pickle.dump([Wy_list_num,by_list_num,Wu_list_num,bu_list_num,Kx_num,Ku_num,Wh_num],file_obj_swing);
+  else:
+    pickle.dump([Wy_list_num,by_list_num,Wu_list_num,bu_list_num,Kx_num,Ku_num],file_obj_swing);]
+
+
 else:
+  if with_output:
+    Wh_num  sess.run(Wh);
+    pickle.dump([Wy_list_num,by_list_num,Kx_num,Wh_num],file_obj_swing);
+  else:
     pickle.dump([Wy_list_num,by_list_num,Kx_num],file_obj_swing);
 file_obj_swing.close();
 
@@ -1109,7 +1119,8 @@ saver = tf.train.Saver()
 tf.add_to_collection('psiyp',psiyp);
 tf.add_to_collection('psiyf',psiyf);
 tf.add_to_collection('Kx',Kx);
-
+if with_output:
+  tf.add_to_collection('Wh',Wh);
 
 if with_control:
   tf.add_to_collection('forward_prediction_control',forward_prediction_control);
