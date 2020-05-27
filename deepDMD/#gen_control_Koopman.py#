@@ -61,9 +61,9 @@ eval_size = batchsize;
 
 use_crelu = 0;
 activation_flag = 2; # sets the activation function type to RELU, ELU, SELU (initialized a certain way,dropout has to be done differently) , or tanh() 
-max_iters = 100000 
-valid_error_threshold = .001;
-test_error_threshold = .001;
+max_iters = 400000 
+valid_error_threshold = .00001;
+test_error_threshold = .00001;
 
 ### Deep Learning Metaparameters ###
 keep_prob = 1.0; #keep_prob = 1-dr opout probability 
@@ -512,16 +512,9 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
     iter+=1;
     
     all_ind = set(np.arange(0,len(u_all_training)));
-    # Note by Shara: The old block of code is commented and the new code is added to replace it. The issue with the old block is that only select_ind was random but valid_ind and select_ind_test were not random and were always chosen from the beginning 
-    # select_ind = np.random.randint(0,len(u_all_training),size=batchsize); # select indices for training 
-    # valid_ind = list(all_ind -set(select_ind))[0:batchsize];  # select indices for validation 
-    # select_ind_test = list(all_ind - set(valid_ind) - set(select_ind))[0:batchsize]; # select indices for test
-
-
-    
-    select_ind = random.sample(all_ind,batchsize) # select indices for training 
-    valid_ind = random.sample(all_ind - set(select_ind),batchsize) # select indices for validation 
-    select_ind_test = random.sample(all_ind - set(select_ind)- set(valid_ind),batchsize) # select indices for test
+    select_ind = np.random.randint(0,len(u_all_training),size=batchsize); # select indices for training 
+    valid_ind = list(all_ind -set(select_ind))[0:batchsize];  # select indices for validation 
+    select_ind_test = list(all_ind - set(valid_ind) - set(select_ind))[0:batchsize]; # select indices for test 
 
     
     u_batch =[];
@@ -668,11 +661,6 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
   plt.close();
   return all_histories,good_start;
 
-def user_controlled_train_net():
-  satisfied = 0
-  while(1):
-    maxiters = input('Iterations - ')
-
 # # # END HELPER FUNCTIONS # # #
 
 
@@ -770,7 +758,7 @@ if pre_examples_switch == 12:
   phase_space_stitching = 0;
 
 if pre_examples_switch == 13:
-  data_suffix = 'Pputida_GrowthHarness_RNAseq.pickle'#'SIM1SHARA_Combinatorial_Promoters_with_input';#'X8SS_Pputida_RNASeqDATA.pickle';
+  data_suffix = 'Pputida_GrowthHarness_RNAseq_deepDMD.pickle'#'SIM1SHARA_Combinatorial_Promoters_with_input';#'X8SS_Pputida_RNASeqDATA.pickle';
   with_control = 1;
   with_output = 0;
   phase_space_stitching = 0;
