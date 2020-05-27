@@ -56,7 +56,7 @@ colors = np.asarray(colors); # defines a color palette
 lambd = 0.00000;
 step_size_val = 0.025#.025;
 
-batchsize =100#30#900;
+batchsize =80#30#900;
 eval_size = batchsize;
 
 use_crelu = 0;
@@ -330,7 +330,7 @@ def gen_next_yk(input_var,W_list,b_list,keep_prob=1.0,activation_flag=1,res_net=
                 prev_layer_output += tf.matmul(u,W1)+b1 #  this expression is not compatible for variable width nets (where each layer has a different width at inialization - okay with regularization and dropout afterwards though)
 
             if activation_flag==1:
-                z_temp_list.append(tf.nn.dropout(tf.nn.relu(prev_layer_output),keep_prob));
+b                z_temp_list.append(tf.nn.dropout(tf.nn.relu(prev_layer_output),keep_prob));
             if activation_flag==2:
                 z_temp_list.append(tf.nn.dropout(tf.nn.elu(prev_layer_output),keep_prob));
             if activation_flag==3:
