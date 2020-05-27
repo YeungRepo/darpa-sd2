@@ -56,7 +56,7 @@ colors = np.asarray(colors); # defines a color palette
 lambd = 0.00000;
 step_size_val = 0.025#.025;
 
-batchsize =30#30#900;
+batchsize =6#30#900;
 eval_size = batchsize;
 
 use_crelu = 0;
@@ -758,9 +758,9 @@ if pre_examples_switch == 12:
   phase_space_stitching = 0;
 
 if pre_examples_switch == 13:
-  data_suffix = 'Pputida_GrowthHarness_RNAseq_DeepDMD.pickle'#'SIM1SHARA_Combinatorial_Promoters_with_input';#'X8SS_Pputida_RNASeqDATA.pickle';
+  data_suffix = 'Pputida_GrowthHarness_RNAseq_deepDMD.pickle'#'SIM1SHARA_Combinatorial_Promoters_with_input';#'X8SS_Pputida_RNASeqDATA.pickle';
   with_control = 1;
-  with_output = 1;
+  with_output = 0;
   phase_space_stitching = 0;
 
 if pre_examples_switch == 14:
@@ -773,15 +773,15 @@ if pre_examples_switch == 14:
 ## Inline Inputs
 ### Define Neural Network Hyperparameters
   
-deep_dict_size = 50;
+deep_dict_size = 30;
 
 
 if with_control:
   deep_dict_size_control =5;
   
 
-max_depth = 4;  # max_depth 3 works well  
-max_width_limit = 50 ;# max width_limit -4 works well 
+max_depth = 7;  # max_depth 3 works well  
+max_width_limit =30 ;# max width_limit -4 works well 
 
 min_width_limit = max_width_limit;# use regularization and dropout to trim edges for now. 
 min_width_limit_control =15;
@@ -807,9 +807,10 @@ if len(sys.argv)>4:
   deep_dict_size = np.int(sys.argv[4]);
 if len(sys.argv)>5 and with_control:
   max_depth_control = np.int(sys.argv[5]);
-if len(sys.argv)>6 and with_control:
+if len(sys.argv)>5 and with_control:
   deep_dict_size_control = np.int(sys.argv[6]);
-if len(sys.argv)>7 and with_control:
+  
+if len(sys.argv)>6 and with_control:
   plot_deep_basis = np.int(sys.argv[7]);
   
   
