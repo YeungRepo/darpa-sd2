@@ -1,0 +1,96 @@
+<class 'dict'>
+[INFO] Number of total samples: 224
+[INFO] Observable dimension of a sample: 1086
+[INFO TYPE]<class 'numpy.ndarray'>
+[INFO TYPE](224, 2)
+[DEBUG]array([112.5, 150. ])
+[INFO] Yp.shape (E-DMD): (224, 1086)
+[INFO] Yf.shape (E-DMD): (224, 1086)
+Number of training snapshots: 112
+Number of test snapshots: 112
+[INFO] hidden_vars_list: array([50, 50, 50, 50])
+step 5000 , validation error 6.60119
+step 5000 , test error 5.45269
+step 10000 , validation error 5.56831
+step 10000 , test error 4.6223
+step 15000 , validation error 5.65272
+step 15000 , test error 4.73956
+step 20000 , validation error 1.90802
+step 20000 , test error 1.76948
+step 25000 , validation error 4.36405
+step 25000 , test error 3.40365
+step 30000 , validation error 0.49986
+step 30000 , test error 0.50605
+step 35000 , validation error 4.23959
+step 35000 , test error 3.39792
+step 40000 , validation error 2.32626
+step 40000 , test error 1.86111
+step 45000 , validation error 4.60397
+step 45000 , test error 3.58663
+step 50000 , validation error 5.07314
+step 50000 , test error 3.93363
+step 55000 , validation error 0.884406
+step 55000 , test error 0.789705
+step 60000 , validation error 2.35247
+step 60000 , test error 2.05788
+step 65000 , validation error 3.24674
+step 65000 , test error 2.22695
+step 70000 , validation error 3.11545
+step 70000 , test error 2.24339
+step 75000 , validation error 1.32758
+step 75000 , test error 1.04092
+step 80000 , validation error 1.26786
+step 80000 , test error 0.961315
+step 85000 , validation error 3.09491
+step 85000 , test error 2.1916
+step 90000 , validation error 1.21944
+step 90000 , test error 1.0654
+step 95000 , validation error 1.78959
+step 95000 , test error 1.50887
+step 100000 , validation error 2.36225
+step 100000 , test error 1.80641
+step 5000 , validation error 0.313276
+step 5000 , test error 0.269472
+step 10000 , validation error 0.334055
+step 10000 , test error 0.260275
+step 15000 , validation error 0.293866
+step 15000 , test error 0.295485
+step 20000 , validation error 0.281227
+step 20000 , test error 0.284386
+step 25000 , validation error 0.299278
+step 25000 , test error 0.261555
+step 30000 , validation error 0.311606
+step 30000 , test error 0.326927
+step 35000 , validation error 0.313978
+step 35000 , test error 0.302976
+step 40000 , validation error 0.292783
+step 40000 , test error 0.295511
+step 45000 , validation error 0.311245
+step 45000 , test error 0.292001
+step 50000 , validation error 0.309532
+step 50000 , test error 0.295646
+step 55000 , validation error 0.306101
+step 55000 , test error 0.27201
+step 60000 , validation error 0.290581
+step 60000 , test error 0.288886
+step 65000 , validation error 0.293602
+step 65000 , test error 0.279339
+step 70000 , validation error 0.301434
+step 70000 , test error 0.272308
+step 75000 , validation error 0.273147
+step 75000 , test error 0.270629
+step 80000 , validation error 0.28601
+step 80000 , test error 0.275352
+step 85000 , validation error 0.270011
+step 85000 , test error 0.265392
+step 90000 , validation error 0.249893
+step 90000 , test error 0.268
+step 95000 , validation error 0.275939
+step 95000 , test error 0.240799
+step 100000 , validation error 0.270747
+step 100000 , test error 0.27738
+[INFO] Initialization was successful: True
+[INFO] Koopman_dim:(1136, 1136)
+[COMP] Training error: 0.503518
+[COMP] Test error: 30.012871
+[RESULT] n-step Prediction error: 30382.201802
