@@ -1,0 +1,118 @@
+<class 'dict'>
+[INFO] Number of total samples: 224
+[INFO] Observable dimension of a sample: 1086
+[INFO TYPE]<class 'numpy.ndarray'>
+[INFO TYPE](224, 2)
+[DEBUG]array([112.5, 150. ])
+[INFO] Yp.shape (E-DMD): (224, 1086)
+[INFO] Yf.shape (E-DMD): (224, 1086)
+Number of training snapshots: 112
+Number of test snapshots: 112
+[INFO] hidden_vars_list: array([50, 50, 50, 50])
+<class 'dict'>
+[INFO] Number of total samples: 224
+[INFO] Observable dimension of a sample: 1086
+[INFO TYPE]<class 'numpy.ndarray'>
+[INFO TYPE](224, 2)
+[DEBUG]array([112.5, 150. ])
+[INFO] Yp.shape (E-DMD): (224, 1086)
+[INFO] Yf.shape (E-DMD): (224, 1086)
+Number of training snapshots: 112
+Number of test snapshots: 112
+[INFO] hidden_vars_list: array([50, 50, 50, 50])
+<class 'dict'>
+[INFO] Number of total samples: 224
+[INFO] Observable dimension of a sample: 1086
+[INFO TYPE]<class 'numpy.ndarray'>
+[INFO TYPE](224, 2)
+[DEBUG]array([112.5, 150. ])
+[INFO] Yp.shape (E-DMD): (224, 1086)
+[INFO] Yf.shape (E-DMD): (224, 1086)
+Number of training snapshots: 112
+Number of test snapshots: 112
+[INFO] hidden_vars_list: array([50, 50, 50, 50])
+step 5000 , validation error 12.507
+step 5000 , test error 10.272
+step 10000 , validation error 7.68796
+step 10000 , test error 6.17319
+step 15000 , validation error 2.5506
+step 15000 , test error 2.00277
+step 20000 , validation error 4.88857
+step 20000 , test error 3.84804
+step 25000 , validation error 6.0959
+step 25000 , test error 4.83696
+step 30000 , validation error 4.24689
+step 30000 , test error 3.33053
+step 35000 , validation error 3.08787
+step 35000 , test error 2.5059
+step 40000 , validation error 3.29344
+step 40000 , test error 2.78433
+step 45000 , validation error 2.1407
+step 45000 , test error 1.54023
+step 50000 , validation error 3.22201
+step 50000 , test error 2.64457
+step 55000 , validation error 3.4062
+step 55000 , test error 2.78833
+step 60000 , validation error 1.42435
+step 60000 , test error 1.13003
+step 65000 , validation error 4.20396
+step 65000 , test error 3.36084
+step 70000 , validation error 3.79729
+step 70000 , test error 2.87157
+step 75000 , validation error 1.28339
+step 75000 , test error 1.1582
+step 80000 , validation error 2.23504
+step 80000 , test error 1.83142
+step 85000 , validation error 1.03082
+step 85000 , test error 0.926237
+step 90000 , validation error 2.26595
+step 90000 , test error 1.68249
+step 95000 , validation error 1.97056
+step 95000 , test error 1.69976
+step 100000 , validation error 2.48415
+step 100000 , test error 1.81559
+step 5000 , validation error 0.311495
+step 5000 , test error 0.31438
+step 10000 , validation error 0.316336
+step 10000 , test error 0.291546
+step 15000 , validation error 0.298101
+step 15000 , test error 0.297001
+step 20000 , validation error 0.304679
+step 20000 , test error 0.284232
+step 25000 , validation error 0.310384
+step 25000 , test error 0.288703
+step 30000 , validation error 0.331203
+step 30000 , test error 0.301169
+step 35000 , validation error 0.300168
+step 35000 , test error 0.304433
+step 40000 , validation error 0.300809
+step 40000 , test error 0.271877
+step 45000 , validation error 0.280527
+step 45000 , test error 0.263883
+step 50000 , validation error 0.313614
+step 50000 , test error 0.287271
+step 55000 , validation error 0.293264
+step 55000 , test error 0.275928
+step 60000 , validation error 0.278168
+step 60000 , test error 0.291607
+step 65000 , validation error 0.306667
+step 65000 , test error 0.279132
+step 70000 , validation error 0.293615
+step 70000 , test error 0.253959
+step 75000 , validation error 0.304872
+step 75000 , test error 0.264977
+step 80000 , validation error 0.281699
+step 80000 , test error 0.250392
+step 85000 , validation error 0.318126
+step 85000 , test error 0.236134
+step 90000 , validation error 0.268015
+step 90000 , test error 0.266766
+step 95000 , validation error 0.309325
+step 95000 , test error 0.264969
+step 100000 , validation error 0.257739
+step 100000 , test error 0.239364
+[INFO] Initialization was successful: True
+[INFO] Koopman_dim:(1136, 1136)
+[COMP] Training error: 0.504874
+[COMP] Test error: 37.271038
+[RESULT] n-step Prediction error: 60521290.444994
