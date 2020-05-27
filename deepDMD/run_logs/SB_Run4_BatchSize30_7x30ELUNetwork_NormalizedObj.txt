@@ -1,0 +1,56 @@
+<class 'dict'>
+[INFO] Number of total samples: 224
+[INFO] Observable dimension of a sample: 1086
+[INFO TYPE]<class 'numpy.ndarray'>
+[INFO TYPE](224, 2)
+[DEBUG]array([112.5, 150. ])
+[INFO] Yp.shape (E-DMD): (224, 1086)
+[INFO] Yf.shape (E-DMD): (224, 1086)
+Number of training snapshots: 112
+Number of test snapshots: 112
+[INFO] hidden_vars_list: array([50, 50, 50, 50])
+step 5000 , validation error 0.1966
+step 5000 , test error 0.135249
+step 10000 , validation error 0.193206
+step 10000 , test error 0.105799
+step 15000 , validation error 0.117406
+step 15000 , test error 0.0673868
+step 20000 , validation error 0.0969316
+step 20000 , test error 0.0631019
+step 25000 , validation error 0.0986423
+step 25000 , test error 0.0510741
+step 30000 , validation error 0.0528896
+step 30000 , test error 0.0359773
+step 35000 , validation error 0.0826723
+step 35000 , test error 0.0453084
+step 40000 , validation error 0.0670973
+step 40000 , test error 0.0425
+step 45000 , validation error 0.0643605
+step 45000 , test error 0.0405275
+step 50000 , validation error 0.108445
+step 50000 , test error 0.0587889
+step 5000 , validation error 0.0374553
+step 5000 , test error 0.0274278
+step 10000 , validation error 0.0357839
+step 10000 , test error 0.0195683
+step 15000 , validation error 0.0362142
+step 15000 , test error 0.0246613
+step 20000 , validation error 0.0366951
+step 20000 , test error 0.0273239
+step 25000 , validation error 0.0374332
+step 25000 , test error 0.0228294
+step 30000 , validation error 0.036744
+step 30000 , test error 0.0258139
+step 35000 , validation error 0.0358146
+step 35000 , test error 0.0226655
+step 40000 , validation error 0.0354126
+step 40000 , test error 0.0243209
+step 45000 , validation error 0.0336396
+step 45000 , test error 0.021403
+step 50000 , validation error 0.0369998
+step 50000 , test error 0.0240609
+[INFO] Initialization was successful: True
+[INFO] Koopman_dim:(1136, 1136)
+[COMP] Training error: 0.019123
+[COMP] Test error: 0.330224
+[RESULT] n-step Prediction error: 1581.729773

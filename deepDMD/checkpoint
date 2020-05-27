@@ -1,2 +1,2 @@
-model_checkpoint_path: "incoherent_ff_loop.pickle.ckpt"
-all_model_checkpoint_paths: "incoherent_ff_loop.pickle.ckpt"
+model_checkpoint_path: "Pputida_GrowthHarness_RNAseq_DeepDMD.pickle.ckpt"
+all_model_checkpoint_paths: "Pputida_GrowthHarness_RNAseq_DeepDMD.pickle.ckpt"
