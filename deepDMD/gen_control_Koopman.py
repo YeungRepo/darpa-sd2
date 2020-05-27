@@ -1097,7 +1097,7 @@ if with_control:
     Wh_num = sess.run(Wh);
     pickle.dump([Wy_list_num,by_list_num,Wu_list_num,bu_list_num,Kx_num,Ku_num,Wh_num],file_obj_swing);
   else:
-    pickle.dump([Wy_list_num,by_list_num,Wu_list_num,bu_list_num,Kx_num,Ku_num],file_obj_swing);]
+    pickle.dump([Wy_list_num,by_list_num,Wu_list_num,bu_list_num,Kx_num,Ku_num],file_obj_swing);
 
 
 else:
