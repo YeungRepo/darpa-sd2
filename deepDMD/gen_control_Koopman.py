@@ -56,12 +56,12 @@ colors = np.asarray(colors); # defines a color palette
 lambd = 0.00000;
 step_size_val = 0.025#.025;
 
-batchsize =30#30#900;
+batchsize =100#30#900;
 eval_size = batchsize;
 
 use_crelu = 0;
 activation_flag = 2; # sets the activation function type to RELU, ELU, SELU (initialized a certain way,dropout has to be done differently) , or tanh() 
-max_iters = 50000 
+max_iters = 100000 
 valid_error_threshold = .00001;
 test_error_threshold = .00001;
 
@@ -428,9 +428,9 @@ def Deep_Output_KIC_Objective(psiyp,psiyf,Kx,psiu,Ku,step_size,Yf,Yp,Wh,learn_co
      ctrb_s,ctrb_v = tf.self_adjoint_eig(ctrbTctrb);
      print(tf.norm(ctrb_s,1))
 
-   #tf_koopman_loss =  tf.reduce_mean(tf.norm(psiyf - forward_prediction_control,axis=[0,1],ord='fro')) + tf.reduce_mean(tf.norm(Yf-output_prediction_fw,axis=[0,1],ord='fro')) + tf.reduce_mean(tf.norm(Yp-output_prediction_prev,axis=[0,1],ord='fro')); 
+   tf_koopman_loss =  tf.reduce_mean(tf.norm(psiyf - forward_prediction_control,axis=[0,1],ord='fro')) + tf.reduce_mean(tf.norm(Yf-output_prediction_fw,axis=[0,1],ord='fro')) + tf.reduce_mean(tf.norm(Yp-output_prediction_prev,axis=[0,1],ord='fro')); 
      
-   tf_koopman_loss =  tf.reduce_mean(tf.norm(psiyf - forward_prediction_control,axis=[0,1],ord='fro'))/tf.reduce_mean(tf.norm(psiyf,axis=[0,1],ord='fro')) + tf.reduce_mean(tf.norm(Yf-output_prediction_fw,axis=[0,1],ord='fro'))/tf.reduce_mean(tf.norm(psiyf,axis=[0,1],ord='fro')) + tf.reduce_mean(tf.norm(Yp-output_prediction_prev,axis=[0,1],ord='fro'))/tf.reduce_mean(tf.norm(Yp,axis=[0,1],ord='fro')); 
+   #tf_koopman_loss =  tf.reduce_mean(tf.norm(psiyf - forward_prediction_control,axis=[0,1],ord='fro'))/tf.reduce_mean(tf.norm(psiyf,axis=[0,1],ord='fro')) + tf.reduce_mean(tf.norm(Yf-output_prediction_fw,axis=[0,1],ord='fro'))/tf.reduce_mean(tf.norm(psiyf,axis=[0,1],ord='fro')) + tf.reduce_mean(tf.norm(Yp-output_prediction_prev,axis=[0,1],ord='fro'))/tf.reduce_mean(tf.norm(Yp,axis=[0,1],ord='fro')); 
 
 
    #/tf.reduce_mean(tf.norm(psiyp,axis=[0,1],ord='fro'));   
