@@ -636,14 +636,15 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
 
       
     if iter > 10000 and with_control:
-      At = sess.run(Kx).T;
-      Bt = sess.run(Ku).T;
-      ctrb_rank = np.linalg.matrix_rank(control.ctrb(At,Bt));
-      if debug_splash:
-        print(repr(ctrb_rank) + " : " + repr(control.ctrb(At,Bt).shape[0]));
+      At = None;
+      #At = sess.run(Kx).T;
+      #Bt = sess.run(Ku).T;
+      #ctrb_rank = np.linalg.matrix_rank(control.ctrb(At,Bt));
+      #if debug_splash:
+      #  print(repr(ctrb_rank) + " : " + repr(control.ctrb(At,Bt).shape[0]));
       
-      if ctrb_rank == control.ctrb(At,Bt).shape[0] and test_error_history_nocovar[-1] <1e-5:
-         iter=max_iters;
+      #if ctrb_rank == control.ctrb(At,Bt).shape[0] and test_error_history_nocovar[-1] <1e-5:
+      #   iter=max_iters;
          
 
         
