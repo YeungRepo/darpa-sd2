@@ -982,7 +982,7 @@ for n_depth_reciprocal in range(1,2):#max_depth-2): #2
             print("\n Initialization attempt number: ") + repr(try_num);
             print("\n \t Initializing Tensorflow Residual ELU Network with ") + repr(n_inputs) + (" inputs and ") + repr(n_outputs) + (" outputs and ") + repr(len(hidden_vars_list)) + (" layers");
 
-          with tf.device('/gpu:0'):
+          with tf.device('/cpu:0'):
             Wy_list,by_list = initialize_Wblist(n_inputs,hidden_vars_list);
             params_list = [ n_outputs, deep_dict_size, hidden_vars_list,Wy_list,by_list,keep_prob,activation_flag, res_net ]
             
