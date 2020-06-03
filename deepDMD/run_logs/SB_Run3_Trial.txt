@@ -1,0 +1,24 @@
+<class 'dict'>
+[INFO] Number of total samples: 224
+[INFO] Observable dimension of a sample: 980
+[INFO TYPE]<class 'numpy.ndarray'>
+[INFO TYPE](224, 2)
+[DEBUG]array([0.6, 0.8])
+[INFO] Yp.shape (E-DMD): (224, 980)
+[INFO] Yf.shape (E-DMD): (224, 980)
+Number of training snapshots: 112
+Number of test snapshots: 112
+[INFO] hidden_vars_list: array([50, 50, 50, 50])
+step 5000 , validation error 0.860081
+step 5000 , test error 0.819039
+step 10000 , validation error 0.827121
+step 10000 , test error 0.801872
+step 5000 , validation error 0.508158
+step 5000 , test error 0.679998
+step 10000 , validation error 0.546446
+step 10000 , test error 0.638611
+[INFO] Initialization was successful: True
+[INFO] Koopman_dim:(1030, 1030)
+[COMP] Training error: 1.123231
+[COMP] Test error: 27.033844
+[RESULT] n-step Prediction error: 29672436740.222977
