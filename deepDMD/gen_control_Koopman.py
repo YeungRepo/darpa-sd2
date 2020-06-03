@@ -4,7 +4,7 @@
 import pickle; # for data I/O
 
 # Math Packages 
-import numpy as np;
+import numpy as np
 from numpy.linalg import pinv;
 from numpy.polynomial.legendre import legvander;
 import math;
@@ -61,7 +61,7 @@ eval_size = batchsize;
 
 use_crelu = 0;
 activation_flag = 2; # sets the activation function type to RELU, ELU, SELU (initialized a certain way,dropout has to be done differently) , or tanh() 
-max_iters = 10000
+max_iters = 100000
 valid_error_threshold = .00001;
 test_error_threshold = .00001;
 
@@ -1038,8 +1038,8 @@ for n_depth_reciprocal in range(1,2):#max_depth-2): #2
             
             all_histories,good_start  = train_net(up_all_training,uf_all_training,deep_koopman_loss,optimizer,U_train,Out_p_train,Out_f_train,valid_error_threshold,test_error_threshold,max_iters,step_size_val);
             all_histories,good_start  = train_net(up_all_training,uf_all_training,deep_koopman_loss,optimizer,U_train,Out_p_train,Out_f_train,valid_error_threshold*.1,test_error_threshold*.1,max_iters,step_size_val/10);
-            #all_histories,good_start  = train_net(up_all_training,uf_all_training,deep_koopman_loss,optimizer,U_train,valid_error_threshold*.025,test_error_threshold*.025,max_iters,step_size_val/100);
-
+            all_histories,good_start  = train_net(up_all_training,uf_all_training,deep_koopman_loss,optimizer,U_train,valid_error_threshold*.025,test_error_threshold*.025,max_iters,step_size_val/1000);
+            all_histories,good_start  = train_net(up_all_training,uf_all_training,deep_koopman_loss,optimizer,U_train,valid_error_threshold*.025,test_error_threshold*.025,max_iters,step_size_val/10000);
           training_error_history_nocovar = all_histories[0];
           validation_error_history_nocovar =   all_histories[1];
           test_error_history_nocovar = all_histories[2];
