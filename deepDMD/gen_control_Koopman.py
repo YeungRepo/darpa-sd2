@@ -4,7 +4,7 @@
 import pickle; # for data I/O
 
 # Math Packages 
-import numpy as np;
+import numpy as np
 from numpy.linalg import pinv;
 from numpy.polynomial.legendre import legvander;
 import math;
