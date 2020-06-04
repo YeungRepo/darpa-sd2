@@ -96,7 +96,7 @@ def quick_nstep_predict(Y_p_old,u_control_all_training,with_control,num_bas_obs,
   psiyp_Ycurr = psiyp.eval(feed_dict={yp_feed:Ycurr});
   psiyf_Ycurr = psiyf.eval(feed_dict={yf_feed:Ycurr});
 
-  ## Define a growing list of vector valued observables that is the forward prediction of the Yf snapshot matrix, initiated from an initial condition in Yp_final_test.   
+  # Define a growing list of vector valued observables that is the forward prediction of the Yf snapshot matrix, initiated from an initial condition in Yp_final_test.
   Yf_final_test_ep_nn = [];
   Yf_final_test_ep_nn.append(psiyp_Ycurr.tolist()[0][0:num_bas_obs]); # append the initial seed state value.
 
@@ -123,7 +123,7 @@ def quick_nstep_predict(Y_p_old,u_control_all_training,with_control,num_bas_obs,
   print('%s%f' % ('[INFO] Current n-step prediction error (not used for gradient descent/backprop): ',prediction_error));
 
   plt.figure();
-  ### Make a Prediction Plot 
+  # Make a Prediction Plot
   x_range = np.arange(0,Yf_final_test_stack_nn.shape[1],1);
   for i in range(0,3):
       plt.plot(x_range,Yf_final_test_ep_nn[i,:],'--',color=colors[i,:]);
@@ -154,6 +154,20 @@ def compute_covarmat(U,Y):
     for i in range(0,n_outputs):
       Output_Mat[i,j] = compute_covar(Y[:,i],U[:,j]);
   return Output_Mat;
+
+def compute_covarmat_v2(U,Y):
+    # Written by Shara
+    # The compute_covarmat and compute_covar create a lot of downtime when dealing with data of large number of states
+    # Both these functions are compiled into one function to improve the time of the code
+    # I have verified that both methods yield the same answer
+    U = np.asarray(U)
+    Y = np.asarray(Y)
+    if U.shape[0]  != Y.shape[0]:
+        print('')
+        return np.inf
+    else:
+        return np.matmul((U - np.mean(U, axis=0)).T, Y - np.mean(Y, axis=0)) / U.shape[0]
+
 
 def gen_random_unitary(sq_matrix_dim,sc_factor=1.0):
     n = sq_matrix_dim;
@@ -493,6 +507,77 @@ def instantiate_output_variables(Output_Dim,Koopman_Dim):
   y_output_f_var = tf.placeholder(tf.float32,shape=[None,Output_Dim])
   return y_output_f_var,y_output_p_var, Wh_var;
 
+
+## Functions for dynamic training with user interface
+def get_variable_value(variable_name,prev_variable_value,reqd_data_type,lower_bound=0):
+    NOT_VALID = True
+    variable_output = prev_variable_value
+    while(NOT_VALID):
+        print('Current value of ',variable_name,' = ',prev_variable_value)
+        variable_input = input('Enter new '+ variable_name + ' value [-1 or ENTER to retain previous entry]: ')
+        # First check for -1
+        if variable_input in ['-1','']:
+            NOT_VALID = False
+        else:
+            # Second check for correct data type
+            try:
+                variable_input = reqd_data_type(variable_input)
+                NOT_VALID = False
+                # Third check for the correct bound
+                if not (variable_input > lower_bound):
+                    print('Error! Value is out of bounds. Please enter a value greater than ',lower_bound)
+                    NOT_VALID = True
+                else:
+                    variable_output = variable_input
+                    NOT_VALID = False
+            except:
+                print('Error! Please enter a ',reqd_data_type,' value, -1 or ENTER')
+                NOT_VALID = True
+    return variable_output
+
+
+def display_train_params(step_size_val,valid_error_threshold,test_error_threshold,max_iters):
+    print('======================================')
+    print('CURRENT TRAINING PARAMETERS')
+    print('======================================')
+    print('Maximum Iterations         : ',max_iters)
+    print('Step Size Value            : ',step_size_val)
+    print('Validation Error Threshold : ',valid_error_threshold)
+    print('Test Error Threshold       : ', test_error_threshold)
+    print('--------------------------------------')
+    return
+
+def dynamic_train_net(up_all_training, uf_all_training, deep_koopman_loss,optimizer,U_train,Out_p_train, Out_f_train,valid_error_threshold=1e-2,test_error_threshold=1e-2,max_iters=100000,step_size_val=0.01):
+    KEEP_TRAINING = True
+    NO_CHOICE_VALUES = ['n','N','no','No','NO']
+    while (KEEP_TRAINING):
+        train_user_choice = input('Do you want to train the neural net [y/n]? ')
+        if train_user_choice not in NO_CHOICE_VALUES:
+            display_train_params(step_size_val,valid_error_threshold,test_error_threshold,max_iters)
+            param_user_choice = input('Do you want to change the parameters [y/n]?')
+            if param_user_choice not in NO_CHOICE_VALUES:
+                NOT_SATISFIED = True
+                while(NOT_SATISFIED):
+                    step_size_val = get_variable_value('Step Size',step_size_val,float)
+                    valid_error_threshold = get_variable_value('Validation error threshold',valid_error_threshold,float)
+                    test_error_threshold = get_variable_value('Test error threshold',test_error_threshold,float)
+                    max_iters = get_variable_value('Maximum Iterations',max_iters,int)
+                    display_train_params(step_size_val,valid_error_threshold,test_error_threshold,max_iters)
+                    parameter_satisfaction = input('Are these parameters fine [y/n]?')
+                    if parameter_satisfaction not in NO_CHOICE_VALUES:
+                        NOT_SATISFIED = False
+                    else:
+                        print('*** Enter the parameters again ***')
+            all_histories, good_start = train_net(up_all_training, uf_all_training, deep_koopman_loss, optimizer, U_train,
+                                      Out_p_train, Out_f_train, valid_error_threshold,
+                                      test_error_threshold, max_iters, step_size_val);
+        else:
+            print('Training Complete')
+            KEEP_TRAINING = False
+    return all_histories, good_start
+
+
+##
 def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_control_all_training=None,Output_p_batch=None,Output_f_batch=None,valid_error_thres=1e-2,test_error_thres=1e-2,max_iters=100000,step_size_val=0.01):
   iter = 0;
   samplerate = 5000;
@@ -507,12 +592,12 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
   validation_error_history_withcovar = [];
   test_error_history_withcovar = [];
 
-  covar_actual = compute_covarmat(u_all_training,y_all_training);
+  covar_actual = compute_covarmat_v2(u_all_training,y_all_training);
   covar_model_history = [];
   covar_diff_history = [];
+  print('Training Starts now')
   while (((test_error>test_error_thres) or (valid_error > valid_error_thres)) and iter < max_iters):
     iter+=1;
-    
     all_ind = set(np.arange(0,len(u_all_training)));
     select_ind = np.random.randint(0,len(u_all_training),size=batchsize); # select indices for training 
     valid_ind = list(all_ind -set(select_ind))[0:batchsize];  # select indices for validation 
@@ -535,9 +620,7 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
     output_batch_f = [];
     output_batch_valid_f = [];
     output_batch_test_train_f = [];  
-    
 
-    
     for j in range(0,len(select_ind)):
       u_batch.append(u_all_training[select_ind[j]]);
       y_batch.append(y_all_training[select_ind[j]]);
@@ -645,13 +728,9 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
       
       #if ctrb_rank == control.ctrb(At,Bt).shape[0] and test_error_history_nocovar[-1] <1e-5:
       #   iter=max_iters;
-         
-
-        
 
   all_histories = [training_error_history_nocovar, validation_error_history_nocovar,test_error_history_nocovar, \
-                   training_error_history_withcovar,validation_error_history_withcovar,test_error_history_withcovar,covar_actual,covar_diff_history,covar_model_history];
-    
+                  training_error_history_withcovar,validation_error_history_withcovar,test_error_history_withcovar,covar_actual,covar_diff_history,covar_model_history];
   
   plt.close();
   x = np.arange(0,len(validation_error_history_nocovar),1);
@@ -670,7 +749,7 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
 
 
 
-# # # - - - Begin Koopman Model Script - - - # # #
+## # - - - Begin Koopman Model Script - - - # # #
 
 
 pre_examples_switch = 13; 
@@ -793,28 +872,28 @@ max_depth_control =3;
 best_test_error = np.inf;
 best_depth = max_depth;
 best_width = min_width_limit;
-### End Neural Network Sweep Parameters
+# End Neural Network Sweep Parameters
 
 
 ## CMD Line Argument (Override) Inputs:
 
-import sys
-
-if len(sys.argv)>1:
-  data_suffix = sys.argv[1];
-if len(sys.argv)>2:
-  max_depth = np.int(sys.argv[2]);
-if len(sys.argv)>3:
-  max_width_limit = np.int(sys.argv[3]);
-if len(sys.argv)>4:
-  deep_dict_size = np.int(sys.argv[4]);
-if len(sys.argv)>5 and with_control:
-  max_depth_control = np.int(sys.argv[5]);
-if len(sys.argv)>6 and with_control:
-  deep_dict_size_control = np.int(sys.argv[6]);
-if len(sys.argv)>7 and with_control:
-  plot_deep_basis = np.int(sys.argv[7]);
-  
+# import sys
+#
+# if len(sys.argv)>1:
+#   data_suffix = sys.argv[1];
+# if len(sys.argv)>2:
+#   max_depth = np.int(sys.argv[2]);
+# if len(sys.argv)>3:
+#   max_width_limit = np.int(sys.argv[3]);
+# if len(sys.argv)>4:
+#   deep_dict_size = np.int(sys.argv[4]);
+# if len(sys.argv)>5 and with_control:
+#   max_depth_control = np.int(sys.argv[5]);
+# if len(sys.argv)>6 and with_control:
+#   deep_dict_size_control = np.int(sys.argv[6]);
+# if len(sys.argv)>7 and with_control:
+#   plot_deep_basis = np.int(sys.argv[7]);
+#
   
 data_file = data_directory + data_suffix;
 
@@ -949,134 +1028,138 @@ if debug_splash:
 
 ### Begin Sweep 
 
-for n_depth_reciprocal in range(1,2):#max_depth-2): #2
-  n_depth = max_depth+1 - n_depth_reciprocal;
-  n_depth_control = max_depth_control + 1 - n_depth_reciprocal;   
-  for min_width_conjugate in range(1,2):#min_width_limit): #2
-      min_width= min_width_limit+1-min_width_conjugate;
-      max_width = min_width; #zero gap between min and max ; use regularization and dropout to trim edges. 
-      min_width_control = min_width_limit_control+1-min_width_conjugate;
+# for n_depth_reciprocal in range(1,2):#max_depth-2): #2
+n_depth_reciprocal =1
+n_depth = max_depth+1 - n_depth_reciprocal;
+n_depth_control = max_depth_control + 1 - n_depth_reciprocal;
+# for min_width_conjugate in range(1,2):#min_width_limit): #2
+min_width_conjugate = 1
+min_width= min_width_limit+1-min_width_conjugate;
+max_width = min_width; #zero gap between min and max ; use regularization and dropout to trim edges.
+min_width_control = min_width_limit_control+1-min_width_conjugate;
 
-      
-      if min_width==max_width:
-        hidden_vars_list = np.asarray([min_width]*n_depth);
+
+if min_width==max_width:
+ hidden_vars_list = np.asarray([min_width]*n_depth);
+else:
+ hidden_vars_list = np.random.randint(min_width,max_width,size=n_depth);
+
+if with_control:
+ hidden_vars_list_control = np.asarray([min_width_control]*n_depth_control);
+ hidden_vars_list_control[-1] = deep_dict_size_control;
+
+good_start = 0;
+max_tries = 1;
+try_num = 0;
+
+# # # - - - enforce Koopman last layer # # #
+
+hidden_vars_list[-1] = deep_dict_size;
+
+print("[INFO] hidden_vars_list: " +repr(hidden_vars_list));
+while good_start==0 and try_num < max_tries:
+  try_num +=1;
+  if debug_splash:
+    print("\n Initialization attempt number: ") + repr(try_num);
+    print("\n \t Initializing Tensorflow Residual ELU Network with ") + repr(n_inputs) + (" inputs and ") + repr(n_outputs) + (" outputs and ") + repr(len(hidden_vars_list)) + (" layers");
+
+  with tf.device('/cpu:0'):
+    Wy_list,by_list = initialize_Wblist(n_inputs,hidden_vars_list);
+    params_list = [ n_outputs, deep_dict_size, hidden_vars_list,Wy_list,by_list,keep_prob,activation_flag, res_net ]
+
+    psiypz_list,psiyp,yp_feed =  instantiate_comp_graph(params_list);
+    psiyfz_list,psiyf,yf_feed = instantiate_comp_graph(params_list);
+    if with_output:
+      y_output_f,y_output_p,Wh = instantiate_output_variables(Yf_output.shape[1],deep_dict_size+num_bas_obs);
+    if with_control:
+      Wu_list,bu_list = initialize_Wblist(n_inputs_control,hidden_vars_list_control);
+
+
+      psiuz_list, psiu,u_control = initialize_stateinclusive_tensorflow_graph(n_inputs_control,deep_dict_size_control,hidden_vars_list_control,Wu_list,bu_list,keep_prob,activation_flag,res_net);
+
+    # add hooks for affine control perturbation to Deep_Direct_Koopman_Objective
+    step_size = tf.placeholder(tf.float32,shape=[]);
+
+    if phase_space_stitching and (not with_control):
+      try:
+        Kmatrix_file_obj = open('phase_space_stitching/raws/Kmatrix_file.pickle','rb');
+        this_pickle_file_list = pickle.load(Kmatrix_file_obj);
+        Kx_num  = this_pickle_file_list[0];
+        Kx = tf.constant(Kx_num); # this is assuming a row space (pre-multiplication) Koopman
+
+      except:
+        print("[Warning]: No phase space prior for the Koopman Matrix Detected @ /phase_space_stitching/raws/Kmatrix_file.pickle\n . . . learning Koopman prior as a fixed variable. ");
+        no_phase_space_prior = True;
+        Kx = weight_variable([deep_dict_size+n_outputs,deep_dict_size+n_outputs]);
+    else:
+        Kx = weight_variable([deep_dict_size+n_outputs,deep_dict_size+n_outputs]);
+
+    if with_control:
+      if with_output:
+        Ku = weight_variable([deep_dict_size_control+n_inputs_control,deep_dict_size+n_outputs]);
+        deep_koopman_loss,optimizer,forward_prediction_control,out_pred_f,out_pred_p = Deep_Output_KIC_Objective(psiyp,psiyf,Kx,psiu,Ku,step_size,y_output_f,y_output_p,Wh);
       else:
-        hidden_vars_list = np.random.randint(min_width,max_width,size=n_depth);
+        Ku = weight_variable([deep_dict_size_control+n_inputs_control,deep_dict_size+n_outputs]);  # [NOTE: generalize to vary deep_dict_size (first dim, num of lifted inputs)
+        deep_koopman_loss,optimizer,forward_prediction_control = Deep_Control_Koopman_Objective(psiyp,psiyf,Kx,psiu,Ku,step_size);
 
-      if with_control:  
-        hidden_vars_list_control = np.asarray([min_width_control]*n_depth_control);
-        hidden_vars_list_control[-1] = deep_dict_size_control;
-
-      good_start = 0;
-      max_tries = 1;
-      try_num = 0;
-      
-      # # # - - - enforce Koopman last layer # # #
-      
-      hidden_vars_list[-1] = deep_dict_size;
-      
-      print("[INFO] hidden_vars_list: " +repr(hidden_vars_list));
-      while good_start==0 and try_num < max_tries:
-          try_num +=1;
-          if debug_splash:
-            print("\n Initialization attempt number: ") + repr(try_num);
-            print("\n \t Initializing Tensorflow Residual ELU Network with ") + repr(n_inputs) + (" inputs and ") + repr(n_outputs) + (" outputs and ") + repr(len(hidden_vars_list)) + (" layers");
-
-          with tf.device('/cpu:0'):
-            Wy_list,by_list = initialize_Wblist(n_inputs,hidden_vars_list);
-            params_list = [ n_outputs, deep_dict_size, hidden_vars_list,Wy_list,by_list,keep_prob,activation_flag, res_net ]
-            
-            psiypz_list,psiyp,yp_feed =  instantiate_comp_graph(params_list); 
-            psiyfz_list,psiyf,yf_feed = instantiate_comp_graph(params_list);
-            if with_output:
-              y_output_f,y_output_p,Wh = instantiate_output_variables(Yf_output.shape[1],deep_dict_size+num_bas_obs); 
-            if with_control:
-              Wu_list,bu_list = initialize_Wblist(n_inputs_control,hidden_vars_list_control);
-              
-              
-              psiuz_list, psiu,u_control = initialize_stateinclusive_tensorflow_graph(n_inputs_control,deep_dict_size_control,hidden_vars_list_control,Wu_list,bu_list,keep_prob,activation_flag,res_net);
-            
-            # add hooks for affine control perturbation to Deep_Direct_Koopman_Objective
-            step_size = tf.placeholder(tf.float32,shape=[]);
-
-            if phase_space_stitching and (not with_control):
-              try:
-                Kmatrix_file_obj = open('phase_space_stitching/raws/Kmatrix_file.pickle','rb');
-                this_pickle_file_list = pickle.load(Kmatrix_file_obj);
-                Kx_num  = this_pickle_file_list[0];
-                Kx = tf.constant(Kx_num); # this is assuming a row space (pre-multiplication) Koopman
-
-              except:
-                print("[Warning]: No phase space prior for the Koopman Matrix Detected @ /phase_space_stitching/raws/Kmatrix_file.pickle\n . . . learning Koopman prior as a fixed variable. ");
-                no_phase_space_prior = True;
-                Kx = weight_variable([deep_dict_size+n_outputs,deep_dict_size+n_outputs]);
-            else: 
-                Kx = weight_variable([deep_dict_size+n_outputs,deep_dict_size+n_outputs]);
-            
-            if with_control:
-              if with_output:
-                Ku = weight_variable([deep_dict_size_control+n_inputs_control,deep_dict_size+n_outputs]);
-                deep_koopman_loss,optimizer,forward_prediction_control,out_pred_f,out_pred_p = Deep_Output_KIC_Objective(psiyp,psiyf,Kx,psiu,Ku,step_size,y_output_f,y_output_p,Wh);
-              else:
-                Ku = weight_variable([deep_dict_size_control+n_inputs_control,deep_dict_size+n_outputs]);  # [NOTE: generalize to vary deep_dict_size (first dim, num of lifted inputs)             
-                deep_koopman_loss,optimizer,forward_prediction_control = Deep_Control_Koopman_Objective(psiyp,psiyf,Kx,psiu,Ku,step_size);
-              
-            else:
-              deep_koopman_loss,optimizer,forward_prediction = Deep_Direct_Koopman_Objective(psiyp,psiyf,Kx,step_size,convex_basis=0,u=yp_feed);
-              
-            
-            if debug_splash:
-              train_vars = tf.trainable_variables();
-              values = sess.run([x.name for x in train_vars]);
-              print("[DEBUG] # of Trainable Variables: ") + repr(len(values));
-              print("[DEBUG] Trainable Variables: ") + repr([ temp_var.shape for temp_var in values]);
-
-              print("[DEBUG] # of datapoints in up_all_training: ") + repr(up_all_training.shape);
-              print("[DEBUG] # of datapoints in uf_all_training: ") + repr(uf_all_training.shape);
+    else:
+      deep_koopman_loss,optimizer,forward_prediction = Deep_Direct_Koopman_Objective(psiyp,psiyf,Kx,step_size,convex_basis=0,u=yp_feed);
 
 
-            
-            all_histories,good_start  = train_net(up_all_training,uf_all_training,deep_koopman_loss,optimizer,U_train,Out_p_train,Out_f_train,valid_error_threshold,test_error_threshold,max_iters,step_size_val);
-            all_histories,good_start  = train_net(up_all_training,uf_all_training,deep_koopman_loss,optimizer,U_train,Out_p_train,Out_f_train,valid_error_threshold*.1,test_error_threshold*.1,max_iters,step_size_val/10);
-            all_histories,good_start  = train_net(up_all_training,uf_all_training,deep_koopman_loss,optimizer,U_train,valid_error_threshold*.025,test_error_threshold*.025,max_iters,step_size_val/1000);
-            all_histories,good_start  = train_net(up_all_training,uf_all_training,deep_koopman_loss,optimizer,U_train,valid_error_threshold*.025,test_error_threshold*.025,max_iters,step_size_val/10000);
-          training_error_history_nocovar = all_histories[0];
-          validation_error_history_nocovar =   all_histories[1];
-          test_error_history_nocovar = all_histories[2];
-          training_error_history_withcovar  = all_histories[3];
-          validation_error_history_withcovar = all_histories[4];
-          test_error_history_withcovar = all_histories[5];
-          print("[INFO] Initialization was successful: " + repr(good_start==1));
-          
-          accuracy = deep_koopman_loss;#;
+    if debug_splash:
+      train_vars = tf.trainable_variables();
+      values = sess.run([x.name for x in train_vars]);
+      print("[DEBUG] # of Trainable Variables: ") + repr(len(values));
+      print("[DEBUG] Trainable Variables: ") + repr([ temp_var.shape for temp_var in values]);
 
-          if with_control and (with_output):
-            train_accuracy = accuracy.eval(feed_dict={yp_feed:up_all_training,yf_feed:uf_all_training,u_control:U_train,y_output_f:Out_f_train,y_output_p:Out_p_train});
-            test_accuracy = accuracy.eval(feed_dict={yp_feed:Yp_test,yf_feed:Yf_test,u_control:U_test,y_output_f:Out_f_test,y_output_p:Out_p_test});
-          
-          if with_control and (not with_output):
-            train_accuracy = accuracy.eval(feed_dict={yp_feed:up_all_training,yf_feed:uf_all_training,u_control:U_train});
-            test_accuracy = accuracy.eval(feed_dict={yp_feed:Yp_test,yf_feed:Yf_test,u_control:U_test});
-            
-          if (not with_control) and (not with_output):
-            train_accuracy = accuracy.eval(feed_dict={yp_feed:up_all_training,yf_feed:uf_all_training});
-            test_accuracy = accuracy.eval(feed_dict={yp_feed:Yp_test,yf_feed:Yf_test});
-      
-          if test_accuracy <= best_test_error:
-              best_test_error = test_accuracy;
-              best_depth = n_depth;
-              best_width = min_width;
+      print("[DEBUG] # of datapoints in up_all_training: ") + repr(up_all_training.shape);
+      print("[DEBUG] # of datapoints in uf_all_training: ") + repr(uf_all_training.shape);
 
-              if debug_splash:
-                print("[DEBUG]: Regularization penalty: " + repr(sess.run(reg_term(Wy_list))));
-              np.set_printoptions(precision=2,suppress=True);
-              if debug_splash:
-                print("[DEBUG]: " + repr(np.asarray(sess.run(Wy_list[0]).tolist())));
-          if debug_splash:
-            print("[Result]: Training Error: ");
-            print(train_accuracy);
-            print("[Result]: Test Error : ");
-            print(test_accuracy);
+
+    print('Training begins now!')
+    all_histories,good_start  = dynamic_train_net(up_all_training,uf_all_training,deep_koopman_loss,optimizer,U_train,Out_p_train,Out_f_train,valid_error_threshold,test_error_threshold,max_iters,step_size_val);
+
+    # all_histories,good_start  = train_net(up_all_training,uf_all_training,deep_koopman_loss,optimizer,U_train,Out_p_train,Out_f_train,valid_error_threshold,test_error_threshold,max_iters,step_size_val);
+    # all_histories,good_start  = train_net(up_all_training,uf_all_training,deep_koopman_loss,optimizer,U_train,Out_p_train,Out_f_train,valid_error_threshold*.1,test_error_threshold*.1,max_iters,step_size_val/10);
+    # all_histories,good_start  = train_net(up_all_training,uf_all_training,deep_koopman_loss,optimizer,U_train,Out_p_train,Out_f_train,valid_error_threshold*.025,test_error_threshold*.025,max_iters,step_size_val/1000);
+    # all_histories,good_start  = train_net(up_all_training,uf_all_training,deep_koopman_loss,optimizer,U_train,Out_p_train,Out_f_train,valid_error_threshold*.025,test_error_threshold*.025,max_iters,step_size_val/10000);
+  training_error_history_nocovar = all_histories[0];
+  validation_error_history_nocovar =   all_histories[1];
+  test_error_history_nocovar = all_histories[2];
+  training_error_history_withcovar  = all_histories[3];
+  validation_error_history_withcovar = all_histories[4];
+  test_error_history_withcovar = all_histories[5];
+  print("[INFO] Initialization was successful: " + repr(good_start==1));
+
+  accuracy = deep_koopman_loss;#;
+
+  if with_control and (with_output):
+    train_accuracy = accuracy.eval(feed_dict={yp_feed:up_all_training,yf_feed:uf_all_training,u_control:U_train,y_output_f:Out_f_train,y_output_p:Out_p_train});
+    test_accuracy = accuracy.eval(feed_dict={yp_feed:Yp_test,yf_feed:Yf_test,u_control:U_test,y_output_f:Out_f_test,y_output_p:Out_p_test});
+
+  if with_control and (not with_output):
+    train_accuracy = accuracy.eval(feed_dict={yp_feed:up_all_training,yf_feed:uf_all_training,u_control:U_train});
+    test_accuracy = accuracy.eval(feed_dict={yp_feed:Yp_test,yf_feed:Yf_test,u_control:U_test});
+
+  if (not with_control) and (not with_output):
+    train_accuracy = accuracy.eval(feed_dict={yp_feed:up_all_training,yf_feed:uf_all_training});
+    test_accuracy = accuracy.eval(feed_dict={yp_feed:Yp_test,yf_feed:Yf_test});
+
+  if test_accuracy <= best_test_error:
+      best_test_error = test_accuracy;
+      best_depth = n_depth;
+      best_width = min_width;
+
+      if debug_splash:
+        print("[DEBUG]: Regularization penalty: " + repr(sess.run(reg_term(Wy_list))));
+      np.set_printoptions(precision=2,suppress=True);
+      if debug_splash:
+        print("[DEBUG]: " + repr(np.asarray(sess.run(Wy_list[0]).tolist())));
+  if debug_splash:
+    print("[Result]: Training Error: ");
+    print(train_accuracy);
+    print("[Result]: Test Error : ");
+    print(test_accuracy);
           
 ### Write Vars to Checkpoint Files/MetaFiles 
           

@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="Always" serverName="yeunglab@microtensor.me.ucsb.edu:22">
+  <component name="PublishConfigData" autoUpload="Always" serverName="deepuser@optictensor.me.ucsb.edu:22">
     <serverData>
-      <paths name="yeunglab@microtensor.me.ucsb.edu:22">
+      <paths name="deepuser@optictensor.me.ucsb.edu:22">
         <serverdata>
           <mappings>
-            <mapping deploy="/tmp/pycharm_project_260" local="$PROJECT_DIR$" />
+            <mapping deploy="/home/deepuser/Desktop/Shara" local="$PROJECT_DIR$" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="deepuser@optictensor.me.ucsb.edu:22 (1)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/home/deepuser/Desktop/Shara" local="$PROJECT_DIR$" />
           </mappings>
         </serverdata>
       </paths>
