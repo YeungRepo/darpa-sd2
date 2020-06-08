@@ -10,7 +10,7 @@ from numpy.polynomial.legendre import legvander;
 import math;
 import random;
 from numpy import genfromtxt
-
+import itertools
 
 # Import CVXOPT Packages
 from cvxpy import Minimize, Problem, Variable,norm1,norm2,installed_solvers,lambda_max;
@@ -18,7 +18,7 @@ from cvxpy import norm as cvxpynorm;
 import cvxpy;
 
 # Tensorflow Packages
-import tensorflow as tf
+import tensorflow as tf;
 
 # Plotting Tools for Visualizing Basis Functions
 import matplotlib
@@ -28,6 +28,9 @@ import matplotlib.pyplot as plt;
 matplotlib.rcParams.update({'font.size':22}) # default font size on (legible) figures
 import control;
 
+import os
+import shutil
+import pandas as pd
 
 ### Process Control Flags : User Defined (dev-note: run as a separate instance of code?) 
 #with_control = 1;  # This activates the closed-loop deep Koopman learning algorithm; requires input and state data, historical model parameter.  Now it is specified along with the dataset file path below.  
@@ -48,7 +51,7 @@ colors =[[ 0.68627453,  0.12156863,  0.16470589],
 
 colors = np.asarray(colors); # defines a color palette 
 
-#class Koopman_Model(activation_flag=2,eval_size=100,batchsize=100,step_size_val=0.1,lambda=0.0000,max_iters=50000,valid_error_stop_threshold=0.00001,test_error_threshold=0.00001):
+#class Koopman_Model(activation_flag=2,eval_size=100,batch_size=100,step_size_val=0.1,lambda=0.0000,max_iters=50000,valid_error_stop_threshold=0.00001,test_error_threshold=0.00001):
   
 
 ###  Deep Learning Optimization Parameters ### 
@@ -56,14 +59,17 @@ colors = np.asarray(colors); # defines a color palette
 lambd = 0.00000;
 step_size_val = 0.025#.025;
 
-batchsize =30#30#900;
-eval_size = batchsize;
+batch_size =30#30#900;
+eval_size = batch_size;
 
 use_crelu = 0;
 activation_flag = 2; # sets the activation function type to RELU, ELU, SELU (initialized a certain way,dropout has to be done differently) , or tanh() 
-max_iters = 100000
-valid_error_threshold = .00001;
-test_error_threshold = .00001;
+# max_iters = 100000
+max_epochs =1000
+train_error_threshold = 0.00001
+valid_error_threshold = 0.00001;
+test_error_threshold = 0.00001;
+DISPLAY_SAMPLE_RATE_EPOCH = 500
 
 ### Deep Learning Metaparameters ###
 keep_prob = 1.0; #keep_prob = 1-dr opout probability 
@@ -421,13 +427,11 @@ def initialize_stateinclusive_tensorflow_graph(n_u,deep_dict_size,hv_list,W_list
 
 
 # Output Koopman Input Objective Function that Implements S. Balakrishnan's Algorithm for Output-Constrained Deep-DMD 
-def Deep_Output_KIC_Objective(psiyp,psiyf,Kx,psiu,Ku,step_size,Yf,Yp,Wh,learn_controllable_Koopman=0):
-   
+def Deep_Output_KIC_Objective(all_psiXp,all_psiXf,Kx,all_psiUp,Ku,step_size,all_Yf,all_Yp,Wh,learn_controllable_Koopman=0):
 
-  
-   forward_prediction_control = (tf.matmul(psiyp,Kx) + tf.matmul(psiu,Ku));
-   output_prediction_fw = tf.matmul(psiyf,Wh);
-   output_prediction_prev = tf.matmul(psiyp,Wh);
+   all_psiXf_predicted = (tf.matmul(all_psiXp,Kx) + tf.matmul(all_psiUp,Ku));
+   all_Yf_predicted = tf.matmul(psiyf,Wh);
+   all_Yp_predicted = tf.matmul(psiyp,Wh);
    
    
    if learn_controllable_Koopman:
@@ -442,16 +446,20 @@ def Deep_Output_KIC_Objective(psiyp,psiyf,Kx,psiu,Ku,step_size,Yf,Yp,Wh,learn_co
      ctrb_s,ctrb_v = tf.self_adjoint_eig(ctrbTctrb);
      print(tf.norm(ctrb_s,1))
 
-   tf_koopman_loss =  tf.reduce_mean(tf.norm(psiyf - forward_prediction_control,axis=[0,1],ord='fro')) + tf.reduce_mean(tf.norm(Yf-output_prediction_fw,axis=[0,1],ord='fro')) + tf.reduce_mean(tf.norm(Yp-output_prediction_prev,axis=[0,1],ord='fro')); 
-     
-   #tf_koopman_loss =  tf.reduce_mean(tf.norm(psiyf - forward_prediction_control,axis=[0,1],ord='fro'))/tf.reduce_mean(tf.norm(psiyf,axis=[0,1],ord='fro')) + tf.reduce_mean(tf.norm(Yf-output_prediction_fw,axis=[0,1],ord='fro'))/tf.reduce_mean(tf.norm(psiyf,axis=[0,1],ord='fro')) + tf.reduce_mean(tf.norm(Yp-output_prediction_prev,axis=[0,1],ord='fro'))/tf.reduce_mean(tf.norm(Yp,axis=[0,1],ord='fro')); 
+   # Frobenius norm error
+   # tf_koopman_loss = tf.norm(all_psiXf - all_psiXf_predicted,axis=[0,1],ord='fro') + tf.norm(all_Yf - all_Yf_predicted,axis=[0,1],ord='fro') + tf.norm(all_Yp - all_Yp_predicted,axis=[0,1],ord='fro');
 
+   # SSE
+   output_prediction_error = tf.norm(all_Yf - all_Yf_predicted,axis=[0,1],ord='fro')
+   state_prediction_error = tf.norm(all_psiXf - all_psiXf_predicted,axis=[0,1],ord='fro')
+   output_frobenius_norm = tf.norm(all_Yf,axis=[0,1],ord='fro')
+   state_frobenius_norm = tf.norm(all_psiXf,axis=[0,1],ord='fro')
 
-   #/tf.reduce_mean(tf.norm(psiyp,axis=[0,1],ord='fro'));   
+   tf_koopman_loss =  tf.reduce_mean([output_prediction_error/output_frobenius_norm ,state_prediction_error/state_frobenius_norm]) #+ tf.norm(all_Yp - all_Yp_predicted,axis=[0,1],ord='fro')/tf.norm(all_Yp,axis=[0,1],ord='fro');
+
    optimizer = tf.train.AdagradOptimizer(step_size).minimize(tf_koopman_loss);
    result = sess.run(tf.global_variables_initializer());
-   
-   return tf_koopman_loss,optimizer,forward_prediction_control,output_prediction_fw,output_prediction_prev;
+   return tf_koopman_loss,optimizer,all_psiXf_predicted,all_Yf_predicted,all_Yp_predicted;
 
 def Deep_Control_Koopman_Objective(psiyp,psiyf,Kx,psiu,Ku,step_size,learn_controllable_Koopman=0):
 
@@ -536,51 +544,182 @@ def get_variable_value(variable_name,prev_variable_value,reqd_data_type,lower_bo
     return variable_output
 
 
-def display_train_params(step_size_val,valid_error_threshold,test_error_threshold,max_iters):
+def display_train_params(step_size_val,valid_error_threshold,test_error_threshold,max_epochs,batch_size):
     print('======================================')
     print('CURRENT TRAINING PARAMETERS')
     print('======================================')
-    print('Maximum Iterations         : ',max_iters)
     print('Step Size Value            : ',step_size_val)
-    print('Validation Error Threshold : ',valid_error_threshold)
     print('Test Error Threshold       : ', test_error_threshold)
+    print('Validation Error Threshold : ',valid_error_threshold)
+    print('Maximum number of Epochs   : ', max_epochs)
+    print('Batch Size   : ', batch_size)
     print('--------------------------------------')
     return
 
-def dynamic_train_net(up_all_training, uf_all_training, deep_koopman_loss,optimizer,U_train,Out_p_train, Out_f_train,valid_error_threshold=1e-2,test_error_threshold=1e-2,max_iters=100000,step_size_val=0.01):
+def generate_hyperparam_entry(feed_dict_train,feed_dict_test,error_func,n_epochs_run,step_size_val,batch_size):
+    training_error = error_func.eval(feed_dict=feed_dict_train)
+    test_error = error_func.eval(feed_dict=feed_dict_test)
+    dict_hp = {}
+    dict_hp['hidden_variable_list'] = hidden_vars_list
+    dict_hp['activation flag'] = activation_flag
+    dict_hp['activation function'] = None
+    if activation_flag == 1:
+        dict_hp['activation function'] = 'relu'
+    elif activation_flag == 2:
+        dict_hp['activation function'] = 'elu'
+    elif activation_flag == 3:
+        dict_hp['activation function'] = 'tanh'
+    dict_hp['no of epochs'] = n_epochs_run
+    dict_hp['batch size'] = batch_size
+    dict_hp['step size'] = step_size_val
+    dict_hp['training error'] = training_error
+    dict_hp['test error'] = test_error
+    return dict_hp
+
+def dynamic_train_net(dict_train, dict_test, deep_koopman_loss, optimizer, train_error_threshold=1e-2,
+                                                  valid_error_threshold=1e-2, max_epochs=1000, step_size_val = 0.01, batch_size = 1):
+    # For evaluating how the hyperparameters performed with that training
+    feed_dict_train = {yp_feed: dict_train['Xp'], yf_feed: dict_train['Xf']}
+    feed_dict_test = {yp_feed: dict_train['Xp'], yf_feed: dict_train['Xf']}
+    if with_control:
+        feed_dict_train[u_control] = dict_train['Up']
+        feed_dict_test[u_control] = dict_test['Up']
+    if with_output:
+        feed_dict_train[y_output_p] = dict_train['Yp']
+        feed_dict_test[y_output_p] = dict_test['Yp']
+        feed_dict_train[y_output_f] = dict_train['Yf']
+        feed_dict_test[y_output_f] = dict_test['Yf']
+    # --------
     KEEP_TRAINING = True
     NO_CHOICE_VALUES = ['n','N','no','No','NO']
+    dict_run_info = {}
+    run_info_index = 0
     while (KEEP_TRAINING):
         train_user_choice = input('Do you want to train the neural net [y/n]? ')
         if train_user_choice not in NO_CHOICE_VALUES:
-            display_train_params(step_size_val,valid_error_threshold,test_error_threshold,max_iters)
+            display_train_params(step_size_val,train_error_threshold,valid_error_threshold,max_epochs,batch_size)
             param_user_choice = input('Do you want to change the parameters [y/n]?')
             if param_user_choice not in NO_CHOICE_VALUES:
                 NOT_SATISFIED = True
                 while(NOT_SATISFIED):
                     step_size_val = get_variable_value('Step Size',step_size_val,float)
+                    train_error_threshold = get_variable_value('Training error threshold', train_error_threshold, float)
                     valid_error_threshold = get_variable_value('Validation error threshold',valid_error_threshold,float)
-                    test_error_threshold = get_variable_value('Test error threshold',test_error_threshold,float)
-                    max_iters = get_variable_value('Maximum Iterations',max_iters,int)
-                    display_train_params(step_size_val,valid_error_threshold,test_error_threshold,max_iters)
+                    max_epochs = get_variable_value('Maximum number of epochs',max_epochs,int)
+                    batch_size = get_variable_value('Batch size', batch_size, int)
+                    display_train_params(step_size_val,valid_error_threshold,test_error_threshold,max_epochs,batch_size)
                     parameter_satisfaction = input('Are these parameters fine [y/n]?')
                     if parameter_satisfaction not in NO_CHOICE_VALUES:
                         NOT_SATISFIED = False
                     else:
                         print('*** Enter the parameters again ***')
-            all_histories, good_start = train_net(up_all_training, uf_all_training, deep_koopman_loss, optimizer, U_train,
-                                      Out_p_train, Out_f_train, valid_error_threshold,
-                                      test_error_threshold, max_iters, step_size_val);
+            # all_histories, good_start = train_net(up_all_training, uf_all_training, deep_koopman_loss, optimizer, U_train,
+            #                           Out_p_train, Out_f_train, valid_error_threshold,
+            #                           test_error_threshold, max_iters, step_size_val);
+            all_histories, good_start,n_epochs_run = train_net_v2(dict_train['Xp'], dict_train['Xf'], deep_koopman_loss, optimizer,dict_train['Up'],
+                                                  dict_train['Yp'],dict_train['Yf'], train_error_threshold,
+                                                  valid_error_threshold, max_epochs, step_size_val,batch_size)
+            dict_run_info[run_info_index] = generate_hyperparam_entry(feed_dict_train,feed_dict_test,deep_koopman_loss,n_epochs_run,step_size_val,batch_size)
+            run_info_index+=1
         else:
             print('Training Complete')
             KEEP_TRAINING = False
-    return all_histories, good_start
+
+    return all_histories, good_start, dict_run_info
 
 
 ##
+
+def train_net_v2(xp_all,xf_all,loss_func,optimizer,u_all=None,yp_all=None,yf_all=None,train_error_thres=1e-2,valid_error_thres = 1e-2,max_epochs=100,step_size_val=0.01,batch_size =1):
+    # ----
+    # Additions from train_net() ---Figure out the purpose of these
+    covar_actual = compute_covarmat_v2(xp_all, xf_all)
+    covar_model_history = []
+    covar_diff_history = []
+    test_error_history_nocovar =[]
+    training_error_history_withcovar= []
+    validation_error_history_withcovar = []
+    test_error_history_withcovar = []
+    good_start = 1
+    # ----
+    PERCENT_TRAIN = 60 # <---- HAs to later be changed using k-fold cross validation
+    runs_per_epoch = int(np.ceil(len(xp_all)/batch_size))
+    # Do a train/valid split here if you want to tune the hyperparameters
+    N_train_samples = int(len(xp_all)*(PERCENT_TRAIN/100))
+    all_ind = list(range(len(xp_all)))
+    random.shuffle(all_ind) # If we want to randomize the allocation of training and validation
+    all_train_indices = all_ind[0:N_train_samples]
+    all_valid_indices = list(set(all_ind) - set(all_train_indices))
+    epoch_i = 0
+    training_error = 100
+    validation_error = 100
+    xp_all_train = xp_all[all_train_indices]
+    xf_all_train = xf_all[all_train_indices]
+    u_all_train = u_all[all_train_indices]
+    yp_all_train = yp_all[all_train_indices]
+    yf_all_train= yf_all[all_train_indices]
+    xp_all_valid = xp_all[all_valid_indices]
+    xf_all_valid = xf_all[all_valid_indices]
+    u_all_valid = u_all[all_valid_indices]
+    yp_all_valid = yp_all[all_valid_indices]
+    yf_all_valid = yf_all[all_valid_indices]
+    training_error_cumulative = []
+    validation_error_cumulative = []
+    # Feed the corresponding data
+    if with_control and with_output:
+        feed_dict_train_all = {yp_feed: xp_all_train, yf_feed: xf_all_train, u_control: u_all_train, step_size: step_size_val,
+                                y_output_p: yp_all_train, y_output_f: yf_all_train}
+        feed_dict_valid_all = {yp_feed: xp_all_valid, yf_feed: xf_all_valid, u_control: u_all_valid,
+                               step_size: step_size_val,
+                               y_output_p: yp_all_valid, y_output_f: yf_all_valid}
+    elif with_control and not (with_output):
+        feed_dict_train_all = {yp_feed: xp_all_train, yf_feed: xf_all_train, u_control: u_all_train, step_size: step_size_val}
+        feed_dict_valid_all = {yp_feed: xp_all_valid, yf_feed: xf_all_valid, u_control: u_all_valid, step_size: step_size_val}
+    else:
+        feed_dict_train_all = {yp_feed: xp_all_train, yf_feed: xf_all_train, step_size: step_size_val}
+        feed_dict_valid_all = {yp_feed: xp_all_valid, yf_feed: xf_all_valid, step_size: step_size_val}
+    while ((epoch_i<max_epochs) and (training_error > train_error_thres) and (validation_error > valid_error_thres)):
+        epoch_i += 1
+        # Re initializing the training indices
+        all_train_indices = list(range(len(all_train_indices)))
+        # Random sort of the training indices
+        random.shuffle(all_train_indices)
+        for run_i in range(runs_per_epoch):
+            if run_i !=  runs_per_epoch-1:
+                train_indices = all_train_indices[run_i * batch_size:(run_i+1)*batch_size]
+            else:
+                # Last run with the residual data
+                train_indices = all_train_indices[run_i * batch_size: N_train_samples]
+            xp_train = xp_all_train[train_indices]
+            xf_train = xf_all_train[train_indices]
+            u_train = u_all_train[train_indices]
+            yp_train = yp_all_train[train_indices]
+            yf_train = yf_all_train[train_indices]
+            # Feed the corresponding data
+            if with_control and with_output:
+                feed_dict_train_curr = {yp_feed: xp_train, yf_feed: xf_train, u_control: u_train, step_size: step_size_val,y_output_p: yp_train, y_output_f: yf_train}
+            elif with_control and not(with_output):
+                feed_dict_train_curr = {yp_feed: xp_train, yf_feed: xf_train, u_control: u_train, step_size: step_size_val}
+            else:
+                feed_dict_train_curr = {yp_feed: xp_train, yf_feed: xf_train, step_size: step_size_val}
+            optimizer.run(feed_dict=feed_dict_train_curr)
+        # After training 1 epoch
+        training_error = loss_func.eval(feed_dict=feed_dict_train_all)
+        validation_error = loss_func.eval(feed_dict=feed_dict_valid_all)
+        if np.mod(epoch_i,DISPLAY_SAMPLE_RATE_EPOCH) == 0:
+            print('Epoch No: ',epoch_i,' |   Training error: ',training_error)
+            print('Validation error: '.rjust(len('Epoch No: ' + str(epoch_i) + ' |   Validation error: ')), validation_error)
+            training_error_cumulative.append(training_error)
+            training_error_cumulative.append(validation_error)
+
+    all_histories = [training_error_cumulative, validation_error_cumulative, test_error_history_nocovar, training_error_history_withcovar, validation_error_history_withcovar,
+                         test_error_history_withcovar, covar_actual, covar_diff_history, covar_model_history]
+    return all_histories,good_start,epoch_i
+
+
 def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_control_all_training=None,Output_p_batch=None,Output_f_batch=None,valid_error_thres=1e-2,test_error_thres=1e-2,max_iters=100000,step_size_val=0.01):
   iter = 0;
-  samplerate = 5000;
+  samplerate = 10;
   good_start = 1;
   valid_error = 100.0;
   test_error = 100.0;
@@ -599,11 +738,9 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
   while (((test_error>test_error_thres) or (valid_error > valid_error_thres)) and iter < max_iters):
     iter+=1;
     all_ind = set(np.arange(0,len(u_all_training)));
-    select_ind = np.random.randint(0,len(u_all_training),size=batchsize); # select indices for training 
-    valid_ind = list(all_ind -set(select_ind))[0:batchsize];  # select indices for validation 
-    select_ind_test = list(all_ind - set(valid_ind) - set(select_ind))[0:batchsize]; # select indices for test 
-
-    
+    select_ind = np.random.randint(0,len(u_all_training),size=batch_size); # select indices for training 
+    valid_ind = list(all_ind -set(select_ind))[0:batch_size];  # select indices for validation
+    select_ind_test = list(all_ind - set(valid_ind) - set(select_ind))[0:batch_size]; # select indices for test
     u_batch =[];
     u_control_batch = [];
     y_batch = [];
@@ -718,8 +855,8 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
 
 
       
-    if iter > 10000 and with_control:
-      At = None;
+    # if iter > 10000 and with_control:
+    #   At = None;
       #At = sess.run(Kx).T;
       #Bt = sess.run(Ku).T;
       #ctrb_rank = np.linalg.matrix_rank(control.ctrb(At,Bt));
@@ -753,7 +890,7 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
 
 
 pre_examples_switch = 13; 
-
+os.chdir('/home/deepuser/Desktop/Shara/deepDMD')
 ### Randomly generated oscillator system with control
 
 
@@ -855,7 +992,7 @@ if pre_examples_switch == 14:
 ## Inline Inputs
 ### Define Neural Network Hyperparameters
   
-deep_dict_size = 50;
+deep_dict_size = 100;
 
 
 if with_control:
@@ -863,7 +1000,7 @@ if with_control:
   
 
 max_depth = 4;  # max_depth 3 works well  
-max_width_limit = 50 ;# max width_limit -4 works well 
+max_width_limit = 100 ;# max width_limit -4 works well
 
 min_width_limit = max_width_limit;# use regularization and dropout to trim edges for now. 
 min_width_limit_control =15;
@@ -965,8 +1102,12 @@ Yf_train = Yf[train_indices];
 Yp_test = Yp[test_indices];
 Yf_test = Yf[test_indices];
 
-
-
+dict_train = {}
+dict_test = {}
+dict_train['Xp'] = Yp_train
+dict_train['Xf'] = Yf_train
+dict_test['Xp'] = Yp_test
+dict_test['Xf'] = Yf_test
 
 print("Number of training snapshots: " + repr(len(train_indices)));
 print("Number of test snapshots: " + repr(len(test_indices)));
@@ -982,21 +1123,32 @@ if with_control:
   if len(U_test.shape)==1:
     U_train = np.reshape(U_train,(U_train.shape[0],1));
     U_test = np.reshape(U_test,(U_test.shape[0],1));
-                                                
+  dict_train['Up'] = U_train
+  dict_test['Up'] = U_test
 #  print("[INFO] : U_train.shape: " + repr(U_train.shape));
 else:
   U_train = None;
   U_test = None;
+  dict_train['Up'] = None
+  dict_test['Up'] = None
 if with_output:
   Out_p_train = Yp_output[train_indices];
   Out_f_train = Yf_output[train_indices];
   Out_p_test = Yp_output[test_indices];
   Out_f_test = Yf_output[test_indices];
+  dict_train['Yp'] = Out_p_train
+  dict_train['Yf'] = Out_f_train
+  dict_test['Yp'] = Out_p_test
+  dict_test['Yf'] = Out_f_test
 else:
   Out_f_train = None;
   Out_p_train = None;
   Out_f_test = None;
-  Out_p_test = None; 
+  Out_p_test = None;
+  dict_train['Yp'] = None
+  dict_train['Yf'] = None
+  dict_test['Yp'] = None
+  dict_test['Yf'] = None
 
 
   
@@ -1073,8 +1225,6 @@ while good_start==0 and try_num < max_tries:
       y_output_f,y_output_p,Wh = instantiate_output_variables(Yf_output.shape[1],deep_dict_size+num_bas_obs);
     if with_control:
       Wu_list,bu_list = initialize_Wblist(n_inputs_control,hidden_vars_list_control);
-
-
       psiuz_list, psiu,u_control = initialize_stateinclusive_tensorflow_graph(n_inputs_control,deep_dict_size_control,hidden_vars_list_control,Wu_list,bu_list,keep_prob,activation_flag,res_net);
 
     # add hooks for affine control perturbation to Deep_Direct_Koopman_Objective
@@ -1117,7 +1267,9 @@ while good_start==0 and try_num < max_tries:
 
 
     print('Training begins now!')
-    all_histories,good_start  = dynamic_train_net(up_all_training,uf_all_training,deep_koopman_loss,optimizer,U_train,Out_p_train,Out_f_train,valid_error_threshold,test_error_threshold,max_iters,step_size_val);
+    # all_histories,good_start  = dynamic_train_net(up_all_training,uf_all_training,deep_koopman_loss,optimizer,U_train,Out_p_train,Out_f_train,valid_error_threshold,test_error_threshold,max_iters,step_size_val);
+    all_histories, good_start,dict_run_info = dynamic_train_net(dict_train, dict_test, deep_koopman_loss, optimizer, train_error_threshold,
+                                                  valid_error_threshold, max_epochs, step_size_val,batch_size)
 
     # all_histories,good_start  = train_net(up_all_training,uf_all_training,deep_koopman_loss,optimizer,U_train,Out_p_train,Out_f_train,valid_error_threshold,test_error_threshold,max_iters,step_size_val);
     # all_histories,good_start  = train_net(up_all_training,uf_all_training,deep_koopman_loss,optimizer,U_train,Out_p_train,Out_f_train,valid_error_threshold*.1,test_error_threshold*.1,max_iters,step_size_val/10);
@@ -1162,35 +1314,42 @@ while good_start==0 and try_num < max_tries:
     print(test_accuracy);
           
 ### Write Vars to Checkpoint Files/MetaFiles 
-          
+# Creating a fo;lder for saving the objects of the current run
+FOLDER_NAME = '_current_run_saved_files'
+if os.path.exists(FOLDER_NAME):
+    shutil.rmtree(FOLDER_NAME) # Delete the folder and all the contents inside it
+os.mkdir(FOLDER_NAME) # Recreate the folder
+
+
 Kx_num = sess.run(Kx);
-
-eig_val, eig_vec = np.linalg.eig(Kx_num) 
-
+eig_val, eig_vec = np.linalg.eig(Kx_num)
 file_obj_swing = open('constrainedNN-Model.pickle','wb');
 Wy_list_num = [sess.run(W_temp) for W_temp in Wy_list];
 by_list_num = [sess.run(b_temp) for b_temp in by_list];
-
 if with_control:
   Wu_list_num = [sess.run(W_temp) for W_temp in Wu_list];
   bu_list_num = [sess.run(b_temp) for b_temp in bu_list];
   Ku_num = sess.run(Ku);
-  if with_output:
+ls_dump = []
+if with_output:
     Wh_num = sess.run(Wh);
-    pickle.dump([Wy_list_num,by_list_num,Wu_list_num,bu_list_num,Kx_num,Ku_num,Wh_num],file_obj_swing);
-  else:
-    pickle.dump([Wy_list_num,by_list_num,Wu_list_num,bu_list_num,Kx_num,Ku_num],file_obj_swing);
-
-
+if with_control and with_output:
+    ls_dump = [Wy_list_num,by_list_num,Wu_list_num,bu_list_num,Kx_num,Ku_num,Wh_num]
+elif with_control and not(with_output):
+    ls_dump = [Wy_list_num,by_list_num,Wu_list_num,bu_list_num,Kx_num,Ku_num]
 else:
-  if with_output:
-    Wh_num =  sess.run(Wh);
-    pickle.dump([Wy_list_num,by_list_num,Kx_num,Wh_num],file_obj_swing);
-  else:
-    pickle.dump([Wy_list_num,by_list_num,Kx_num],file_obj_swing);
-file_obj_swing.close();
-
-
+    ls_dump = [Wy_list_num, by_list_num, Kx_num];
+pickle.dump(ls_dump, file_obj_swing)
+file_obj_swing.close()
+with open(FOLDER_NAME+'/constrainedNN-Model.pickle','wb') as file_obj_swing:
+    pickle.dump(ls_dump, file_obj_swing)
+with open(FOLDER_NAME+'/run_info.pickle','wb') as file_obj_swing:
+    pickle.dump(dict_run_info, file_obj_swing)
+print('------ ------ -----')
+print('----- Run Info ----')
+print('------ ------ -----')
+print(pd.DataFrame(dict_run_info))
+print('------ ------ -----')
 if (not phase_space_stitching) and (not with_control):
   file_obj_phase = open('phase_space_stitching/raws/Kmatrix_file.pickle','wb');
   pickle.dump([Kx_num],file_obj_phase);
@@ -1216,6 +1375,7 @@ tf.add_to_collection('yp_feed',yp_feed);
 tf.add_to_collection('yf_feed',yf_feed);
 
 save_path = saver.save(sess, data_suffix + '.ckpt')
+saver_path_curr = saver.save(sess, FOLDER_NAME + '/' + data_suffix + '.ckpt')
 
 Koopman_dim = Kx_num.shape[0];
 print("[INFO] Koopman_dim:" + repr(Kx_num.shape));
@@ -1281,69 +1441,69 @@ if (not with_control) and (not with_output):
 print('%s%f' % ('[COMP] Training error: ',training_error));
 print('%s%f' % ('[COMP] Test error: ',test_error));
 
-# # # - - - n-step Prediction Error Analysis - - - # # # 
-
-  
-n_points_pred = len(Y_p_old) - test_indices[0]-1;
-
-init_index = test_indices[0];
-Yf_final_test_stack_nn = np.asarray(Y_p_old).T[:,init_index:(init_index+1)+n_points_pred]
-Ycurr = np.asarray(Y_p_old).T[:,init_index]
-Ycurr = np.transpose(Ycurr);
-if with_control:
-  Uf_final_test_stack_nn = np.asarray(u_control_all_training).T[:,init_index:(init_index+1)+n_points_pred]
-
-#Reshape for tensorflow, which operates using row multiplication. 
-Ycurr = Ycurr.reshape(1,num_bas_obs);
-psiyp_Ycurr = psiyp.eval(feed_dict={yp_feed:Ycurr});
-psiyf_Ycurr = psiyf.eval(feed_dict={yf_feed:Ycurr});
-
-
-## Define a growing list of vector valued observables that is the forward prediction of the Yf snapshot matrix, initiated from an initial condition in Yp_final_test.   
-Yf_final_test_ep_nn = [];
-Yf_final_test_ep_nn.append(psiyp_Ycurr.tolist()[0][0:num_bas_obs]); # append the initial seed state value.
-
-for i in range(0,n_points_pred):
-  if with_control:
-    if len(U_test[i,:])==1:
-      U_temp_mat = np.reshape(Uf_final_test_stack_nn[i,:],(1,1));
-      psiyp_Ycurr = sess.run(forward_prediction_control, feed_dict={yp_feed:psiyp_Ycurr[:,0:num_bas_obs],u_control:U_temp_mat});#
-    else:
-      U_temp_mat = np.reshape(Uf_final_test_stack_nn.T[i,:],(1,n_inputs_control));
-      psiyp_Ycurr = sess.run(forward_prediction_control, feed_dict={yp_feed:psiyp_Ycurr[:,0:num_bas_obs],u_control:U_temp_mat});# 
-  else:
-    psiyp_Ycurr = sess.run(forward_prediction,feed_dict={yp_feed:psiyp_Ycurr[:,0:num_bas_obs]});
-
-  Yout = psiyp_Ycurr.tolist()[0][0:num_bas_obs];
-  Yf_final_test_ep_nn.append(Yout);
-
-
-Yf_final_test_ep_nn = np.asarray(Yf_final_test_ep_nn);
-Yf_final_test_ep_nn = np.transpose(Yf_final_test_ep_nn);
-
-prediction_error = np.linalg.norm(Yf_final_test_stack_nn-Yf_final_test_ep_nn,ord='fro')/np.linalg.norm(Yf_final_test_stack_nn,ord='fro');
-print('%s%f' % ('[RESULT] n-step Prediction error: ',prediction_error));
-
-import matplotlib
-matplotlib.rcParams.update({'font.size':20})
-
-
-### Make a Prediction Plot
-x_range = np.arange(0,30,1)
-#x_range = np.arange(0,Yf_final_test_stack_nn.shape[1],1);
-for i in range(0,3):#num_bas_obs):
-    plt.plot(x_range,Yf_final_test_ep_nn[i,0:len(x_range)],'--',color=colors[i,:]);
-    plt.plot(x_range,Yf_final_test_stack_nn[i,0:len(x_range)],'*',color=colors[i,:]);
-axes = plt.gca();
-axes.spines['right'].set_visible(False)
-axes.spines['top'].set_visible(False)
-
-#plt.legend(loc='best');
-plt.xlabel('t');
-fig = plt.gcf();
-
-target_file = data_suffix.replace('.pickle','')+'final_nstep_prediction.pdf';
-plt.savefig(target_file);
-plt.show();
+# # # # - - - n-step Prediction Error Analysis - - - # # #
+#
+#
+# n_points_pred = len(Y_p_old) - test_indices[0]-1;
+#
+# init_index = test_indices[0];
+# Yf_final_test_stack_nn = np.asarray(Y_p_old).T[:,init_index:(init_index+1)+n_points_pred]
+# Ycurr = np.asarray(Y_p_old).T[:,init_index]
+# Ycurr = np.transpose(Ycurr);
+# if with_control:
+#   Uf_final_test_stack_nn = np.asarray(u_control_all_training).T[:,init_index:(init_index+1)+n_points_pred]
+#
+# #Reshape for tensorflow, which operates using row multiplication.
+# Ycurr = Ycurr.reshape(1,num_bas_obs);
+# psiyp_Ycurr = psiyp.eval(feed_dict={yp_feed:Ycurr});
+# psiyf_Ycurr = psiyf.eval(feed_dict={yf_feed:Ycurr});
+#
+#
+# ## Define a growing list of vector valued observables that is the forward prediction of the Yf snapshot matrix, initiated from an initial condition in Yp_final_test.
+# Yf_final_test_ep_nn = [];
+# Yf_final_test_ep_nn.append(psiyp_Ycurr.tolist()[0][0:num_bas_obs]); # append the initial seed state value.
+#
+# for i in range(0,n_points_pred):
+#   if with_control:
+#     if len(U_test[i,:])==1:
+#       U_temp_mat = np.reshape(Uf_final_test_stack_nn[i,:],(1,1));
+#       psiyp_Ycurr = sess.run(forward_prediction_control, feed_dict={yp_feed:psiyp_Ycurr[:,0:num_bas_obs],u_control:U_temp_mat});#
+#     else:
+#       U_temp_mat = np.reshape(Uf_final_test_stack_nn.T[i,:],(1,n_inputs_control));
+#       psiyp_Ycurr = sess.run(forward_prediction_control, feed_dict={yp_feed:psiyp_Ycurr[:,0:num_bas_obs],u_control:U_temp_mat});#
+#   else:
+#     psiyp_Ycurr = sess.run(forward_prediction,feed_dict={yp_feed:psiyp_Ycurr[:,0:num_bas_obs]});
+#
+#   Yout = psiyp_Ycurr.tolist()[0][0:num_bas_obs];
+#   Yf_final_test_ep_nn.append(Yout);
+#
+#
+# Yf_final_test_ep_nn = np.asarray(Yf_final_test_ep_nn);
+# Yf_final_test_ep_nn = np.transpose(Yf_final_test_ep_nn);
+#
+# prediction_error = np.linalg.norm(Yf_final_test_stack_nn-Yf_final_test_ep_nn,ord='fro')/np.linalg.norm(Yf_final_test_stack_nn,ord='fro');
+# print('%s%f' % ('[RESULT] n-step Prediction error: ',prediction_error));
+#
+# import matplotlib
+# matplotlib.rcParams.update({'font.size':20})
+#
+#
+# ### Make a Prediction Plot
+# x_range = np.arange(0,30,1)
+# #x_range = np.arange(0,Yf_final_test_stack_nn.shape[1],1);
+# for i in range(0,3):#num_bas_obs):
+#     plt.plot(x_range,Yf_final_test_ep_nn[i,0:len(x_range)],'--',color=colors[i,:]);
+#     plt.plot(x_range,Yf_final_test_stack_nn[i,0:len(x_range)],'*',color=colors[i,:]);
+# axes = plt.gca();
+# axes.spines['right'].set_visible(False)
+# axes.spines['top'].set_visible(False)
+#
+# #plt.legend(loc='best');
+# plt.xlabel('t');
+# fig = plt.gcf();
+#
+# target_file = data_suffix.replace('.pickle','')+'final_nstep_prediction.pdf';
+# plt.savefig(target_file);
+# plt.show();
 
 
