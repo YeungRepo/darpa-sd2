@@ -1,0 +1,3 @@
+model_checkpoint_path: "Pputida_GrowthHarness_RNAseq_DeepDMD.pickle.ckpt"
+all_model_checkpoint_paths: "../Pputida_GrowthHarness_RNAseq_DeepDMD.pickle.ckpt"
+all_model_checkpoint_paths: "Pputida_GrowthHarness_RNAseq_DeepDMD.pickle.ckpt"
