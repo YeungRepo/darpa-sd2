@@ -119,7 +119,7 @@ def expose_deep_basis(z_list,num_bas_obs,deep_dict_size,iter_num):
   
 def compute_covar(x1,x2):
   if (len(x1)!=len(x2)):
-    print "Error: compute_covar(x1,x2) requires x1 and x2 to be the same length";
+    print("Error: compute_covar(x1,x2) requires x1 and x2 to be the same length");
     return Inf;
   else:
     sum_x1x2 = 0.0;
@@ -138,13 +138,13 @@ def load_pickle_data(file_path,has_control):
            file_path: 
 
         '''     
-        file_obj = file(file_path,'rb');
-        output_vec = pickle.load(file_obj);
+        file_obj = open(file_path,'rb');
+        output_vec = pickle.load(file_obj,encoding='latin1');
 
         Yp = output_vec[0]; # list of baseline observables, len(Yp) = (n_samps-1) 
         Yf = output_vec[1]; # list of baseline observables, len(Yf) = (n_samps-1) 
 
-        print "DEBUG:" + repr(len(output_vec));
+        print("DEBUG:" + repr(len(output_vec)));
         if has_control:
           u_control_all_training = output_vec[2];
           #print u_control_all_training[0:10]
@@ -152,7 +152,7 @@ def load_pickle_data(file_path,has_control):
           u_control_all_training = None;
           
         if len(Yp)<2:
-            print "Warning: the time-series data provided has no more than 2 points."
+            print("Warning: the time-series data provided has no more than 2 points.");
     
         Y_whole = [None]*(len(Yp)+1);
         
@@ -229,7 +229,7 @@ def gen_next_yk(input_var,W_list,b_list,keep_prob=1.0,activation_flag=1,res_net=
                 z_temp_list.append(tf.nn.dropout(tf.nn.elu(prev_layer_output),keep_prob));
             if activation_flag==3:
                 z_temp_list.append(tf.nn.dropout(tf.nn.tanh(prev_layer_output),keep_prob));
-    #print "[DEBUG] z_list" + repr(z_list[-1]);
+    #print("[DEBUG] z_list" + repr(z_list[-1]));
 
     #y_out = tf.concat([z_list[-1],u],axis=1); # last element of activation output list is the actual NN output
     y_out = z_temp_list[-1];
@@ -277,7 +277,7 @@ def initialize_tailconstrained_tensorflow_variables(n_u,deep_dict_size,hv_list,W
           W_list.append(weight_variable([hv_list[k-1],hv_list[k]]));
           b_list.append(bias_variable([hv_list[k]]));
           prev_layer_output = tf.matmul(z_list[k-1],W_list[k])+b_list[k]
-          print "[DEBUG] prev_layer_output.get_shape() " +repr(prev_layer_output.get_shape());
+          print("[DEBUG] prev_layer_output.get_shape() " +repr(prev_layer_output.get_shape()));
           if res_net and k==(n_depth-2):
               prev_layer_output += tf.matmul(u,W1)+b1 #  this expression is not compatible for variable width nets (where each layer has a different width at inialization - okay with regularization and dropout afterwards though)              
           if activation_flag==1:
@@ -291,7 +291,7 @@ def initialize_tailconstrained_tensorflow_variables(n_u,deep_dict_size,hv_list,W
 
   y = tf.concat([u,z_list[-1]],axis=1); # [TODO] in the most general function signature, allow for default option with state/input inclusion 
   result = sess.run(tf.initialize_all_variables());
-#  print "[DEBUG] y.get_shape(): " + repr(y.get_shape()) + " y_.get_shape(): " + repr(y_.get_shape());
+#  print("[DEBUG] y.get_shape(): " + repr(y.get_shape()) + " y_.get_shape(): " + repr(y_.get_shape()));
   return z_list,y,u;#,u_control;
 
 def Deep_Control_Koopman_Objective(psiyf,K,psi_stack,step_size):
@@ -339,9 +339,9 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
   validation_error_history_withcovar = [];
   test_error_history_withcovar = [];
 
-  covar_actual = compute_covarmat(u_all_training,y_all_training);
-  covar_model_history = [];
-  covar_diff_history = [];
+  #covar_actual = compute_covarmat(u_all_training,y_all_training);
+  #covar_model_history = [];
+  #covar_diff_history = [];
   while (((test_error>test_error_thres) or (valid_error > valid_error_thres)) and iter < max_iters):
     iter+=1;
     all_ind = set(np.arange(0,len(u_all_training)));
@@ -397,7 +397,7 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
 
     
     #if frobenius_norm.eval(feed_dict={u:u_batch,y_:y_batch}) < 0.001:
-    #  print "It took " + repr(iter) + " iterations to reduce covariate error to 0.1%!"
+    #  print("It took " + repr(iter) + " iterations to reduce covariate error to 0.1%!"
       
     if iter%samplerate==0:
       if with_control:
@@ -415,23 +415,23 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
           fig_hand = expose_deep_basis(psiypz_list,num_bas_obs,deep_dict_size,iter);
 
         if with_control:  
-          print ("step %d , validation error %g"%(iter, mean_diff_nocovar.eval(feed_dict={yp_feed:u_valid,yf_feed:y_valid,u_control:u_control_valid})));
-          print ("step %d , test error %g"%(iter, mean_diff_nocovar.eval(feed_dict={yp_feed:u_test_train,yf_feed:y_test_train,u_control:u_control_test_train})));
+          print("step %d , validation error %g"%(iter, mean_diff_nocovar.eval(feed_dict={yp_feed:u_valid,yf_feed:y_valid,u_control:u_control_valid})));
+          print("step %d , test error %g"%(iter, mean_diff_nocovar.eval(feed_dict={yp_feed:u_test_train,yf_feed:y_test_train,u_control:u_control_test_train})));
         else:
-          print ("step %d , validation error %g"%(iter, mean_diff_nocovar.eval(feed_dict={yp_feed:u_valid,yf_feed:y_valid})));
-          print ("step %d , test error %g"%(iter, mean_diff_nocovar.eval(feed_dict={yp_feed:u_test_train,yf_feed:y_test_train})));
+          print("step %d , validation error %g"%(iter, mean_diff_nocovar.eval(feed_dict={yp_feed:u_valid,yf_feed:y_valid})));
+          print("step %d , test error %g"%(iter, mean_diff_nocovar.eval(feed_dict={yp_feed:u_test_train,yf_feed:y_test_train})));
           
     if ((iter>10000) and iter%10) :
 
-      valid_gradient = np.gradient(np.asarray(validation_error_history_nocovar[iter/samplerate*7/10:]));
+      valid_gradient = np.gradient(np.asarray(validation_error_history_nocovar[np.int(iter/samplerate*7/10):]));
       mu_gradient = np.mean(valid_gradient);
 
       if ((iter <1000) and (mu_gradient >= 5e-1)): # eventually update this to be 1/10th the mean of batch data, or mean of all data handed as input param to func
         good_start = 0; # if after 10,000 iterations validation error is still above 1e0, initialization was poor.
-        print "Terminating model refinement loop with gradient:" + repr(mu_gradient) + ", validation error after " + repr(iter) + " epochs:  " + repr(valid_error);
+        print("Terminating model refinement loop with gradient:" + repr(mu_gradient) + ", validation error after " + repr(iter) + " epochs:  " + repr(valid_error));
         iter = max_iters; # terminate while loop and return histories
   all_histories = [training_error_history_nocovar, validation_error_history_nocovar,test_error_history_nocovar, \
-                   training_error_history_withcovar,validation_error_history_withcovar,test_error_history_withcovar,covar_actual,covar_diff_history,covar_model_history];
+                   training_error_history_withcovar,validation_error_history_withcovar,test_error_history_withcovar];
   plt.close();
   x = np.arange(0,len(validation_error_history_nocovar),1);
   plt.plot(x,training_error_history_nocovar,label='train. err.');
@@ -483,7 +483,7 @@ if pre_examples_switch == 6:
   with_control = 1; 
 
 if pre_examples_switch == 7:
-  data_suffix = 'exp_toggle_switch_M9CA.pickle';
+  data_suffix = 'exp_toggle_switch_M9CA_7_9_20.pickle';
   with_control = 1;
   
   
@@ -494,8 +494,8 @@ if with_control:
 else:
   Yp,Yf,Y_whole,temp_var = load_pickle_data(data_file,with_control);
     
-print "[INFO] Number of total samples: " + repr(len(Yp));
-print "[INFO] Observable dimension of a sample: " + repr(len(Yp[0]));
+print("[INFO] Number of total samples: " + repr(len(Yp)));
+print("[INFO] Observable dimension of a sample: " + repr(len(Yp[0])));
 num_bas_obs = len(Yp[0]);
 num_all_samples = len(Yp);
 
@@ -513,11 +513,11 @@ for i in range(0,len(rand_indices) ):
     if with_control:
       u_control_all_training[i] = u_control_all_training_old[curr_index];                          
 
-print "[INFO] Yp.shape (E-DMD): " + repr(Yp.shape);
-print "[INFO] Yf.shape (E-DMD): " + repr(Yf.shape);
+print("[INFO] Yp.shape (E-DMD): " + repr(Yp.shape));
+print("[INFO] Yf.shape (E-DMD): " + repr(Yf.shape));
 
 #import sklearn.model_selection import train_test_split
-train_range = len(Yp)*5/10; # define upper limits of training data 
+train_range = np.int(len(Yp)*5/10); # define upper limits of training data 
 test_range = len(Yp); # define upper limits of test data 
 #Yp_test = Yp[0:test_range];
 #Yf_test = Yf[0:test_range];
@@ -526,7 +526,7 @@ Yf_test_old = Yf[train_range:test_range];
 Yp_train_old = Yp[0:train_range];
 Yf_train_old = Yf[0:train_range];
 
-num_trains = len(Yp)*9/10;
+num_trains = np.int(len(Yp)*9/10);
 train_indices = np.random.randint(0,len(Yp),num_trains)
 test_indices = np.random.randint(0,len(Yp),len(Yp)-num_trains); 
 Yp_train = Yp[train_indices];
@@ -536,7 +536,7 @@ Yf_test = Yf[test_indices];
 
 
 if with_control:
-  print "[INFO]: u_control_all_training.shape post-loading: " + repr(len(u_control_all_training));
+  print("[INFO]: u_control_all_training.shape post-loading: " + repr(len(u_control_all_training)));
   U_train = u_control_all_training[train_indices];
   U_test  = u_control_all_training[test_indices];
   
@@ -548,7 +548,7 @@ if with_control:
     U_train = np.reshape(U_train,(U_train.shape[0],1));
     U_test = np.reshape(U_test,(U_test.shape[0],1));
                                                 
-  print "[INFO] : U_train.shape: " + repr(U_train.shape);
+  print("[INFO] : U_train.shape: " + repr(U_train.shape));
 else:
   U_train = None;
   U_test = None;
@@ -557,10 +557,10 @@ Yf_train = np.asarray(Yf_train);
 Yp_test = np.asarray(Yp_test);
 Yf_test = np.asarray(Yf_test);
 
-print "[INFO] Yp_test.shape (E-DMD) " + repr(Yp_test.shape);
-print "[INFO] Yf_test.shape (E-DMD) " + repr(Yf_test.shape);
+print("[INFO] Yp_test.shape (E-DMD) " + repr(Yp_test.shape));
+print("[INFO] Yf_test.shape (E-DMD) " + repr(Yf_test.shape));
 if with_control:
-  print "[INFO] U_train.shape (E-DMD) " + repr(U_train.shape);
+  print("[INFO] U_train.shape (E-DMD) " + repr(U_train.shape));
 
 Yp_final_train = Yp_train; 
 Yf_final_train = Yf_train; 
@@ -570,7 +570,7 @@ Yf_final_test = Yf_test;
 up_all_training = Yp_final_train;
 uf_all_training = Yf_final_train;
 
-print "[INFO] up_all_training.shape: " + repr(up_all_training.shape);
+print("[INFO] up_all_training.shape: " + repr(up_all_training.shape));
 
 deep_dict_size = 20;
 n_outputs =num_bas_obs;
@@ -583,7 +583,7 @@ if with_control:
 if with_control:
   #print "[INFO TYPE]" + repr(type(u_control_all_training_old[0]));
   if type(u_control_all_training_old[0])==np.ndarray:
-    print "[DEBUG]"  + repr(u_control_all_training_old[0]);
+    print("[DEBUG]"  + repr(u_control_all_training_old[0]));
     n_inputs_control =u_control_all_training_old[0].shape[0];
     
   else:
@@ -639,12 +639,12 @@ for n_depth_reciprocal in range(1,2):#max_depth-2): #2
       
       hidden_vars_list[-1] = deep_dict_size;
       
-      print "[INFO] hidden_vars_list: " +repr(hidden_vars_list);
+      print("[INFO] hidden_vars_list: " +repr(hidden_vars_list));
       while good_start==0 and try_num < max_tries:
           try_num +=1;
           if debug_splash:
-            print "\n Initialization attempt number: " + repr(try_num);
-            print "\n \t Initializing Tensorflow Residual ELU Network with " + repr(n_inputs) + " inputs and " + repr(n_outputs) + " outputs and " + repr(len(hidden_vars_list)) + " layers";
+            print("\n Initialization attempt number: " + repr(try_num));
+            print("\n \t Initializing Tensorflow Residual ELU Network with " + repr(n_inputs) + " inputs and " + repr(n_outputs) + " outputs and " + repr(len(hidden_vars_list)) + " layers");
 
           with tf.device('/cpu:0'):
             Wy_list,by_list = initialize_Wblist(n_inputs,hidden_vars_list);
@@ -675,11 +675,11 @@ for n_depth_reciprocal in range(1,2):#max_depth-2): #2
             if debug_splash:
               train_vars = tf.trainable_variables();
               values = sess.run([x.name for x in train_vars]);
-              print "[DEBUG] # of Trainable Variables: " + repr(len(values));
-              print "[DEBUG] Trainable Variables: " + repr([ temp_var.shape for temp_var in values]);
+              print("[DEBUG] # of Trainable Variables: " + repr(len(values)));
+              print("[DEBUG] Trainable Variables: " + repr([ temp_var.shape for temp_var in values]));
 
-              print "[DEBUG] # of datapoints in up_all_training: " + repr(up_all_training.shape);
-              print "[DEBUG] # of datapoints in uf_all_training: " + repr(uf_all_training.shape);
+              print("[DEBUG] # of datapoints in up_all_training: " + repr(up_all_training.shape));
+              print("[DEBUG] # of datapoints in uf_all_training: " + repr(uf_all_training.shape));
 
 
             
@@ -693,7 +693,7 @@ for n_depth_reciprocal in range(1,2):#max_depth-2): #2
           training_error_history_withcovar  = all_histories[3];
           validation_error_history_withcovar = all_histories[4];
           test_error_history_withcovar = all_histories[5];
-          print "[INFO] Initialization was successful: " + repr(good_start==1);
+          print("[INFO] Initialization was successful: " + repr(good_start==1));
           
           accuracy = deep_koopman_loss;#;
           if with_control:
@@ -710,14 +710,14 @@ for n_depth_reciprocal in range(1,2):#max_depth-2): #2
               best_width = min_width;
 
               if debug_splash:
-                print "[DEBUG]: Regularization penalty: " + repr(sess.run(reg_term(Wy_list)));
+                print("[DEBUG]: Regularization penalty: " + repr(sess.run(reg_term(Wy_list))));
               np.set_printoptions(precision=2,suppress=True);
               if debug_splash:
-                print "[DEBUG]: " + repr(np.asarray(sess.run(Wy_list[0]).tolist()));
+                print("[DEBUG]: " + repr(np.asarray(sess.run(Wy_list[0]).tolist())));
         
-          print "[Result]: Training Error: ";
+          print("[Result]: Training Error: ");
           print(train_accuracy);
-          print "[Result]: Test Error : ";
+          print("[Result]: Test Error : ");
           print(test_accuracy);
           
 ### Write Vars to Checkpoint Files/MetaFiles 
@@ -762,7 +762,7 @@ tf.add_to_collection('yf_feed',yf_feed);
 save_path = saver.save(sess, data_suffix + '.ckpt')
 
 Koopman_dim = Kx_num.shape[0];
-print "[INFO] Koopman_dim:" + repr(Kx_num.shape);
+print("[INFO] Koopman_dim:" + repr(Kx_num.shape));
 
 if single_series:
     #Y_p_old,Y_f_old,Y_whole,u_control_all_training = load_pickle_data('koopman_data/zhang_control.pickle');#deltaomega-series.pickle'
@@ -771,13 +771,13 @@ if single_series:
 
 #K = sess.run(K);
 if not( Kx_num.shape[1]==Kx_num.shape[0]):
-    print "Warning! Estimated Koopman operator is not square with dimensions : " + repr(Kx_num.shape);
+    print("Warning! Estimated Koopman operator is not square with dimensions : " + repr(Kx_num.shape));
 
 train_range = len(Y_p_old)/2; # define upper limits of training data 
-print "[DEBUG] train_range: " + repr(train_range);
-print "[DEBUG] test_range: " + repr(test_range);
-print "Y_p_old.shape" + repr(Y_p_old.shape);
-print "Y_f_old.shape" + repr(Y_f_old.shape);
+print("[DEBUG] train_range: " + repr(train_range))
+print("[DEBUG] test_range: " + repr(test_range))
+print("Y_p_old.shape" + repr(Y_p_old.shape));
+print("Y_f_old.shape" + repr(Y_f_old.shape));
 
 
 test_range = len(Y_p_old); # define upper limits of test data 
@@ -810,7 +810,7 @@ Yp_final_train = Yp_train;
 Yf_final_train = Yf_train;
 # # # Print Evaluation Metrics -  Deep Koopman Learning # # #
 
-print "[DEBUG]: Yp_train.shape" + repr(Yp_train.shape);
+print("[DEBUG]: Yp_train.shape" + repr(Yp_train.shape));
 
 if with_control:
   training_error = accuracy.eval(feed_dict={yp_feed:list(Yp_train),yf_feed:list(Yf_train),u_control:list(U_train)});
@@ -824,12 +824,12 @@ print('%s%f' % ('[COMP] Test error: ',test_error));
 
 # # # - - - n-step Prediction Error Analysis - - - # # # 
 
-print "[DEBUG] Yf_final_test.shape: " + repr( Yf_final_test.shape);
+print("[DEBUG] Yf_final_test.shape: " + repr( Yf_final_test.shape));
 
 n_points_pred = 18;#Yf_final_test.shape[0]-1;
 
 
-print "[INFO] Yp_final_test.shape: " + repr(Yp_final_test.shape);
+print("[INFO] Yp_final_test.shape: " + repr(Yp_final_test.shape))
 
 Yp_final_test = np.transpose(Yp_final_test);
 Ycurr = Yp_final_test[:,0]; # grab one time point from the final prediction of the training data
@@ -842,12 +842,12 @@ psiyf_Ycurr = psiyf.eval(feed_dict={yf_feed:Ycurr});
 
 ### DEBUG ###
 if debug_splash:
-  print "[DEBUG] Ycurr.shape: " + repr(Ycurr.shape);
-  print "[DEBUG]:" + " Equality check between psiyp and psiyf: " + repr( psiyp_Ycurr-psiyf_Ycurr);
-  print "[DEBUG]: " + repr(psiyp_Ycurr.shape)
-  print "[DEBUG]: " + "Equality check between psiyp first 7 elems and Ycurr: " + repr(psiyp_Ycurr[:,0:num_bas_obs]-Ycurr);
+  print("[DEBUG] Ycurr.shape: " + repr(Ycurr.shape))
+  print("[DEBUG]:" + " Equality check between psiyp and psiyf: " + repr( psiyp_Ycurr-psiyf_Ycurr));
+  print("[DEBUG]: " + repr(psiyp_Ycurr.shape));
+  print("[DEBUG]: " + "Equality check between psiyp first 7 elems and Ycurr: " + repr(psiyp_Ycurr[:,0:num_bas_obs]-Ycurr));
 if with_control:
-  print "[DEBUG] U_test.shape" + repr(U_test.shape);
+  print("[DEBUG] U_test.shape" + repr(U_test.shape));
   
 Yf_final_test_ep_nn = [];
 Yf_final_test_ep_nn.append(psiyp_Ycurr.tolist()[0][0:num_bas_obs]); # append the initial seed state value.
@@ -872,9 +872,9 @@ Yf_final_test_ep_nn = np.transpose(Yf_final_test_ep_nn);
 Yf_final_test = np.transpose(Yf_final_test);
 
 
-print "[INFO] Yf_final_test_ep_nn.shape: " + repr(Yf_final_test_ep_nn.shape);
-print "[INFO] Yf_final_test.shape: " + repr(Yf_final_test.shape);
-print "[INFO] Yp_final_test.shape: " + repr(Yp_final_test.shape);
+print("[INFO] Yf_final_test_ep_nn.shape: " + repr(Yf_final_test_ep_nn.shape));
+print("[INFO] Yf_final_test.shape: " + repr(Yf_final_test.shape));
+print("[INFO] Yp_final_test.shape: " + repr(Yp_final_test.shape));
 
 Yf_final_test_stack_nn = np.zeros((Yf_final_test_ep_nn.shape[0],Yf_final_test_ep_nn.shape[1]));
 
@@ -885,13 +885,13 @@ for i in range(0,Yf_final_test_ep_nn.shape[1]-1):
 # DEBUG Statements 
 
 if debug_splash:
-  print "[DEBUG] Yf_final_test_stack_nn: " +repr(Yf_final_test_stack_nn);
-  print "[DEBUG] Yf_final_test_ep_nn:" +  repr(Yf_final_test_ep_nn);
-  print "[DEBUG] Yf_final_test_stack_nn - Yf_final_test_ep_nn : " + repr(Yf_final_test_stack_nn - Yf_final_test_ep_nn);
-  print "[DEBUG] Y_final_test_stack.shape: " + repr(Yf_final_test_stack_nn.shape);
-  print "[INFO] Ground truth Yf_final_test_ep_stack.shape: "+ repr( Yf_final_test_stack_nn.shape);
-  print "[INFO] Prediction Yf_final_test_ep_nn.shape: "+ repr(Yf_final_test_ep_nn.shape);
-  print "Denominator of prediction error: " + repr(np.linalg.norm(Yf_final_test_stack_nn,ord='fro'));
+  print("[DEBUG] Yf_final_test_stack_nn: " +repr(Yf_final_test_stack_nn));
+  print("[DEBUG] Yf_final_test_ep_nn:" +  repr(Yf_final_test_ep_nn));
+  print("[DEBUG] Yf_final_test_stack_nn - Yf_final_test_ep_nn : " + repr(Yf_final_test_stack_nn - Yf_final_test_ep_nn));
+  print("[DEBUG] Y_final_test_stack.shape: " + repr(Yf_final_test_stack_nn.shape));
+  print("[INFO] Ground truth Yf_final_test_ep_stack.shape: "+ repr( Yf_final_test_stack_nn.shape));
+  print("[INFO] Prediction Yf_final_test_ep_nn.shape: "+ repr(Yf_final_test_ep_nn.shape));
+  print("Denominator of prediction error: " + repr(np.linalg.norm(Yf_final_test_stack_nn,ord='fro')));
   
 
 ### 
