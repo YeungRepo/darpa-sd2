@@ -48,12 +48,12 @@ colors = np.asarray(colors); # defines a color palette
 lambd = 0.00001;
 step_size_val = .075#.025;
 
-batchsize =200#30#900;
+batchsize =600#30#900;
 eval_size = batchsize;
 
 use_crelu = 0;
 activation_flag = 2; # sets the activation function type to RELU, ELU, SELU (initialized a certain way,dropout has to be done differently) , or tanh() 
-max_iters = 500000;#10000#200000 #1000000;
+max_iters = 300000;#10000#200000 #1000000;
 valid_error_threshold = .00001;
 test_error_threshold = .00001;
 
@@ -296,7 +296,7 @@ def initialize_tailconstrained_tensorflow_variables(n_u,deep_dict_size,hv_list,W
 
 def Deep_Control_Koopman_Objective(psiyf,K,psi_stack,step_size):
    forward_prediction_control = (tf.matmul(psi_stack,K)); 
-   tf_koopman_loss = tf.reduce_mean(tf.norm(psiyf - forward_prediction_control,axis=[0,1],ord='fro'));#/tf.reduce_mean(tf.norm(psi_stack,axis=[0,1],ord='fro'));
+   tf_koopman_loss = tf.reduce_mean(tf.norm(psiyf - forward_prediction_control,axis=[0,1],ord='fro'))/tf.reduce_mean(tf.norm(psi_stack,axis=[0,1],ord='fro'));
                                  
    optimizer = tf.train.AdagradOptimizer(step_size).minimize(tf_koopman_loss);
    result = sess.run(tf.initialize_all_variables());
@@ -345,9 +345,14 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
   while (((test_error>test_error_thres) or (valid_error > valid_error_thres)) and iter < max_iters):
     iter+=1;
     all_ind = set(np.arange(0,len(u_all_training)));
-    select_ind = np.random.randint(0,len(u_all_training),size=batchsize);
-    valid_ind = list(all_ind -set(select_ind))[0:batchsize];
-    select_ind_test = list(all_ind - set(valid_ind) - set(select_ind))[0:batchsize];
+    random_all_ind = list(range(len(u_all_training)));
+    random.shuffle(random_all_ind);
+    select_ind = random_all_ind[0:batchsize];
+    valid_ind = random_all_ind[batchsize:batchsize*2]
+    select_ind_test = random_all_ind[batchsize*2:batchsize*3];
+    #np.random.randint(0,len(u_all_training),size=batchsize);
+    #valid_ind = list(all_ind -set(select_ind))[0:batchsize];
+    #select_ind_test = list(all_ind - set(valid_ind) - set(select_ind))[0:batchsize];
 
     
     u_batch =[];
@@ -421,9 +426,9 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
           print("step %d , validation error %g"%(iter, mean_diff_nocovar.eval(feed_dict={yp_feed:u_valid,yf_feed:y_valid})));
           print("step %d , test error %g"%(iter, mean_diff_nocovar.eval(feed_dict={yp_feed:u_test_train,yf_feed:y_test_train})));
           
-    if ((iter>10000) and iter%10) :
+    if ((iter>30000) and iter%10) :
 
-      valid_gradient = np.gradient(np.asarray(validation_error_history_nocovar[np.int(iter/samplerate*7/10):]));
+      valid_gradient = np.gradient(np.asarray(validation_error_history_nocovar[np.int(iter/(samplerate)*7/10):]));
       mu_gradient = np.mean(valid_gradient);
 
       if ((iter <1000) and (mu_gradient >= 5e-1)): # eventually update this to be 1/10th the mean of batch data, or mean of all data handed as input param to func
@@ -483,7 +488,7 @@ if pre_examples_switch == 6:
   with_control = 1; 
 
 if pre_examples_switch == 7:
-  data_suffix = 'exp_toggle_switch_M9CA_7_9_20.pickle';
+  data_suffix = 'exp_toggle_switch_M9CA.pickle';
   with_control = 1;
   
   
@@ -723,7 +728,7 @@ for n_depth_reciprocal in range(1,2):#max_depth-2): #2
 ### Write Vars to Checkpoint Files/MetaFiles 
           
 Kx_num = sess.run(Kx);
-file_obj_swing = file('constrainedNN-Model.pickle','wb');
+file_obj_swing = open('constrainedNN-Model.pickle','wb');
 Wy_list_num = [sess.run(W_temp) for W_temp in Wy_list];
 by_list_num = [sess.run(b_temp) for b_temp in by_list];
 
@@ -773,7 +778,7 @@ if single_series:
 if not( Kx_num.shape[1]==Kx_num.shape[0]):
     print("Warning! Estimated Koopman operator is not square with dimensions : " + repr(Kx_num.shape));
 
-train_range = len(Y_p_old)/2; # define upper limits of training data 
+train_range = np.int(len(Y_p_old)/2); # define upper limits of training data 
 print("[DEBUG] train_range: " + repr(train_range))
 print("[DEBUG] test_range: " + repr(test_range))
 print("Y_p_old.shape" + repr(Y_p_old.shape));

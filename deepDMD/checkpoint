@@ -1,2 +1,2 @@
-model_checkpoint_path: "Pputida_GrowthHarness_RNAseq_DeepDMD.pickle.ckpt"
-all_model_checkpoint_paths: "Pputida_GrowthHarness_RNAseq_DeepDMD.pickle.ckpt"
+model_checkpoint_path: "exp_toggle_switch_M9CA.pickle.ckpt"
+all_model_checkpoint_paths: "exp_toggle_switch_M9CA.pickle.ckpt"
