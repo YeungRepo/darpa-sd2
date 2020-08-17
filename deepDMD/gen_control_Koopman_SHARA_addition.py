@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 ### Import Packages 
-import pickle; # for data I/O
+import pickle # for data I/O
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 # Math Packages 
@@ -13,27 +13,27 @@ import random;
 from numpy import genfromtxt
 import itertools
 
-# Import CVXOPT Packages
-from cvxpy import Minimize, Problem, Variable,norm1,norm2,installed_solvers,lambda_max;
-from cvxpy import norm as cvxpynorm;
-import cvxpy;
+# # Import CVXOPT Packages
+# from cvxpy import Minimize, Problem, Variable,norm1,norm2,installed_solvers,lambda_max;
+# from cvxpy import norm as cvxpynorm;
+# import cvxpy;
 
 # Tensorflow Packages
 import tensorflow as tf;
 
 # Plotting Tools for Visualizing Basis Functions
 import matplotlib
-matplotlib.use('Agg'); # for seamless execution in Linux environments with Tensorflow 
+matplotlib.use('Agg'); # for seamless execution in Linux environments with Tensorflow
 import matplotlib.pyplot as plt;
 matplotlib.rcParams.update({'font.size':22}) # default font size on (legible) figures
-import control;
+import control
 
 import os
 import shutil
 import pandas as pd
 
 ### Process Control Flags : User Defined (dev-note: run as a separate instance of code?) 
-#with_control = 1;  # This activates the closed-loop deep Koopman learning algorithm; requires input and state data, historical model parameter.  Now it is specified along with the dataset file path below.  
+# with_control = 1;  # This activates the closed-loop deep Koopman learning algorithm; requires input and state data, historical model parameter.  Now it is specified along with the dataset file path below.
 plot_deep_basis = 0;  # This activates plotting of deep basis functions as a function of training iterations.
 single_series = 0;  # Useful if you're analyzing a system with only a single time-series (requires extremely high temporal resolution). 
 debug_splash = 0;
@@ -59,18 +59,18 @@ colors = np.asarray(colors); # defines a color palette
 lambd = 0.00000;
 step_size_val = 0.1#.025;
 
-batch_size =8#30#900;
+batch_size =400#30#900;
 eval_size = batch_size;
 
 use_crelu = 0;
-activation_flag = 2; # sets the activation function type to RELU[0], ELU[1], SELU[2] (initialized a certain way,dropout has to be done differently) , or tanh() 
-max_epochs =1000
-train_error_threshold = 0.01
-valid_error_threshold = 0.01;
+activation_flag = 1; # sets the activation function type to RELU[0], ELU[1], SELU[2] (initialized a certain way,dropout has to be done differently) , or tanh()
+max_epochs =2000
+train_error_threshold = 1e-4
+valid_error_threshold = 1e-4;
 test_error_threshold = 0.01;
 DISPLAY_SAMPLE_RATE_EPOCH = 500
-TRAIN_PERCENT = 85
-WEIGHT_OUTPUT_OBJECTIVE = 0.5
+TRAIN_PERCENT = 75
+# WEIGHT_OUTPUT_OBJECTIVE = 0.5
 # Deep Learning Metaparameters ###
 keep_prob = 1.0; #keep_prob = 1-dropout probability 
 res_net = 0;   # Boolean condition on whether to use a resnet connection. 
@@ -78,22 +78,22 @@ res_net = 0;   # Boolean condition on whether to use a resnet connection.
 ###  ------------------------------ Define Neural Network Hyperparameters ------------------------------ 
 
 # ---- STATE PARAMETERS -------
-x_deep_dict_size = 50; 
-x_max_nn_layers= 3;  # x_max_layers 3 works well
-x_max_nn_nodes_limit = 50  # max width_limit -4 works well
+x_deep_dict_size = 7
+x_max_nn_layers= 4;  # x_max_layers 3 works well
+x_max_nn_nodes_limit = 15  # max width_limit -4 works well
 x_min_nn_nodes_limit = x_max_nn_nodes_limit   # use regularization and dropout to trim edges for now.
 
 # ---- INPUT PARAMETERS -------
-u_deep_dict_size = 3
+u_deep_dict_size = 1
 u_min_nn_nodes_limit = 3
-u_max_nn_layers = 5
+u_max_nn_layers = 3
 # u_max_nn_nodes_limit = 3
 
 # ---- STATE n INPUT COMBINED PARAMETERS -------
-xu_deep_dict_size = 5
+xu_deep_dict_size = 2
 xu_max_nn_layers = 3
-xu_max_nn_nodes_limit = 5
-xu_min_nn_nodes_limit = 5
+xu_max_nn_nodes_limit = 15
+xu_min_nn_nodes_limit = 15
 
 best_test_error = np.inf
 best_depth = x_max_nn_layers
@@ -260,6 +260,17 @@ def expose_deep_basis(z_list,num_bas_obs,x_deep_dict_size,iter_num,u):
 #     covar = sum_x1x2/(1.0*len(x1))- sum_x1/(1.0*len(x1))*sum_x2/(1.0*len(x1));
 #     return covar;
 
+def estimate_K_stability(Kx):
+    Kx_num = sess.run(Kx)
+    np.linalg.eigvals(Kx_num)
+    Kx_num_eigval_mod = np.abs(np.linalg.eigvals(Kx_num))
+    if np.max(Kx_num_eigval_mod) > 1:
+        print('[COMP] The identified Koopman operator is UNSTABLE with ', np.sum(np.abs(Kx_num_eigval_mod) > 1),
+              'eigenvalues greater than 1')
+    else:
+        print('[COMP] The identified Koopman operator is STABLE')
+    return
+
 def load_pickle_data(file_path,has_control,has_output):
     '''load pickle data file for deep Koopman dynamic mode decomposition.
     Args:
@@ -267,10 +278,10 @@ def load_pickle_data(file_path,has_control,has_output):
 
     '''
     try:
-        file_obj = open(file_path,'rb');
-        output_vec = pickle.load(file_obj);
+        file_obj = open(file_path,'rb')
+        output_vec = pickle.load(file_obj)
     except:
-        print('ERROR! Can\'t locate file in \"'+ file_obj +'\"')
+        print('ERROR! Can\'t locate file in \"' + file_path +'\"')
         exit()
     Xp = None;
     Xf = None;
@@ -461,14 +472,21 @@ def Deep_Output_KIC_Objective(all_psiXp,all_psiXf,Kx,all_psiUp,Ku,all_psiXUp,Kxu
         all_Yp_predicted = []
 
     # SSE
-    state_prediction_error = tf.math.square(tf.norm(all_psiXf - all_psiXf_predicted,axis=[0,1],ord='fro'))
+    N_eqns = tf.add(tf.shape(all_psiXp)[0], tf.shape(all_Yf)[0])
+    N_datapts = tf.shape(all_psiXp)[1]
+    state_prediction_error = all_psiXf - all_psiXf_predicted
+    # state_prediction_error = tf.math.square(tf.norm(state_prediction_error,axis=[0,1],ord='fro'))
     state_frobenius_norm_squared = tf.math.square(tf.norm(all_psiXf,axis=[0,1],ord='fro'))
     if with_output:
-        output_prediction_error = tf.math.square(tf.norm(all_Yf - all_Yf_predicted, axis=[0, 1], ord='fro'))
+        output_prediction_error = all_Yf - all_Yf_predicted
+        # output_prediction_error = tf.math.square(tf.norm(output_prediction_error, axis=[0, 1], ord='fro'))
         output_frobenius_norm_squared = tf.math.square(tf.norm(all_Yf, axis=[0, 1], ord='fro'))
-        output_prediction_error = output_prediction_error + tf.math.square(tf.norm(all_Yf - all_Yf_predicted, axis=[0, 1], ord='fro'))
-        output_frobenius_norm_squared = output_frobenius_norm_squared + tf.math.square(tf.norm(all_Yf, axis=[0, 1], ord='fro'))
-        tf_koopman_loss = WEIGHT_OUTPUT_OBJECTIVE*(output_prediction_error / output_frobenius_norm_squared) + (1-WEIGHT_OUTPUT_OBJECTIVE )*( state_prediction_error / state_frobenius_norm_squared)
+        # output_prediction_error = output_prediction_error + tf.math.square(tf.norm(all_Yf - all_Yf_predicted, axis=[0, 1], ord='fro'))    # Maybe can be used later to predict Yp as well
+        # output_frobenius_norm_squared = output_frobenius_norm_squared + tf.math.square(tf.norm(all_Yf, axis=[0, 1], ord='fro'))           # Maybe can be used later to predict Yp as well
+        # tf_koopman_loss = WEIGHT_OUTPUT_OBJECTIVE*(output_prediction_error / output_frobenius_norm_squared) + (1-WEIGHT_OUTPUT_OBJECTIVE )*( state_prediction_error / state_frobenius_norm_squared)
+        # tf_koopman_loss = (output_prediction_error+state_prediction_error)/(output_frobenius_norm_squared+state_frobenius_norm_squared)
+        # tf_koopman_loss = tf.math.divide(output_prediction_error + state_prediction_error, tf.cast(tf.math.multiply(N_eqns,N_datapts),dtype = tf.float32)) # Mean Squared Error
+        tf_koopman_loss = tf.math.reduce_max(tf.math.reduce_mean(tf.math.abs(tf.concat([output_prediction_error,state_prediction_error],1)),0))
     else:
         tf_koopman_loss = state_prediction_error / state_frobenius_norm_squared
     optimizer = tf.train.AdagradOptimizer(step_size).minimize(tf_koopman_loss)
@@ -593,7 +611,7 @@ def generate_hyperparam_entry(feed_dict_train,feed_dict_test,error_func,n_epochs
     dict_hp['test error'] = test_error
     return dict_hp
 
-def dynamic_train_net(dict_train, dict_test, deep_koopman_loss, optimizer,with_control,mix_state_and_control,with_output, train_error_threshold=1e-2,
+def dynamic_train_net(dict_train, dict_test, Kx, deep_koopman_loss, optimizer,with_control,mix_state_and_control,with_output, train_error_threshold=1e-2,
                                                   valid_error_threshold=1e-2, max_epochs=1000, step_size_val = 0.01, batch_size = 1):
     # For evaluating how the hyperparameters performed with that training
     feed_dict_train = {xp_feed: dict_train['Xp'], xf_feed: dict_train['Xf']}
@@ -634,12 +652,13 @@ def dynamic_train_net(dict_train, dict_test, deep_koopman_loss, optimizer,with_c
                         NOT_SATISFIED = False
                     else:
                         print('*** Enter the parameters again ***')
-            all_histories, good_start,n_epochs_run = train_net_v2(dict_train['Xp'], dict_train['Xf'], deep_koopman_loss, optimizer,dict_train['Up'],
+            all_histories, good_start,n_epochs_run = train_net_v2(dict_train['Xp'], dict_train['Xf'], Kx, deep_koopman_loss, optimizer,dict_train['Up'],
                                                   dict_train['Yp'],dict_train['Yf'],with_control,mix_state_and_control, with_output, train_error_threshold,
                                                   valid_error_threshold, max_epochs, step_size_val,batch_size,all_histories)
             dict_run_info[run_info_index] = generate_hyperparam_entry(feed_dict_train,feed_dict_test,deep_koopman_loss,n_epochs_run,step_size_val,batch_size)
             print('Current Training Error  :',dict_run_info[run_info_index]['training error'])
             print('Current Test Error      :', dict_run_info[run_info_index]['test error'])
+            estimate_K_stability(Kx)
             run_info_index += 1
         else:
             print('Training Complete')
@@ -650,7 +669,7 @@ def dynamic_train_net(dict_train, dict_test, deep_koopman_loss, optimizer,with_c
 
 ##
 
-def train_net_v2(xp_all, xf_all, loss_func, optimizer, up_all=None, yp_all=None, yf_all=None, with_control=0, mix_state_and_control = 0,
+def train_net_v2(xp_all, xf_all, Kx, loss_func, optimizer, up_all=None, yp_all=None, yf_all=None, with_control=0, mix_state_and_control = 0,
                  with_output=0, train_error_thres=1e-2, valid_error_thres=1e-2, max_epochs=100, step_size_val=0.01,
                  batch_size=1,all_histories ={'train error':[],'validation error':[]}):
     # ----
@@ -739,6 +758,7 @@ def train_net_v2(xp_all, xf_all, loss_func, optimizer, up_all=None, yp_all=None,
         if np.mod(epoch_i,DISPLAY_SAMPLE_RATE_EPOCH) == 0:
             print('Epoch No: ',epoch_i,' |   Training error: ',training_error)
             print('Validation error: '.rjust(len('Epoch No: ' + str(epoch_i) + ' |   Validation error: ')), validation_error)
+            estimate_K_stability(Kx)
     return all_histories,good_start,epoch_i
 
 
@@ -914,7 +934,7 @@ def train_net_v2(xp_all, xf_all, loss_func, optimizer, up_all=None, yp_all=None,
 ## # - - - Begin Koopman Model Script - - - # # #
 
 pre_examples_switch = 13;
-os.chdir('/home/deepuser/Desktop/Shara/deepDMD')
+# os.chdir('/home/deepuser/Desktop/Shara/deepDMD')
 # os.chdir('/Users/shara/Desktop/Shara_optictensor/darpa-sd2/deepDMD')
 
 data_directory = 'koopman_data/'
@@ -1011,7 +1031,8 @@ if pre_examples_switch == 12:
     phase_space_stitching = 0;
 
 if pre_examples_switch == 13:
-    data_suffix = 'Pputida_GrowthHarness_RNAseq_DeepDMD.pickle'#'SIM1SHARA_Combinatorial_Promoters_with_input';#'X8SS_Pputida_RNASeqDATA.pickle';
+    # data_suffix = 'Pputida_GrowthHarness_RNAseq_DeepDMD.pickle'#'SIM1SHARA_Combinatorial_Promoters_with_input';#'X8SS_Pputida_RNASeqDATA.pickle';
+    data_suffix = 'oc_deepDMD_FeedForwardLoopSystem.pickle'
     with_control = 1;
     with_output = 1;
     mix_state_and_control = 1;
@@ -1225,7 +1246,7 @@ while good_start==0 and try_num < max_tries:
             print("[DEBUG] # of datapoints in uf_all_training: ") + repr(Xf.shape)
         print('Training begins now!')
         # all_histories,good_start  = dynamic_train_net(up_all_training,uf_all_training,deep_koopman_loss,optimizer,U_train,Out_p_train,Out_f_train,valid_error_threshold,test_error_threshold,max_iters,step_size_val);
-        all_histories, good_start,dict_run_info = dynamic_train_net(dict_train, dict_test, deep_koopman_loss, optimizer,with_control,mix_state_and_control, with_output, train_error_threshold,
+        all_histories, good_start,dict_run_info = dynamic_train_net(dict_train, dict_test, Kx, deep_koopman_loss, optimizer,with_control,mix_state_and_control, with_output, train_error_threshold,
                                                       valid_error_threshold, max_epochs, step_size_val,batch_size)
         # all_histories,good_start  = train_net(up_all_training,uf_all_training,deep_koopman_loss,optimizer,U_train,Out_p_train,Out_f_train,valid_error_threshold,test_error_threshold,max_iters,step_size_val);
     training_error_history_nocovar = all_histories['train error'];
@@ -1320,20 +1341,21 @@ if (not phase_space_stitching) and (not with_control):
 saver = tf.compat.v1.train.Saver()
 tf.compat.v1.add_to_collection('psixpT',psixp)
 tf.compat.v1.add_to_collection('psixfT',psixf)
-tf.compat.v1.add_to_collection('xp_feed',xp_feed)
-tf.compat.v1.add_to_collection('xf_feed',xf_feed)
+tf.compat.v1.add_to_collection('xpT_feed',xp_feed)
+tf.compat.v1.add_to_collection('xfT_feed',xf_feed)
 tf.compat.v1.add_to_collection('forward_prediction', forward_prediction)
 tf.compat.v1.add_to_collection('KxT',Kx)
 if with_output:
   tf.compat.v1.add_to_collection('WhT',Wh)
-  tf.compat.v1.add_to_collection('yp_feed', yp_feed)
-  tf.compat.v1.add_to_collection('yf_feed', yf_feed)
+  tf.compat.v1.add_to_collection('ypT_feed', yp_feed)
+  tf.compat.v1.add_to_collection('yfT_feed', yf_feed)
 if with_control:
   tf.compat.v1.add_to_collection('psiupT',psiup)
-  tf.compat.v1.add_to_collection('up_feed',up_feed)
+  tf.compat.v1.add_to_collection('upT_feed',up_feed)
   tf.compat.v1.add_to_collection('KuT',Ku)
   if mix_state_and_control:
       tf.compat.v1.add_to_collection('psixupT', psixup)
+      tf.compat.v1.add_to_collection('xupT_feed', xup_feed)
       tf.compat.v1.add_to_collection('KxuT', Kxu)
 save_path = saver.save(sess, data_suffix + '.ckpt')
 saver_path_curr = saver.save(sess, FOLDER_NAME + '/' + data_suffix + '.ckpt')
@@ -1413,13 +1435,13 @@ print("[INFO] Koopman_dim:" + repr(Kx_num.shape))
 # test_error = accuracy.eval(feed_dict=feed_dict_test)
 print('%s%f' % ('[COMP] Training error: ',train_accuracy));
 print('%s%f' % ('[COMP] Test error: ',test_accuracy));
-
-np.linalg.eigvals(Kx_num)
-Kx_num_eigval_mod = np.abs(np.linalg.eigvals(Kx_num))
-if np.max(Kx_num_eigval_mod)>1:
-    print('[COMP] The identified Koopman operator is UNSTABLE with ',np.sum(np.abs(Kx_num_eigval_mod)>1),'eigenvalues greater than 1')
-else:
-    print('[COMP] The identified Koopman operator is STABLE')
+estimate_K_stability(Kx)
+# np.linalg.eigvals(Kx_num)
+# Kx_num_eigval_mod = np.abs(np.linalg.eigvals(Kx_num))
+# if np.max(Kx_num_eigval_mod)>1:
+#     print('[COMP] The identified Koopman operator is UNSTABLE with ',np.sum(np.abs(Kx_num_eigval_mod)>1),'eigenvalues greater than 1')
+# else:
+#     print('[COMP] The identified Koopman operator is STABLE')
 
 # # # # - - - n-step Prediction Error Analysis - - - # # #
 #
