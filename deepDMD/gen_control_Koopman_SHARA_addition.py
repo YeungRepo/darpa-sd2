@@ -58,6 +58,7 @@ colors = np.asarray(colors); # defines a color palette
 
 lambd = 0.00000;
 step_size_val = 0.1#.025;
+regularization_lambda_val = 0
 
 batch_size =400#30#900;
 eval_size = batch_size;
@@ -73,7 +74,22 @@ TRAIN_PERCENT = 75
 # WEIGHT_OUTPUT_OBJECTIVE = 0.5
 # Deep Learning Metaparameters ###
 keep_prob = 1.0; #keep_prob = 1-dropout probability 
-res_net = 0;   # Boolean condition on whether to use a resnet connection. 
+res_net = 0;   # Boolean condition on whether to use a resnet connection.
+
+# Explicitly mentioning the training routine
+ls_dict_training_params =[]
+dict_training_params = {'step size': 00.1, 'regularization coefficient': 0, 'training error': float(1e-8), 'validation error': float(1e-8), 'no of epochs': 20000, 'batch size': 400 }
+ls_dict_training_params.append(dict_training_params)
+dict_training_params = {'step size': 0.07, 'regularization coefficient': 0, 'training error': float(1e-8), 'validation error': float(1e-8), 'no of epochs': 15000, 'batch size': 400 }
+ls_dict_training_params.append(dict_training_params)
+dict_training_params = {'step size': 0.05, 'regularization coefficient': 0, 'training error': float(1e-8), 'validation error': float(1e-8), 'no of epochs': 10000, 'batch size': 400 }
+ls_dict_training_params.append(dict_training_params)
+dict_training_params = {'step size': 0.03, 'regularization coefficient': 0, 'training error': float(1e-8), 'validation error': float(1e-8), 'no of epochs': 10000, 'batch size': 400 }
+ls_dict_training_params.append(dict_training_params)
+dict_training_params = {'step size': 0.02, 'regularization coefficient': 0, 'training error': float(1e-8), 'validation error': float(1e-8), 'no of epochs': 10000, 'batch size': 400 }
+ls_dict_training_params.append(dict_training_params)
+dict_training_params = {'step size': 0.01, 'regularization coefficient': 0, 'training error': float(1e-8), 'validation error': float(1e-8), 'no of epochs': 10000, 'batch size': 400 }
+ls_dict_training_params.append(dict_training_params)
 
 ###  ------------------------------ Define Neural Network Hyperparameters ------------------------------ 
 
@@ -443,12 +459,70 @@ def initialize_tensorflow_graph(n_u,x_deep_dict_size,hv_list,W_list,b_list,keep_
 
 
 # Output Koopman Input Objective Function that Implements S. Balakrishnan's Algorithm for Output-Constrained Deep-DMD
-def Deep_Output_KIC_Objective(all_psiXp,all_psiXf,Kx,all_psiUp,Ku,all_psiXUp,Kxu,all_Yf,all_Yp,Wh,step_size,with_control=0,mix_state_and_control =0,with_output=0,learn_controllable_Koopman=0):
+# def Deep_Output_KIC_Objective(all_psiXp,all_psiXf,Kx,all_psiUp,Ku,all_psiXUp,Kxu,all_Yf,all_Yp,Wh,step_size,with_control=0,mix_state_and_control =0,with_output=0,learn_controllable_Koopman=0):
+#     all_psiXf_predicted = tf.matmul(all_psiXp, Kx)
+#     if with_control:
+#         all_psiXf_predicted = all_psiXf_predicted + tf.matmul(all_psiUp,Ku)
+#         if mix_state_and_control:
+#             all_psiXf_predicted = all_psiXf_predicted + tf.matmul(all_psiXUp, Kxu)
+#     if learn_controllable_Koopman:
+#         print('Learning Controllable Koopman is disabled!!!')
+#         # n = np.int(Kx.get_shape()[0]);
+#         # Kut = tf.transpose(Ku);
+#         # Kxt = tf.transpose(Kx);
+#         # ctrb_matrix = Kut;
+#         # for ind in range(1,n):
+#         #     ctrb_matrix = tf.concat([ctrb_matrix,tf.matmul(tf.pow(Kxt,ind),Kut)],axis=1);
+#         #     ctrbTctrb = tf.matmul(ctrb_matrix,tf.transpose(ctrb_matrix) );
+#         #     print(ctrbTctrb.get_shape())
+#         #     ctrb_s,ctrb_v = tf.self_adjoint_eig(ctrbTctrb);
+#         #     print(tf.norm(ctrb_s,1))
+#
+#     # Dealing with Output
+#     if with_output:
+#         all_Yf_predicted = tf.matmul(all_psiXf_predicted,Wh)
+#         # all_Yf_predicted = tf.matmul(all_psiXf, Wh)
+#         all_Yp_predicted = tf.matmul(all_psiXp,Wh)
+#     else:
+#         all_Yf_predicted = []
+#         all_Yp_predicted = []
+#
+#     # SSE
+#     if with_output:
+#         N_eqns = tf.add(tf.shape(all_psiXp)[0], tf.shape(all_Yf)[0])
+#     else:
+#         N_eqns = tf.shape(all_psiXp)[0]
+#     N_datapts = tf.shape(all_psiXp)[1]
+#     state_prediction_error = all_psiXf - all_psiXf_predicted
+#     # state_prediction_error = tf.math.square(tf.norm(state_prediction_error,axis=[0,1],ord='fro'))
+#     state_frobenius_norm_squared = tf.math.square(tf.norm(all_psiXf,axis=[0,1],ord='fro'))
+#     if with_output:
+#         output_prediction_error = all_Yf - all_Yf_predicted
+#         # output_prediction_error = tf.math.square(tf.norm(output_prediction_error, axis=[0, 1], ord='fro'))
+#         output_frobenius_norm_squared = tf.math.square(tf.norm(all_Yf, axis=[0, 1], ord='fro'))
+#         # output_prediction_error = output_prediction_error + tf.math.square(tf.norm(all_Yf - all_Yf_predicted, axis=[0, 1], ord='fro'))    # Maybe can be used later to predict Yp as well
+#         # output_frobenius_norm_squared = output_frobenius_norm_squared + tf.math.square(tf.norm(all_Yf, axis=[0, 1], ord='fro'))           # Maybe can be used later to predict Yp as well
+#         # tf_koopman_loss = WEIGHT_OUTPUT_OBJECTIVE*(output_prediction_error / output_frobenius_norm_squared) + (1-WEIGHT_OUTPUT_OBJECTIVE )*( state_prediction_error / state_frobenius_norm_squared)
+#         # tf_koopman_loss = (output_prediction_error+state_prediction_error)/(output_frobenius_norm_squared+state_frobenius_norm_squared)
+#         # tf_koopman_loss = tf.math.divide(output_prediction_error + state_prediction_error, tf.cast(tf.math.multiply(N_eqns,N_datapts),dtype = tf.float32)) # Mean Squared Error
+#         tf_koopman_loss = tf.math.reduce_max(tf.math.reduce_mean(tf.math.abs(tf.concat([output_prediction_error,state_prediction_error],1)),0)) + tf.math.reduce_max(tf.math.abs(Kx)) + tf.math.reduce_max(tf.math.abs(Ku)) + tf.math.reduce_max(tf.math.abs(Kxu)) + tf.math.reduce_max(tf.math.abs(Wh))
+#     else:
+#         # tf_koopman_loss = state_prediction_error / state_frobenius_norm_squared
+#         tf_koopman_loss = tf.math.reduce_max(tf.math.reduce_mean(tf.math.abs(state_prediction_error), 0)) + tf.math.reduce_max(tf.math.abs(Kx)) + tf.math.reduce_max(tf.math.abs(Ku)) + tf.math.reduce_max(tf.math.abs(Kxu))
+#     optimizer = tf.train.AdagradOptimizer(step_size).minimize(tf_koopman_loss)
+#     result = sess.run(tf.global_variables_initializer())
+#     return tf_koopman_loss,optimizer,all_psiXf_predicted,all_Yf_predicted,all_Yp_predicted
+
+def Deep_Output_KIC_Objective_v2(all_psiXp,all_psiXf,Kx,all_psiUp,Ku,all_psiXUp,Kxu,all_Yf,all_Yp,Wh,step_size,regularization_lambda,with_control=0,mix_state_and_control =0,with_output=0,learn_controllable_Koopman=0):
     all_psiXf_predicted = tf.matmul(all_psiXp, Kx)
+    regularization_penalty = tf.norm(Kx, axis=[-2,-1], ord='fro')
+
     if with_control:
         all_psiXf_predicted = all_psiXf_predicted + tf.matmul(all_psiUp,Ku)
+        regularization_penalty = regularization_penalty + tf.norm(Ku, axis=[-2,-1], ord='fro')
         if mix_state_and_control:
             all_psiXf_predicted = all_psiXf_predicted + tf.matmul(all_psiXUp, Kxu)
+            regularization_penalty = regularization_penalty + tf.norm(Kxu, axis=[-2,-1], ord='fro')
     if learn_controllable_Koopman:
         print('Learning Controllable Koopman is disabled!!!')
         # n = np.int(Kx.get_shape()[0]);
@@ -461,37 +535,27 @@ def Deep_Output_KIC_Objective(all_psiXp,all_psiXf,Kx,all_psiUp,Ku,all_psiXUp,Kxu
         #     print(ctrbTctrb.get_shape())
         #     ctrb_s,ctrb_v = tf.self_adjoint_eig(ctrbTctrb);
         #     print(tf.norm(ctrb_s,1))
-
+    prediction_error_all = all_psiXf - all_psiXf_predicted
+    SST =  tf.math.reduce_sum(tf.math.square(all_psiXf - tf.math.reduce_mean(all_psiXf,axis=0)),axis=0)
+    SSE =  tf.math.reduce_sum(tf.math.square(all_psiXf - all_psiXf_predicted),axis=0)
     # Dealing with Output
     if with_output:
-        all_Yf_predicted = tf.matmul(all_psiXf_predicted,Wh)
-        # all_Yf_predicted = tf.matmul(all_psiXf, Wh)
-        all_Yp_predicted = tf.matmul(all_psiXp,Wh)
-    else:
-        all_Yf_predicted = []
-        all_Yp_predicted = []
-
-    # SSE
-    N_eqns = tf.add(tf.shape(all_psiXp)[0], tf.shape(all_Yf)[0])
-    N_datapts = tf.shape(all_psiXp)[1]
-    state_prediction_error = all_psiXf - all_psiXf_predicted
-    # state_prediction_error = tf.math.square(tf.norm(state_prediction_error,axis=[0,1],ord='fro'))
-    state_frobenius_norm_squared = tf.math.square(tf.norm(all_psiXf,axis=[0,1],ord='fro'))
-    if with_output:
+        # all_Yf_predicted = tf.matmul(all_psiXf_predicted,Wh)
+        all_Yf_predicted = tf.matmul(all_psiXf, Wh)
+        # all_Yp_predicted = tf.matmul(all_psiXp,Wh)
+        all_Yp_predicted = None
         output_prediction_error = all_Yf - all_Yf_predicted
-        # output_prediction_error = tf.math.square(tf.norm(output_prediction_error, axis=[0, 1], ord='fro'))
-        output_frobenius_norm_squared = tf.math.square(tf.norm(all_Yf, axis=[0, 1], ord='fro'))
-        # output_prediction_error = output_prediction_error + tf.math.square(tf.norm(all_Yf - all_Yf_predicted, axis=[0, 1], ord='fro'))    # Maybe can be used later to predict Yp as well
-        # output_frobenius_norm_squared = output_frobenius_norm_squared + tf.math.square(tf.norm(all_Yf, axis=[0, 1], ord='fro'))           # Maybe can be used later to predict Yp as well
-        # tf_koopman_loss = WEIGHT_OUTPUT_OBJECTIVE*(output_prediction_error / output_frobenius_norm_squared) + (1-WEIGHT_OUTPUT_OBJECTIVE )*( state_prediction_error / state_frobenius_norm_squared)
-        # tf_koopman_loss = (output_prediction_error+state_prediction_error)/(output_frobenius_norm_squared+state_frobenius_norm_squared)
-        # tf_koopman_loss = tf.math.divide(output_prediction_error + state_prediction_error, tf.cast(tf.math.multiply(N_eqns,N_datapts),dtype = tf.float32)) # Mean Squared Error
-        tf_koopman_loss = tf.math.reduce_max(tf.math.reduce_mean(tf.math.abs(tf.concat([output_prediction_error,state_prediction_error],1)),0))
-    else:
-        tf_koopman_loss = state_prediction_error / state_frobenius_norm_squared
+        prediction_error_all = tf.concat([prediction_error_all,output_prediction_error],1)
+        regularization_penalty = regularization_penalty + tf.norm(Wh, axis=[-2,-1], ord='fro')
+        SST_y = tf.math.reduce_sum(tf.math.square(all_Yf - tf.math.reduce_mean(all_Yf, axis=0)), axis=0)
+        SSE_y = tf.math.reduce_sum(tf.math.square(all_Yf - all_Yf_predicted), axis=0)
+        SST = tf.concat([SST,SST_y],axis=0) + 1e-2
+        SSE = tf.concat([SSE,SSE_y], axis=0)
+    tf_koopman_loss = tf.math.reduce_mean(tf.math.square(prediction_error_all)) + tf.math.multiply(regularization_lambda,regularization_penalty)
+    tf_koopman_accuracy = (1 - tf.math.reduce_max(tf.divide(SSE,SST)))*100
     optimizer = tf.train.AdagradOptimizer(step_size).minimize(tf_koopman_loss)
     result = sess.run(tf.global_variables_initializer())
-    return tf_koopman_loss,optimizer,all_psiXf_predicted,all_Yf_predicted,all_Yp_predicted
+    return tf_koopman_loss,tf_koopman_accuracy,optimizer,all_psiXf_predicted,all_Yf_predicted,all_Yp_predicted
 
 # def Deep_Control_Koopman_Objective(psiyp,psiyf,Kx,psiu,Ku,step_size,learn_controllable_Koopman=0):
 # 
@@ -577,21 +641,24 @@ def get_variable_value(variable_name,prev_variable_value,reqd_data_type,lower_bo
     return variable_output
 
 
-def display_train_params(step_size_val, train_error_threshold,valid_error_threshold,max_epochs,batch_size):
+def display_train_params(step_size_val, regularization_lambda_val, train_error_threshold,valid_error_threshold,max_epochs,batch_size):
     print('======================================')
     print('CURRENT TRAINING PARAMETERS')
     print('======================================')
     print('Step Size Value            : ',step_size_val)
-    print('Train Error Threshold       : ', train_error_threshold)
+    print('Regularization Coefficient :', regularization_lambda_val)
+    print('Train Error Threshold      : ', train_error_threshold)
     print('Validation Error Threshold : ',valid_error_threshold)
     print('Maximum number of Epochs   : ', max_epochs)
     print('Batch Size   : ', batch_size)
     print('--------------------------------------')
     return
 
-def generate_hyperparam_entry(feed_dict_train,feed_dict_test,error_func,n_epochs_run,step_size_val,batch_size):
+def generate_hyperparam_entry(feed_dict_train,feed_dict_test,error_func,r2_accuracy,n_epochs_run,step_size_val,regularization_lambda_val, batch_size):
     training_error = error_func.eval(feed_dict=feed_dict_train)
     test_error = error_func.eval(feed_dict=feed_dict_test)
+    training_accuracy = r2_accuracy.eval(feed_dict=feed_dict_train)
+    test_accuracy = r2_accuracy.eval(feed_dict=feed_dict_test)
     dict_hp = {}
     dict_hp['x_hidden_variable_list'] = x_hidden_vars_list
     dict_hp['u_hidden_variable_list'] = u_hidden_vars_list
@@ -607,15 +674,60 @@ def generate_hyperparam_entry(feed_dict_train,feed_dict_test,error_func,n_epochs
     dict_hp['no of epochs'] = n_epochs_run
     dict_hp['batch size'] = batch_size
     dict_hp['step size'] = step_size_val
+    dict_hp['regularization coefficient'] = regularization_lambda_val
     dict_hp['training error'] = training_error
     dict_hp['test error'] = test_error
+    dict_hp['r^2 training accuracy'] = training_accuracy
+    dict_hp['r^2 test accuracy'] = test_accuracy
     return dict_hp
 
-def dynamic_train_net(dict_train, dict_test, Kx, deep_koopman_loss, optimizer,with_control,mix_state_and_control,with_output, train_error_threshold=1e-2,
-                                                  valid_error_threshold=1e-2, max_epochs=1000, step_size_val = 0.01, batch_size = 1):
+def static_train_net(dict_train, dict_test, Kx, deep_koopman_loss, deep_koopman_accuracy, regularization_lambda,optimizer,with_control,mix_state_and_control,with_output,ls_dict_training_params):
+    # For evaluating how the hyper parameters performed with that training
+    feed_dict_train = {xp_feed: dict_train['Xp'], xf_feed: dict_train['Xf'], regularization_lambda: ls_dict_training_params[0]['regularization coefficient']}
+    feed_dict_test = {xp_feed: dict_test['Xp'], xf_feed: dict_test['Xf'], regularization_lambda: ls_dict_training_params[0]['regularization coefficient']}
+    if with_control:
+        feed_dict_train[up_feed] = dict_train['Up']
+        feed_dict_test[up_feed] = dict_test['Up']
+        if mix_state_and_control:
+            feed_dict_train[xup_feed] = np.concatenate([dict_train['Xp'], dict_train['Up']], axis=1)
+            feed_dict_test[xup_feed] = np.concatenate([dict_test['Xp'], dict_test['Up']], axis=1)
+    if with_output:
+        feed_dict_train[yp_feed] = dict_train['Yp']
+        feed_dict_test[yp_feed] = dict_test['Yp']
+        feed_dict_train[yf_feed] = dict_train['Yf']
+        feed_dict_test[yf_feed] = dict_test['Yf']
+    # --------
+    dict_run_info = {}
+    run_info_index = 0
+    all_histories = {'train error':[], 'validation error':[]}
+    for dict_train_params_i in ls_dict_training_params:
+        step_size_val = dict_train_params_i['step size']
+        train_error_threshold = dict_train_params_i['training error']
+        valid_error_threshold = dict_train_params_i['validation error']
+        max_epochs = dict_train_params_i['no of epochs']
+        batch_size = dict_train_params_i['batch size']
+        regularization_lambda_val = dict_train_params_i['regularization coefficient']
+        display_train_params(step_size_val,regularization_lambda_val,train_error_threshold,valid_error_threshold,max_epochs,batch_size)
+        all_histories, good_start,n_epochs_run = train_net_v2(dict_train['Xp'], dict_train['Xf'], Kx, deep_koopman_loss, deep_koopman_accuracy,optimizer,dict_train['Up'],
+                                                  dict_train['Yp'],dict_train['Yf'],with_control,mix_state_and_control, with_output, train_error_threshold,
+                                                  valid_error_threshold, max_epochs, step_size_val, regularization_lambda_val, batch_size,all_histories)
+        feed_dict_train[regularization_lambda] = regularization_lambda_val
+        feed_dict_test[regularization_lambda] = regularization_lambda_val
+        dict_run_info[run_info_index] = generate_hyperparam_entry(feed_dict_train, feed_dict_test, deep_koopman_loss,deep_koopman_accuracy, n_epochs_run, step_size_val,regularization_lambda_val, batch_size)
+        print('Current Training Error  :',dict_run_info[run_info_index]['training error'])
+        print('Current Test Error      :', dict_run_info[run_info_index]['test error'])
+        # print('Current Training Accuracy  :', dict_run_info[run_info_index]['r^2 training accuracy'])
+        # print('Current Test Accuracy      :', dict_run_info[run_info_index]['r^2 test accuracy'])
+        estimate_K_stability(Kx)
+        run_info_index += 1
+        good_start = 1
+    return all_histories, good_start, dict_run_info
+
+def dynamic_train_net(dict_train, dict_test, Kx, deep_koopman_loss, deep_koopman_accuracy,regularization_lambda, optimizer,with_control,mix_state_and_control,with_output, train_error_threshold=1e-2,
+                                                  valid_error_threshold=1e-2, max_epochs=1000, step_size_val = 0.01, regularization_lambda_val = 0, batch_size = 1):
     # For evaluating how the hyperparameters performed with that training
-    feed_dict_train = {xp_feed: dict_train['Xp'], xf_feed: dict_train['Xf']}
-    feed_dict_test = {xp_feed: dict_test['Xp'], xf_feed: dict_test['Xf']}
+    feed_dict_train = {xp_feed: dict_train['Xp'], xf_feed: dict_train['Xf'], regularization_lambda: regularization_lambda_val}
+    feed_dict_test = {xp_feed: dict_test['Xp'], xf_feed: dict_test['Xf'], regularization_lambda: regularization_lambda_val}
     if with_control:
         feed_dict_train[up_feed] = dict_train['Up']
         feed_dict_test[up_feed] = dict_test['Up']
@@ -636,28 +748,31 @@ def dynamic_train_net(dict_train, dict_test, Kx, deep_koopman_loss, optimizer,wi
     while (KEEP_TRAINING):
         train_user_choice = input('Do you want to train the neural net [y/n]? ')
         if train_user_choice not in NO_CHOICE_VALUES:
-            display_train_params(step_size_val,train_error_threshold,valid_error_threshold,max_epochs,batch_size)
+            display_train_params(step_size_val,regularization_lambda_val,train_error_threshold,valid_error_threshold,max_epochs,batch_size)
             param_user_choice = input('Do you want to change the parameters [y/n]?')
             if param_user_choice not in NO_CHOICE_VALUES:
                 NOT_SATISFIED = True
                 while(NOT_SATISFIED):
                     step_size_val = get_variable_value('Step Size',step_size_val,float)
+                    regularization_lambda_val = get_variable_value('Regularization Coefficient',regularization_lambda_val,float)
                     train_error_threshold = get_variable_value('Training error threshold', train_error_threshold, float)
                     valid_error_threshold = get_variable_value('Validation error threshold',valid_error_threshold,float)
                     max_epochs = get_variable_value('Maximum number of epochs',max_epochs,int)
                     batch_size = get_variable_value('Batch size', batch_size, int)
-                    display_train_params(step_size_val,train_error_threshold,valid_error_threshold,max_epochs,batch_size)
+                    display_train_params(step_size_val, regularization_lambda_val, train_error_threshold,valid_error_threshold,max_epochs,batch_size)
                     parameter_satisfaction = input('Are these parameters fine [y/n]?')
                     if parameter_satisfaction not in NO_CHOICE_VALUES:
                         NOT_SATISFIED = False
                     else:
                         print('*** Enter the parameters again ***')
-            all_histories, good_start,n_epochs_run = train_net_v2(dict_train['Xp'], dict_train['Xf'], Kx, deep_koopman_loss, optimizer,dict_train['Up'],
+            all_histories, good_start,n_epochs_run = train_net_v2(dict_train['Xp'], dict_train['Xf'], Kx, deep_koopman_loss, deep_koopman_accuracy,optimizer,dict_train['Up'],
                                                   dict_train['Yp'],dict_train['Yf'],with_control,mix_state_and_control, with_output, train_error_threshold,
-                                                  valid_error_threshold, max_epochs, step_size_val,batch_size,all_histories)
-            dict_run_info[run_info_index] = generate_hyperparam_entry(feed_dict_train,feed_dict_test,deep_koopman_loss,n_epochs_run,step_size_val,batch_size)
+                                                  valid_error_threshold, max_epochs, step_size_val, regularization_lambda_val, batch_size,all_histories)
+            dict_run_info[run_info_index] = generate_hyperparam_entry(feed_dict_train,feed_dict_test,deep_koopman_loss, deep_koopman_accuracy,n_epochs_run,step_size_val, regularization_lambda_val,batch_size)
             print('Current Training Error  :',dict_run_info[run_info_index]['training error'])
             print('Current Test Error      :', dict_run_info[run_info_index]['test error'])
+            # print('Current Training Accuracy  :', dict_run_info[run_info_index]['r^2 training accuracy'])
+            # print('Current Test Accuracy      :', dict_run_info[run_info_index]['r^2 test accuracy'])
             estimate_K_stability(Kx)
             run_info_index += 1
         else:
@@ -666,11 +781,10 @@ def dynamic_train_net(dict_train, dict_test, Kx, deep_koopman_loss, optimizer,wi
 
     return all_histories, good_start, dict_run_info
 
-
 ##
 
-def train_net_v2(xp_all, xf_all, Kx, loss_func, optimizer, up_all=None, yp_all=None, yf_all=None, with_control=0, mix_state_and_control = 0,
-                 with_output=0, train_error_thres=1e-2, valid_error_thres=1e-2, max_epochs=100, step_size_val=0.01,
+def train_net_v2(xp_all, xf_all, Kx, loss_func, deep_koopman_accuracy, optimizer, up_all=None, yp_all=None, yf_all=None, with_control=0, mix_state_and_control = 0,
+                 with_output=0, train_error_thres=1e-2, valid_error_thres=1e-2, max_epochs=100, step_size_val=0.01, regularization_lambda_val = 0,
                  batch_size=1,all_histories ={'train error':[],'validation error':[]}):
     # ----
     # Additions from train_net() ---Figure out the purpose of these
@@ -704,8 +818,8 @@ def train_net_v2(xp_all, xf_all, Kx, loss_func, optimizer, up_all=None, yp_all=N
     else:
         yp_all_train = yf_all_train = yp_all_valid = yf_all_valid = None
     # Feed the corresponding data
-    feed_dict_train_all = {xp_feed: xp_all_train, xf_feed: xf_all_train, step_size: step_size_val}
-    feed_dict_valid_all = {xp_feed: xp_all_valid, xf_feed: xf_all_valid, step_size: step_size_val}
+    feed_dict_train_all = {xp_feed: xp_all_train, xf_feed: xf_all_train, step_size: step_size_val, regularization_lambda: regularization_lambda_val}
+    feed_dict_valid_all = {xp_feed: xp_all_valid, xf_feed: xf_all_valid, step_size: step_size_val, regularization_lambda: regularization_lambda_val}
     if with_control:
         feed_dict_train_all[up_feed] = up_all_train
         feed_dict_valid_all[up_feed] = up_all_valid
@@ -741,7 +855,7 @@ def train_net_v2(xp_all, xf_all, Kx, loss_func, optimizer, up_all=None, yp_all=N
             else:
                 yp_train_i = yf_train_i = None
             # Feed the corresponding data
-            feed_dict_train_curr = {xp_feed: xp_train_i, xf_feed: xf_train_i, step_size: step_size_val}
+            feed_dict_train_curr = {xp_feed: xp_train_i, xf_feed: xf_train_i, step_size: step_size_val, regularization_lambda: regularization_lambda_val}
             if with_output:
                 feed_dict_train_curr[yp_feed] = yp_train_i
                 feed_dict_train_curr[yf_feed] = yf_train_i
@@ -753,11 +867,15 @@ def train_net_v2(xp_all, xf_all, Kx, loss_func, optimizer, up_all=None, yp_all=N
         # After training 1 epoch
         training_error = loss_func.eval(feed_dict=feed_dict_train_all)
         validation_error = loss_func.eval(feed_dict=feed_dict_valid_all)
+        training_accuracy = deep_koopman_accuracy.eval(feed_dict=feed_dict_train_all)
+        validation_accuracy = deep_koopman_accuracy.eval(feed_dict=feed_dict_valid_all)
         all_histories['train error'].append(training_error)
         all_histories['validation error'].append(validation_error)
         if np.mod(epoch_i,DISPLAY_SAMPLE_RATE_EPOCH) == 0:
             print('Epoch No: ',epoch_i,' |   Training error: ',training_error)
             print('Validation error: '.rjust(len('Epoch No: ' + str(epoch_i) + ' |   Validation error: ')), validation_error)
+            # print('Training Accuracy: '.rjust(len('Epoch No: ' + str(epoch_i) + ' |   Training Accuracy: ')),training_accuracy)
+            # print('Validation Accuracy: '.rjust(len('Epoch No: ' + str(epoch_i) + ' |   Validation Accuracy: ')),validation_accuracy)
             estimate_K_stability(Kx)
     return all_histories,good_start,epoch_i
 
@@ -1127,9 +1245,9 @@ else:
     Yp_train = None
     Yf_test = None
     Yp_test = None
-    dict_train['Xp'] = None
+    dict_train['Yp'] = None
     dict_train['Yf'] = None
-    dict_test['Xp'] = None
+    dict_test['Yp'] = None
     dict_test['Yf'] = None
 
 # Display info
@@ -1221,6 +1339,7 @@ while good_start==0 and try_num < max_tries:
         else:
           yf_feed = yp_feed = Wh = None
         step_size = tf.placeholder(tf.float32, shape=[])
+        regularization_lambda = tf.placeholder(tf.float32, shape=[])
         # Kx definition
         if phase_space_stitching and (not with_control):
             try:
@@ -1230,12 +1349,12 @@ while good_start==0 and try_num < max_tries:
                 Kx = tf.constant(Kx_num); # this is assuming a row space (pre-multiplication) Koopman
             except:
                 print("[Warning]: No phase space prior for the Koopman Matrix Detected @ /phase_space_stitching/raws/Kmatrix_file.pickle\n . . . learning Koopman prior as a fixed variable. ");
-                no_phase_space_prior = True;
+                no_phase_space_prior = True
                 Kx = weight_variable([x_deep_dict_size + n_x_nn_inputs,x_deep_dict_size + n_x_nn_inputs]);
         else:
             Kx = weight_variable([ x_deep_dict_size + n_x_nn_inputs, x_deep_dict_size + n_x_nn_inputs]);
 
-        deep_koopman_loss,optimizer,forward_prediction,out_pred_f,out_pred_p = Deep_Output_KIC_Objective(psixp,psixf,Kx,psiup,Ku,psixup,Kxu,yf_feed,yp_feed,Wh,step_size,with_control,mix_state_and_control,with_output)
+        deep_koopman_loss, deep_koopman_accuracy, optimizer,forward_prediction,out_pred_f,out_pred_p = Deep_Output_KIC_Objective_v2(psixp,psixf,Kx,psiup,Ku,psixup,Kxu,yf_feed,yp_feed,Wh,step_size,regularization_lambda, with_control,mix_state_and_control,with_output)
 
         if debug_splash:
             train_vars = tf.trainable_variables()
@@ -1245,17 +1364,16 @@ while good_start==0 and try_num < max_tries:
             print("[DEBUG] # of datapoints in up_all_training: ") + repr(Xp.shape)
             print("[DEBUG] # of datapoints in uf_all_training: ") + repr(Xf.shape)
         print('Training begins now!')
-        # all_histories,good_start  = dynamic_train_net(up_all_training,uf_all_training,deep_koopman_loss,optimizer,U_train,Out_p_train,Out_f_train,valid_error_threshold,test_error_threshold,max_iters,step_size_val);
-        all_histories, good_start,dict_run_info = dynamic_train_net(dict_train, dict_test, Kx, deep_koopman_loss, optimizer,with_control,mix_state_and_control, with_output, train_error_threshold,
-                                                      valid_error_threshold, max_epochs, step_size_val,batch_size)
-        # all_histories,good_start  = train_net(up_all_training,uf_all_training,deep_koopman_loss,optimizer,U_train,Out_p_train,Out_f_train,valid_error_threshold,test_error_threshold,max_iters,step_size_val);
+        # # # all_histories,good_start  = dynamic_train_net(up_all_training,uf_all_training,deep_koopman_loss,optimizer,U_train,Out_p_train,Out_f_train,valid_error_threshold,test_error_threshold,max_iters,step_size_val);
+        # all_histories, good_start,dict_run_info = dynamic_train_net(dict_train, dict_test, Kx, deep_koopman_loss, deep_koopman_accuracy,regularization_lambda, optimizer,with_control,mix_state_and_control, with_output, train_error_threshold,valid_error_threshold, max_epochs, step_size_val,regularization_lambda_val, batch_size)
+        all_histories, good_start, dict_run_info = static_train_net(dict_train, dict_test, Kx, deep_koopman_loss, deep_koopman_accuracy, regularization_lambda, optimizer, with_control, mix_state_and_control,with_output, ls_dict_training_params)
+        # # # all_histories,good_start  = train_net(up_all_training,uf_all_training,deep_koopman_loss,optimizer,U_train,Out_p_train,Out_f_train,valid_error_threshold,test_error_threshold,max_iters,step_size_val);
     training_error_history_nocovar = all_histories['train error'];
     validation_error_history_nocovar =   all_histories['validation error'];
     print("[INFO] Initialization was successful: " + repr(good_start==1));
 
-    accuracy = deep_koopman_loss;#;
-    feed_dict_train = {xp_feed: dict_train['Xp'],xf_feed: dict_train['Xf']}
-    feed_dict_test  = {xp_feed: dict_test['Xp'],xf_feed: dict_test['Xf']}
+    feed_dict_train = {xp_feed: dict_train['Xp'],xf_feed: dict_train['Xf'],regularization_lambda: regularization_lambda_val}
+    feed_dict_test  = {xp_feed: dict_test['Xp'],xf_feed: dict_test['Xf'],regularization_lambda: regularization_lambda_val}
     if with_control:
         feed_dict_train[up_feed] = dict_train['Up']
         feed_dict_test[up_feed] = dict_test['Up']
@@ -1267,8 +1385,8 @@ while good_start==0 and try_num < max_tries:
         feed_dict_test[yf_feed] = dict_test['Yf']
         feed_dict_train[yp_feed] = dict_train['Yp']
         feed_dict_test[yp_feed] = dict_test['Yp']
-    train_accuracy = accuracy.eval(feed_dict = feed_dict_train)
-    test_accuracy = accuracy.eval(feed_dict=feed_dict_test)
+    train_accuracy = deep_koopman_accuracy.eval(feed_dict = feed_dict_train)
+    test_accuracy = deep_koopman_accuracy.eval(feed_dict=feed_dict_test)
 
   # if test_accuracy <= best_test_error:
   #     best_test_error = test_accuracy;
@@ -1345,6 +1463,10 @@ tf.compat.v1.add_to_collection('xpT_feed',xp_feed)
 tf.compat.v1.add_to_collection('xfT_feed',xf_feed)
 tf.compat.v1.add_to_collection('forward_prediction', forward_prediction)
 tf.compat.v1.add_to_collection('KxT',Kx)
+tf.compat.v1.add_to_collection('accuracy',deep_koopman_accuracy)
+tf.compat.v1.add_to_collection('loss_func',deep_koopman_loss)
+tf.compat.v1.add_to_collection('regularization_lambda_val',regularization_lambda_val)
+tf.compat.v1.add_to_collection('regularization_lambda',regularization_lambda)
 if with_output:
   tf.compat.v1.add_to_collection('WhT',Wh)
   tf.compat.v1.add_to_collection('ypT_feed', yp_feed)
