@@ -890,7 +890,7 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
 
 
 pre_examples_switch = 13; 
-os.chdir('/home/deepuser/Desktop/Shara/deepDMD')
+#os.chdir('/home/deepuser/Desktop/Shara/deepDMD')
 ### Randomly generated oscillator system with control
 
 
