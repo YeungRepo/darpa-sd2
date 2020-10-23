@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-### Import Packages
+### Import Packages 
 import pickle  # for data I/O
 import warnings
 
@@ -60,7 +60,7 @@ colors = np.asarray(colors);  # defines a color palette
 ###  Deep Learning Optimization Parameters ###
 
 lambd = 0.00000;
-step_size_val = 0.4  # .025;
+step_size_val = 0.5  # .025;
 regularization_lambda_val = 0
 
 batch_size = 400  # 30#900;
@@ -83,18 +83,27 @@ res_net = 0;  # Boolean condition on whether to use a resnet connection.
 
 # Explicitly mentioning the training routine
 ls_dict_training_params = []
-
-dict_training_params = {'step_size_val': 0.4, 'regularization_lambda_val': 0.00, 'train_error_threshold': float(1e-6),
+dict_training_params = {'step_size_val': 00.5, 'regularization_lambda_val': 0.00, 'train_error_threshold': float(1e-6),
                         'valid_error_threshold': float(1e-6), 'max_epochs': 50000, 'batch_size': 1200}
 ls_dict_training_params.append(dict_training_params)
-
+dict_training_params = {'step_size_val': 00.3, 'regularization_lambda_val': 0.00, 'train_error_threshold': float(1e-6),
+                        'valid_error_threshold': float(1e-6), 'max_epochs': 50000, 'batch_size': 1200}
+ls_dict_training_params.append(dict_training_params)
+dict_training_params = {'step_size_val': 0.1, 'regularization_lambda_val': 0, 'train_error_threshold': float(1e-7), 'valid_error_threshold': float(1e-7), 'max_epochs': 300000, 'batch_size': 200 }
+ls_dict_training_params.append(dict_training_params)
+dict_training_params = {'step_size_val': 0.08, 'regularization_lambda_val': 0, 'train_error_threshold': float(1e-8), 'valid_error_threshold': float(1e-8), 'max_epochs': 100000, 'batch_size': 200 }
+ls_dict_training_params.append(dict_training_params)
+dict_training_params = {'step_size_val': 0.05, 'regularization_lambda_val': 0, 'train_error_threshold': float(1e-8), 'valid_error_threshold': float(1e-8), 'max_epochs': 100000, 'batch_size': 200 }
+ls_dict_training_params.append(dict_training_params)
+dict_training_params = {'step_size_val': 0.01, 'regularization_lambda_val': 0, 'train_error_threshold': float(1e-8), 'valid_error_threshold': float(1e-8), 'max_epochs': 100000, 'batch_size': 200 }
+ls_dict_training_params.append(dict_training_params)
 
 ###  ------------------------------ Define Neural Network Hyperparameters ------------------------------
 
 # ---- STATE PARAMETERS -------
-x_deep_dict_size = 3
+x_deep_dict_size = 5
 x_max_nn_layers = 3  # x_max_layers 3 works well
-x_max_nn_nodes_limit = 6  # max width_limit -4 works well
+x_max_nn_nodes_limit = 7  # max width_limit -4 works well
 x_min_nn_nodes_limit = x_max_nn_nodes_limit  # use regularization and dropout to trim edges for now.
 
 # ---- INPUT PARAMETERS -------
@@ -523,56 +532,56 @@ def initialize_tensorflow_graph(n_u, x_deep_dict_size, hv_list, W_list, b_list, 
 #     result = sess.run(tf.global_variables_initializer())
 #     return tf_koopman_loss,optimizer,all_psiXf_predicted,all_Yf_predicted,all_Yp_predicted
 
-# def Deep_Output_KIC_Objective_v2(all_psiXp, all_psiXf, Kx, all_psiUp, Ku, all_psiXUp, Kxu, all_Yf, all_Yp, Wh,
-#                                  step_size, regularization_lambda, with_control=0, mix_state_and_control=0,
-#                                  with_output=0, learn_controllable_Koopman=0):
-#     all_psiXf_predicted = tf.matmul(all_psiXp, Kx)
-#     regularization_penalty = tf.norm(Kx, axis=[-2, -1], ord=2)
-#
-#     if with_control:
-#         all_psiXf_predicted = all_psiXf_predicted + tf.matmul(all_psiUp, Ku)
-#         regularization_penalty = regularization_penalty + tf.norm(Ku, axis=[-2, -1], ord=2)
-#         if mix_state_and_control:
-#             all_psiXf_predicted = all_psiXf_predicted + tf.matmul(all_psiXUp, Kxu)
-#             regularization_penalty = regularization_penalty + tf.norm(Kxu, axis=[-2, -1], ord=2)
-#     if learn_controllable_Koopman:
-#         print('Learning Controllable Koopman is disabled!!!')
-#         # n = np.int(Kx.get_shape()[0]);
-#         # Kut = tf.transpose(Ku);
-#         # Kxt = tf.transpose(Kx);
-#         # ctrb_matrix = Kut;
-#         # for ind in range(1,n):
-#         #     ctrb_matrix = tf.concat([ctrb_matrix,tf.matmul(tf.pow(Kxt,ind),Kut)],axis=1);
-#         #     ctrbTctrb = tf.matmul(ctrb_matrix,tf.transpose(ctrb_matrix) );
-#         #     print(ctrbTctrb.get_shape())
-#         #     ctrb_s,ctrb_v = tf.self_adjoint_eig(ctrbTctrb);
-#         #     print(tf.norm(ctrb_s,1))
-#     prediction_error_all = all_psiXf - all_psiXf_predicted
-#     SST = tf.math.reduce_sum(tf.math.square(all_psiXf - tf.math.reduce_mean(all_psiXf, axis=0)), axis=0)
-#     SSE = tf.math.reduce_sum(tf.math.square(all_psiXf - all_psiXf_predicted), axis=0)
-#     # Dealing with Output
-#     if with_output:
-#         all_Yf_predicted = tf.matmul(all_psiXf_predicted, Wh)
-#         # all_Yf_predicted = tf.matmul(all_psiXf, Wh)
-#         # all_Yp_predicted = tf.matmul(all_psiXp,Wh)
-#         all_Yp_predicted = None
-#         output_prediction_error = all_Yf - all_Yf_predicted
-#         prediction_error_all = tf.concat([prediction_error_all, output_prediction_error], 1)
-#         # regularization_penalty = regularization_penalty + tf.norm(Wh, axis=[-2,-1], ord=2)
-#         SST_y = tf.math.reduce_sum(tf.math.square(all_Yf - tf.math.reduce_mean(all_Yf, axis=0)), axis=0)
-#         SSE_y = tf.math.reduce_sum(tf.math.square(all_Yf - all_Yf_predicted), axis=0)
-#         SST = tf.concat([SST, SST_y], axis=0) + 1e-2
-#         SSE = tf.concat([SSE, SSE_y], axis=0)
-#     else:
-#         all_Yf_predicted = None
-#         all_Yp_predicted = None
-#     tf_koopman_loss = tf.math.reduce_mean(tf.math.square(prediction_error_all)) + tf.math.multiply(
-#         regularization_lambda, regularization_penalty)
-#     # tf_koopman_loss = tf.math.reduce_max(tf.math.reduce_mean(tf.math.square(prediction_error_all),0)) + tf.math.multiply(regularization_lambda,regularization_penalty)
-#     tf_koopman_accuracy = (1 - tf.math.reduce_max(tf.divide(SSE, SST))) * 100
-#     optimizer = tf.train.AdagradOptimizer(step_size).minimize(tf_koopman_loss)
-#     result = sess.run(tf.global_variables_initializer())
-#     return tf_koopman_loss, tf_koopman_accuracy, optimizer, all_psiXf_predicted, all_Yf_predicted, all_Yp_predicted
+def Deep_Output_KIC_Objective_v2(all_psiXp, all_psiXf, Kx, all_psiUp, Ku, all_psiXUp, Kxu, all_Yf, all_Yp, Wh,
+                                 step_size, regularization_lambda, with_control=0, mix_state_and_control=0,
+                                 with_output=0, learn_controllable_Koopman=0):
+    all_psiXf_predicted = tf.matmul(all_psiXp, Kx)
+    regularization_penalty = tf.norm(Kx, axis=[-2, -1], ord=2)
+
+    if with_control:
+        all_psiXf_predicted = all_psiXf_predicted + tf.matmul(all_psiUp, Ku)
+        regularization_penalty = regularization_penalty + tf.norm(Ku, axis=[-2, -1], ord=2)
+        if mix_state_and_control:
+            all_psiXf_predicted = all_psiXf_predicted + tf.matmul(all_psiXUp, Kxu)
+            regularization_penalty = regularization_penalty + tf.norm(Kxu, axis=[-2, -1], ord=2)
+    if learn_controllable_Koopman:
+        print('Learning Controllable Koopman is disabled!!!')
+        # n = np.int(Kx.get_shape()[0]);
+        # Kut = tf.transpose(Ku);
+        # Kxt = tf.transpose(Kx);
+        # ctrb_matrix = Kut;
+        # for ind in range(1,n):
+        #     ctrb_matrix = tf.concat([ctrb_matrix,tf.matmul(tf.pow(Kxt,ind),Kut)],axis=1);
+        #     ctrbTctrb = tf.matmul(ctrb_matrix,tf.transpose(ctrb_matrix) );
+        #     print(ctrbTctrb.get_shape())
+        #     ctrb_s,ctrb_v = tf.self_adjoint_eig(ctrbTctrb);
+        #     print(tf.norm(ctrb_s,1))
+    prediction_error_all = all_psiXf - all_psiXf_predicted
+    SST = tf.math.reduce_sum(tf.math.square(all_psiXf - tf.math.reduce_mean(all_psiXf, axis=0)), axis=0)
+    SSE = tf.math.reduce_sum(tf.math.square(all_psiXf - all_psiXf_predicted), axis=0)
+    # Dealing with Output
+    if with_output:
+        all_Yf_predicted = tf.matmul(all_psiXf_predicted, Wh)
+        # all_Yf_predicted = tf.matmul(all_psiXf, Wh)
+        # all_Yp_predicted = tf.matmul(all_psiXp,Wh)
+        all_Yp_predicted = None
+        output_prediction_error = all_Yf - all_Yf_predicted
+        prediction_error_all = tf.concat([prediction_error_all, output_prediction_error], 1)
+        # regularization_penalty = regularization_penalty + tf.norm(Wh, axis=[-2,-1], ord=2)
+        SST_y = tf.math.reduce_sum(tf.math.square(all_Yf - tf.math.reduce_mean(all_Yf, axis=0)), axis=0)
+        SSE_y = tf.math.reduce_sum(tf.math.square(all_Yf - all_Yf_predicted), axis=0)
+        SST = tf.concat([SST, SST_y], axis=0) + 1e-2
+        SSE = tf.concat([SSE, SSE_y], axis=0)
+    else:
+        all_Yf_predicted = None
+        all_Yp_predicted = None
+    tf_koopman_loss = tf.math.reduce_mean(tf.math.square(prediction_error_all)) + tf.math.multiply(
+        regularization_lambda, regularization_penalty)
+    # tf_koopman_loss = tf.math.reduce_max(tf.math.reduce_mean(tf.math.square(prediction_error_all),0)) + tf.math.multiply(regularization_lambda,regularization_penalty)
+    tf_koopman_accuracy = (1 - tf.math.reduce_max(tf.divide(SSE, SST))) * 100
+    optimizer = tf.train.AdagradOptimizer(step_size).minimize(tf_koopman_loss)
+    result = sess.run(tf.global_variables_initializer())
+    return tf_koopman_loss, tf_koopman_accuracy, optimizer, all_psiXf_predicted, all_Yf_predicted, all_Yp_predicted
 
 def Deep_Output_KIC_Objective_v3(dict_feed,dict_psi,dict_K, with_control=0, mix_state_and_control=0,with_output=0):
     dict_predictions ={}
@@ -585,6 +594,8 @@ def Deep_Output_KIC_Objective_v3(dict_feed,dict_psi,dict_K, with_control=0, mix_
         if mix_state_and_control:
             psiXf_predicted = psiXf_predicted + tf.matmul(dict_psi['xupT'], dict_K['KxuT'])
             # regularization_penalty = regularization_penalty + tf.norm(dict_K['KxuT'], axis=[-2, -1], ord=2)
+
+
     all_prediction_error = dict_psi['xfT'] - psiXf_predicted
     SST_x = tf.math.reduce_sum(tf.math.square(dict_psi['xfT'] - tf.math.reduce_mean(dict_psi['xfT'], axis=0)), axis=0)
     SSE_x = tf.math.reduce_sum(tf.math.square(all_prediction_error), axis=0)
@@ -595,9 +606,7 @@ def Deep_Output_KIC_Objective_v3(dict_feed,dict_psi,dict_K, with_control=0, mix_
     if with_output:
         Yf_predicted = tf.matmul(psiXf_predicted, dict_K['WhT'])
         # Yf_predicted = tf.matmul(dict_psi['xfT'], dict_K['WhT'])
-        print(Yf_predicted)
         Yf_prediction_error = dict_feed['yfT'] - Yf_predicted
-        print(Yf_prediction_error)
         all_prediction_error = tf.concat([all_prediction_error, Yf_prediction_error], 1)
         # regularization_penalty = regularization_penalty + tf.norm(Wh, axis=[-2,-1], ord=2)
         SST_y = tf.math.reduce_sum(tf.math.square(dict_feed['yfT'] - tf.math.reduce_mean(dict_feed['yfT'], axis=0)), axis=0)
@@ -617,49 +626,11 @@ def Deep_Output_KIC_Objective_v3(dict_feed,dict_psi,dict_K, with_control=0, mix_
     tf_koopman_loss = tf.math.reduce_mean(tf.math.square(all_prediction_error)) + tf.math.multiply(dict_feed['regularization_lambda'], regularization_penalty)
     # tf_koopman_loss = tf.math.reduce_max(tf.math.reduce_mean(tf.math.square(prediction_error_all),0)) + tf.math.multiply(regularization_lambda,regularization_penalty)
     tf_koopman_accuracy = (1 - tf.math.reduce_max(tf.divide(SSE, SST))) * 100
-    optimizer = tf.compat.v1.train.AdagradOptimizer(dict_feed['step_size']).minimize(tf_koopman_loss)
+    optimizer = tf.train.AdagradOptimizer(dict_feed['step_size']).minimize(tf_koopman_loss)
     result = sess.run(tf.global_variables_initializer())
     return tf_koopman_loss, optimizer,dict_predictions
 
-# def optimize_K_given_psi(dict_feed,dict_psi,dict_K,feed_dict_data, with_control=0, mix_state_and_control=0,with_output=0):
-#     # dict_fed = get_fed_dict(dict_feed,dict_data, with_control, mix_state_and_control, with_output)
-#     dict_psi_num = {}
-#     for items in dict_psi.keys():
-#         dict_psi_num[items] = tf.constant(dict_psi[items].eval(feed_dict=feed_dict_data))
-#     Yf_num = tf.constant(dict_feed['yfT'].eval(feed_dict=feed_dict_data))
-#     psiXf_predicted = tf.matmul(dict_psi_num['xpT'], dict_K['KxT'])
-#     if with_control:
-#         psiXf_predicted = psiXf_predicted + tf.matmul(dict_psi_num['upT'], dict_K['KuT'])
-#         if mix_state_and_control:
-#             psiXf_predicted = psiXf_predicted + tf.matmul(dict_psi_num['xupT'], dict_K['KxuT'])
-#     all_prediction_error = dict_psi_num['xfT'] - psiXf_predicted
-#     if with_output:
-#         Yf_predicted = tf.matmul(psiXf_predicted, dict_K['WhT'])
-#         Yf_prediction_error = Yf_num - Yf_predicted
-#         all_prediction_error = tf.concat([all_prediction_error, Yf_prediction_error], 1)
-#     loss_func = tf.math.reduce_mean(tf.math.square(all_prediction_error))
-#     optimizer = tf.train.AdagradOptimizer(dict_feed['step_size']).minimize(loss_func)
-#     sess.run(tf.global_variables_initializer())
-#     return loss_func, optimizer
-#
-# def optimize_psi_given_psi(dict_feed,dict_psi,dict_K, with_control=0, mix_state_and_control=0,with_output=0):
-#     dict_K_num = {}
-#     for items in dict_K.keys():
-#         dict_K_num[items] = dict_K[items].eval()
-#     psiXf_predicted = tf.matmul(dict_psi['xpT'], dict_K_num['KxT'])
-#     if with_control:
-#         psiXf_predicted = psiXf_predicted + tf.matmul(dict_psi['upT'], dict_K_num['KuT'])
-#         if mix_state_and_control:
-#             psiXf_predicted = psiXf_predicted + tf.matmul(dict_psi['xupT'], dict_K_num['KxuT'])
-#     all_prediction_error = dict_psi['xfT'] - psiXf_predicted
-#     if with_output:
-#         Yf_predicted = tf.matmul(psiXf_predicted, dict_K_num['WhT'])
-#         Yf_prediction_error = dict_feed['yfT'] - Yf_predicted
-#         all_prediction_error = tf.concat([all_prediction_error, Yf_prediction_error], 1)
-#     loss_func = tf.math.reduce_mean(tf.math.square(all_prediction_error))
-#     optimizer = tf.train.AdagradOptimizer(dict_feed['step_size']).minimize(loss_func)
-#     sess.run(tf.global_variables_initializer())
-#     return loss_func, optimizer
+# def optimize_K_given_psi(psi_data,K_all,):
 
 
 
@@ -804,6 +775,7 @@ def static_train_net(dict_train, dict_valid, dict_feed, dict_psi, dict_K, ls_dic
     except:
         run_info_index = 0
     for dict_train_params_i in ls_dict_training_params:
+        print(dict_train_params_i)
         display_train_params(dict_train_params_i)
         all_histories, good_start, n_epochs_run = train_net_v2(dict_train,feed_dict_train, feed_dict_valid, dict_feed, dict_psi, dict_K,
                                                                deep_koopman_loss, optimizer,dict_train_params_i,all_histories)
@@ -874,12 +846,7 @@ def dynamic_train_net(dict_train, dict_valid, dict_feed, dict_psi, dict_K, dict_
             good_start = 0
     return all_histories, good_start, dict_run_info
 
-def train_net_v2(dict_train, feed_dict_train, feed_dict_valid, dict_feed, dict_psi, dict_K, loss_func,optimizer, dict_run_params, all_histories={'train error': [], 'validation error': []}):
-    # iterative_optimize_input = input('Do iterative optimization?')
-    # if iterative_optimize_input in ['n','No','N','0','False','no']:
-    #     iterative_optimization = False
-    # else:
-    #     iterative_optimization = True
+def train_net_v2(dict_train, feed_dict_train, feed_dict_valid, dict_feed, dict_psi, dict_K, loss_func,optimizer, dict_run_params, all_histories={'train error': [], 'validation error': []},iterative_optimization = False):
     # -----------------------------
     # Initialization
     # -----------------------------
@@ -889,12 +856,6 @@ def train_net_v2(dict_train, feed_dict_train, feed_dict_valid, dict_feed, dict_p
     epoch_i = 0
     training_error = 100
     validation_error = 100
-    # K_optimize = False
-    feed_dict_train[dict_feed['regularization_lambda']] = dict_run_params['regularization_lambda_val']
-    feed_dict_valid[dict_feed['regularization_lambda']] = dict_run_params['regularization_lambda_val']
-    # if iterative_optimization:
-    #     K_optimize = True
-    #     loss_func,optimizer = optimize_K_given_psi(dict_feed,dict_psi,dict_K,feed_dict_train,dict_run_params['with_u'],dict_run_params['with_xu'],dict_run_params['with_y'])
     # -----------------------------
     # Actual training
     # -----------------------------
@@ -919,10 +880,10 @@ def train_net_v2(dict_train, feed_dict_train, feed_dict_valid, dict_feed, dict_p
             feed_dict_train_curr = get_fed_dict(dict_feed,dict_train_i,dict_run_params['with_u'],dict_run_params['with_xu'],dict_run_params['with_y'])
             feed_dict_train_curr[dict_feed['step_size']] = dict_run_params['step_size_val']
             feed_dict_train_curr[dict_feed['regularization_lambda']] = dict_run_params['regularization_lambda_val']
-            # print(optimizer)
-            # print(feed_dict_train_curr)
             optimizer.run(feed_dict=feed_dict_train_curr)
         # After training 1 epoch
+        feed_dict_train[dict_feed['regularization_lambda']] = dict_run_params['regularization_lambda_val']
+        feed_dict_valid[dict_feed['regularization_lambda']] = dict_run_params['regularization_lambda_val']
         training_error = loss_func.eval(feed_dict=feed_dict_train)
         validation_error = loss_func.eval(feed_dict=feed_dict_valid)
         all_histories['train error'].append(training_error)
@@ -1342,7 +1303,7 @@ while good_start == 0 and try_num < max_tries:
         print("\n Initialization attempt number: ") + repr(try_num);
         print("\n \t Initializing Tensorflow Residual ELU Network with ") + repr(n_x_nn_inputs) + (
             " inputs and ") + repr(n_x_nn_outputs) + (" outputs and ") + repr(len(x_hidden_vars_list)) + (" layers");
-    with tf.device('/GPU:1'):
+    with tf.device('/cpu:0'):
         dict_feed = {}
         dict_psi = {}
         dict_K ={}
@@ -1438,7 +1399,9 @@ while good_start == 0 and try_num < max_tries:
         #     with_control, mix_state_and_control, with_output)
 
         deep_koopman_loss, optimizer,dict_predictions = Deep_Output_KIC_Objective_v3(dict_feed,dict_psi,dict_K, with_control, mix_state_and_control, with_output)
-        print(optimizer)
+
+
+
         if debug_splash:
             train_vars = tf.trainable_variables()
             values = sess.run([x.name for x in train_vars])
