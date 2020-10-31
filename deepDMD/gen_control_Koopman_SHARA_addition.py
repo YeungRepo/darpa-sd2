@@ -597,7 +597,7 @@ def Deep_Output_KIC_Objective_v3(dict_feed,dict_psi,dict_K, with_control=0, mix_
 
 
     all_prediction_error = dict_psi['xfT'] - psiXf_predicted
-    SST_x = tf.math.reduce_sum(tf.math.square(dict_psi['xfT'] - tf.math.reduce_mean(dict_psi['xfT'], axis=0)), axis=0)
+    SST_x = tf.math.reduce_sum(tf.math.square(dict_psi['xfT']), axis=0)
     SSE_x = tf.math.reduce_sum(tf.math.square(all_prediction_error), axis=0)
     dict_predictions['xfT'] = psiXf_predicted
     dict_predictions['xfT_error'] = dict_psi['xfT'] - psiXf_predicted
@@ -609,7 +609,7 @@ def Deep_Output_KIC_Objective_v3(dict_feed,dict_psi,dict_K, with_control=0, mix_
         Yf_prediction_error = dict_feed['yfT'] - Yf_predicted
         all_prediction_error = tf.concat([all_prediction_error, Yf_prediction_error], 1)
         # regularization_penalty = regularization_penalty + tf.norm(Wh, axis=[-2,-1], ord=2)
-        SST_y = tf.math.reduce_sum(tf.math.square(dict_feed['yfT'] - tf.math.reduce_mean(dict_feed['yfT'], axis=0)), axis=0)
+        SST_y = tf.math.reduce_sum(tf.math.square(dict_feed['yfT']), axis=0)
         SSE_y = tf.math.reduce_sum(tf.math.square(Yf_prediction_error), axis=0)
         SST = tf.concat([SST_x, SST_y], axis=0)
         SSE = tf.concat([SSE_x, SSE_y], axis=0)
@@ -618,6 +618,8 @@ def Deep_Output_KIC_Objective_v3(dict_feed,dict_psi,dict_K, with_control=0, mix_
         dict_predictions['yfT_accuracy'] = (1 - tf.math.reduce_max(tf.divide(SSE_y, SST_y))) * 100
         dict_predictions['model_accuracy'] = (1 - tf.math.reduce_max(tf.divide(SSE, SST))) * 100
     else:
+        SST = SST_x
+        SSE = SSE_x
         dict_predictions['yfT'] = 0
         dict_predictions['yfT_error'] = 0
         dict_predictions['yft_accuracy'] = 0
@@ -780,7 +782,6 @@ def static_train_net(dict_train, dict_valid, dict_feed, dict_psi, dict_K, ls_dic
         all_histories, good_start, n_epochs_run = train_net_v2(dict_train,feed_dict_train, feed_dict_valid, dict_feed, dict_psi, dict_K,
                                                                deep_koopman_loss, optimizer,dict_train_params_i,all_histories)
         feed_dict_train.update({dict_feed['regularization_lambda']: dict_train_params_i['regularization_lambda_val']})
-        feed_dict_valid.update({dict_feed['regularization_lambda']: dict_train_params_i['regularization_lambda_val']})
         dict_run_info[run_info_index] = generate_hyperparam_entry(feed_dict_train, feed_dict_valid,deep_koopman_loss, dict_predictions['model_accuracy'],n_epochs_run, dict_train_params_i)
         print('Current Training Error  :', dict_run_info[run_info_index]['training error'])
         print('Current Validation Error      :', dict_run_info[run_info_index]['validation error'])
@@ -883,7 +884,6 @@ def train_net_v2(dict_train, feed_dict_train, feed_dict_valid, dict_feed, dict_p
             optimizer.run(feed_dict=feed_dict_train_curr)
         # After training 1 epoch
         feed_dict_train[dict_feed['regularization_lambda']] = dict_run_params['regularization_lambda_val']
-        feed_dict_valid[dict_feed['regularization_lambda']] = dict_run_params['regularization_lambda_val']
         training_error = loss_func.eval(feed_dict=feed_dict_train)
         validation_error = loss_func.eval(feed_dict=feed_dict_valid)
         all_histories['train error'].append(training_error)
@@ -1162,11 +1162,11 @@ if pre_examples_switch == 12:
     phase_space_stitching = 0;
 
 if pre_examples_switch == 13:
-    # data_suffix = 'Pputida_GrowthHarness_RNAseq_DeepDMD.pickle'#'SIM1SHARA_Combinatorial_Promoters_with_input';#'X8SS_Pputida_RNASeqDATA.pickle';
+    data_suffix = 'Pputida_GrowthHarness_RNAseq_DeepDMD.pickle'#'SIM1SHARA_Combinatorial_Promoters_with_input';#'X8SS_Pputida_RNASeqDATA.pickle';
     # data_suffix = 'oc_deepDMD_FeedForwardLoopSystem.pickle'
-    data_suffix = 'oc_deepDMD_ClosedKoopmanSystem.pickle'
+    # data_suffix = 'oc_deepDMD_ClosedKoopmanSystem.pickle'
     with_control = 0;
-    with_output = 1;
+    with_output = 0;
     mix_state_and_control = 0;
     phase_space_stitching = 0;
 
@@ -1335,11 +1335,12 @@ while good_start == 0 and try_num < max_tries:
                 Kx = tf.concat([Kx, last_row], axis=1)
             else:
                 Kx = weight_variable([x_deep_dict_size + n_x_nn_inputs, x_deep_dict_size + n_x_nn_inputs])
-        dict_feed ['xpT'] = xp_feed
-        dict_feed ['xfT'] = xf_feed
-        dict_psi ['xpT'] = psixp
-        dict_psi['xfT'] = psixf
-        dict_K['KxT'] = Kx
+            print('Kx initiation done!')
+        dict_feed ['xpT'] = xp_feed;
+        dict_feed ['xfT'] = xf_feed;
+        dict_psi ['xpT'] = psixp;
+        dict_psi['xfT'] = psixf;
+        dict_K['KxT'] = Kx;
         if with_control:
             Wu_list, bu_list = initialize_Wblist(n_u_nn_inputs, u_hidden_vars_list)
             u_params_list = {'no of base observables': n_u_nn_inputs,
@@ -1347,9 +1348,9 @@ while good_start == 0 and try_num < max_tries:
                              'hidden_var_list': u_hidden_vars_list, 'W_list': Wu_list, 'b_list': bu_list,
                              'keep_prob': keep_prob, 'activation flag': activation_flag, 'res_net': res_net,
                              'include state': True, 'add bias': add_bias}
-            psiupz_list, psiup, up_feed = instantiate_comp_graph(u_params_list)
-            dict_feed['upT'] = up_feed
-            dict_psi['upT'] = psiup
+            psiupz_list, psiup, up_feed = instantiate_comp_graph(u_params_list);
+            dict_feed['upT'] = up_feed;
+            dict_psi['upT'] = psiup;
             if add_bias:
                 Ku = weight_variable([u_deep_dict_size + n_u_nn_inputs + 1, x_deep_dict_size + n_x_nn_inputs + 1])
             else:
@@ -1427,6 +1428,7 @@ while good_start == 0 and try_num < max_tries:
                            'valid_error_threshold': valid_error_threshold, 'max_epochs': max_epochs,
                            'batch_size': batch_size, 'with_u': with_control, 'with_y': with_output,
                            'with_xu': mix_state_and_control}
+        print('SUCCESSFULLY HERE')
         all_histories, good_start, dict_run_info = dynamic_train_net(dict_train, dict_valid, dict_feed, dict_psi,dict_K, dict_run_params, deep_koopman_loss, optimizer, dict_predictions,all_histories,dict_run_info)
         # # # all_histories,good_start  = train_net(up_all_training,uf_all_training,deep_koopman_loss,optimizer,U_train,Out_p_train,Out_f_train,valid_error_threshold,test_error_threshold,max_iters,step_size_val);
     training_error_history_nocovar = all_histories['train error'];
@@ -1454,23 +1456,13 @@ while good_start == 0 and try_num < max_tries:
     train_accuracy = deep_koopman_loss.eval(feed_dict=feed_dict_train)
     test_accuracy = deep_koopman_loss.eval(feed_dict=feed_dict_test)
 
-    # if test_accuracy <= best_test_error:
-    #     best_test_error = test_accuracy;
-    #     best_depth = n_depth;
-    #     best_width = min_width;
-    #
-    #     if debug_splash:
-    #       print("[DEBUG]: Regularization penalty: " + repr(sess.run(reg_term(Wy_list))));
-    #     np.set_printoptions(precision=2,suppress=True);
-    #     if debug_splash:
-    #       print("[DEBUG]: " + repr(np.asarray(sess.run(Wy_list[0]).tolist())));
     if debug_splash:
         print("[Result]: Training Error: ");
         print(train_accuracy);
         print("[Result]: Test Error : ");
         print(test_accuracy);
 ### Write Vars to Checkpoint Files/MetaFiles
-# Creating a fo;lder for saving the objects of the current run
+# Creating a folder for saving the objects of the current run
 FOLDER_NAME = '_current_run_saved_files'
 if os.path.exists(FOLDER_NAME):
     shutil.rmtree(FOLDER_NAME)  # Delete the folder and all the contents inside it

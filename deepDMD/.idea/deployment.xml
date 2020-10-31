@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="Always" serverName="deepuser@optictensor.me.ucsb.edu:22" autoUploadExternalChanges="true">
+  <component name="PublishConfigData" autoUpload="Always" serverName="deepuser@microtensor.me.ucsb.edu:22" autoUploadExternalChanges="true">
     <serverData>
+      <paths name="deepuser@microtensor.me.ucsb.edu:22">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/home/deepuser/Desktop/Shara/deepDMD" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
       <paths name="deepuser@optictensor.me.ucsb.edu:22">
         <serverdata>
           <mappings>
