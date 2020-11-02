@@ -35,6 +35,8 @@ import os
 import shutil
 import pandas as pd
 
+REMOVE_PREVIOUS_RUNDATA = False
+
 ### Process Control Flags : User Defined (dev-note: run as a separate instance of code?)
 # with_control = 1;  # This activates the closed-loop deep Koopman learning algorithm; requires input and state data, historical model parameter.  Now it is specified along with the dataset file path below.
 plot_deep_basis = 0;  # This activates plotting of deep basis functions as a function of training iterations.
@@ -84,26 +86,26 @@ res_net = 0;  # Boolean condition on whether to use a resnet connection.
 # Explicitly mentioning the training routine
 ls_dict_training_params = []
 dict_training_params = {'step_size_val': 00.5, 'regularization_lambda_val': 0.00, 'train_error_threshold': float(1e-6),
-                        'valid_error_threshold': float(1e-6), 'max_epochs': 50000, 'batch_size': 1200}
+                        'valid_error_threshold': float(1e-6), 'max_epochs': 5000, 'batch_size': 45}
 ls_dict_training_params.append(dict_training_params)
 dict_training_params = {'step_size_val': 00.3, 'regularization_lambda_val': 0.00, 'train_error_threshold': float(1e-6),
-                        'valid_error_threshold': float(1e-6), 'max_epochs': 50000, 'batch_size': 1200}
+                        'valid_error_threshold': float(1e-6), 'max_epochs': 5000, 'batch_size': 45}
 ls_dict_training_params.append(dict_training_params)
-dict_training_params = {'step_size_val': 0.1, 'regularization_lambda_val': 0, 'train_error_threshold': float(1e-7), 'valid_error_threshold': float(1e-7), 'max_epochs': 300000, 'batch_size': 200 }
-ls_dict_training_params.append(dict_training_params)
-dict_training_params = {'step_size_val': 0.08, 'regularization_lambda_val': 0, 'train_error_threshold': float(1e-8), 'valid_error_threshold': float(1e-8), 'max_epochs': 100000, 'batch_size': 200 }
-ls_dict_training_params.append(dict_training_params)
-dict_training_params = {'step_size_val': 0.05, 'regularization_lambda_val': 0, 'train_error_threshold': float(1e-8), 'valid_error_threshold': float(1e-8), 'max_epochs': 100000, 'batch_size': 200 }
-ls_dict_training_params.append(dict_training_params)
-dict_training_params = {'step_size_val': 0.01, 'regularization_lambda_val': 0, 'train_error_threshold': float(1e-8), 'valid_error_threshold': float(1e-8), 'max_epochs': 100000, 'batch_size': 200 }
-ls_dict_training_params.append(dict_training_params)
+# dict_training_params = {'step_size_val': 0.1, 'regularization_lambda_val': 0, 'train_error_threshold': float(1e-7), 'valid_error_threshold': float(1e-7), 'max_epochs': 3000, 'batch_size': 45 }
+# ls_dict_training_params.append(dict_training_params)
+# dict_training_params = {'step_size_val': 0.08, 'regularization_lambda_val': 0, 'train_error_threshold': float(1e-8), 'valid_error_threshold': float(1e-8), 'max_epochs': 5000, 'batch_size': 45 }
+# ls_dict_training_params.append(dict_training_params)
+# dict_training_params = {'step_size_val': 0.05, 'regularization_lambda_val': 0, 'train_error_threshold': float(1e-8), 'valid_error_threshold': float(1e-8), 'max_epochs': 5000, 'batch_size': 45 }
+# ls_dict_training_params.append(dict_training_params)
+# dict_training_params = {'step_size_val': 0.01, 'regularization_lambda_val': 0, 'train_error_threshold': float(1e-8), 'valid_error_threshold': float(1e-8), 'max_epochs': 5000, 'batch_size': 45 }
+# ls_dict_training_params.append(dict_training_params)
 
 ###  ------------------------------ Define Neural Network Hyperparameters ------------------------------
 
 # ---- STATE PARAMETERS -------
 x_deep_dict_size = 5
 x_max_nn_layers = 3  # x_max_layers 3 works well
-x_max_nn_nodes_limit = 7  # max width_limit -4 works well
+x_max_nn_nodes_limit = 10  # max width_limit -4 works well
 x_min_nn_nodes_limit = x_max_nn_nodes_limit  # use regularization and dropout to trim edges for now.
 
 # ---- INPUT PARAMETERS -------
@@ -777,11 +779,11 @@ def static_train_net(dict_train, dict_valid, dict_feed, dict_psi, dict_K, ls_dic
     except:
         run_info_index = 0
     for dict_train_params_i in ls_dict_training_params:
-        print(dict_train_params_i)
         display_train_params(dict_train_params_i)
         all_histories, good_start, n_epochs_run = train_net_v2(dict_train,feed_dict_train, feed_dict_valid, dict_feed, dict_psi, dict_K,
                                                                deep_koopman_loss, optimizer,dict_train_params_i,all_histories)
         feed_dict_train.update({dict_feed['regularization_lambda']: dict_train_params_i['regularization_lambda_val']})
+        feed_dict_valid.update({dict_feed['regularization_lambda']: dict_train_params_i['regularization_lambda_val']})
         dict_run_info[run_info_index] = generate_hyperparam_entry(feed_dict_train, feed_dict_valid,deep_koopman_loss, dict_predictions['model_accuracy'],n_epochs_run, dict_train_params_i)
         print('Current Training Error  :', dict_run_info[run_info_index]['training error'])
         print('Current Validation Error      :', dict_run_info[run_info_index]['validation error'])
@@ -884,6 +886,7 @@ def train_net_v2(dict_train, feed_dict_train, feed_dict_valid, dict_feed, dict_p
             optimizer.run(feed_dict=feed_dict_train_curr)
         # After training 1 epoch
         feed_dict_train[dict_feed['regularization_lambda']] = dict_run_params['regularization_lambda_val']
+        feed_dict_valid[dict_feed['regularization_lambda']] = dict_run_params['regularization_lambda_val']
         training_error = loss_func.eval(feed_dict=feed_dict_train)
         validation_error = loss_func.eval(feed_dict=feed_dict_valid)
         all_histories['train error'].append(training_error)
@@ -1059,6 +1062,27 @@ def train_net_v2(dict_train, feed_dict_train, feed_dict_valid, dict_feed, dict_p
 #   plt.close();
 #   return all_histories,good_start;
 
+# Functions for storing the data
+def remove_past_run_data():
+    FOLDER_NAME = '_current_run_saved_files'
+    if os.path.exists(FOLDER_NAME):
+        shutil.rmtree(FOLDER_NAME)  # Delete the folder and all the contents inside it
+    os.mkdir(FOLDER_NAME)  # Recreate the folder
+    return
+
+def generate_next_run_directory():
+    main_folder = '_current_run_saved_files'
+    list_folders = os.listdir(main_folder)
+    highest_run_number = 0
+    for items in os.listdir(main_folder):
+        if str(items[0:4]) == 'RUN_':
+            highest_run_number = np.max([highest_run_number, int(items[4:])])
+        else:
+            list_folders.remove(items)
+    FOLDER_NAME = main_folder + '/RUN_' + str(highest_run_number + 1)
+    os.mkdir(FOLDER_NAME)
+    return FOLDER_NAME
+
 # # # END HELPER FUNCTIONS # # #
 
 
@@ -1162,11 +1186,11 @@ if pre_examples_switch == 12:
     phase_space_stitching = 0;
 
 if pre_examples_switch == 13:
-    data_suffix = 'Pputida_GrowthHarness_RNAseq_DeepDMD.pickle'#'SIM1SHARA_Combinatorial_Promoters_with_input';#'X8SS_Pputida_RNASeqDATA.pickle';
+    # data_suffix = 'Pputida_GrowthHarness_RNAseq_DeepDMD.pickle'#'SIM1SHARA_Combinatorial_Promoters_with_input';#'X8SS_Pputida_RNASeqDATA.pickle';
     # data_suffix = 'oc_deepDMD_FeedForwardLoopSystem.pickle'
-    # data_suffix = 'oc_deepDMD_ClosedKoopmanSystem.pickle'
+    data_suffix = 'oc_deepDMD_ClosedKoopmanSystem.pickle'
     with_control = 0;
-    with_output = 0;
+    with_output = 1;
     mix_state_and_control = 0;
     phase_space_stitching = 0;
 
@@ -1429,7 +1453,7 @@ while good_start == 0 and try_num < max_tries:
                            'batch_size': batch_size, 'with_u': with_control, 'with_y': with_output,
                            'with_xu': mix_state_and_control}
         print('SUCCESSFULLY HERE')
-        all_histories, good_start, dict_run_info = dynamic_train_net(dict_train, dict_valid, dict_feed, dict_psi,dict_K, dict_run_params, deep_koopman_loss, optimizer, dict_predictions,all_histories,dict_run_info)
+        # all_histories, good_start, dict_run_info = dynamic_train_net(dict_train, dict_valid, dict_feed, dict_psi,dict_K, dict_run_params, deep_koopman_loss, optimizer, dict_predictions,all_histories,dict_run_info)
         # # # all_histories,good_start  = train_net(up_all_training,uf_all_training,deep_koopman_loss,optimizer,U_train,Out_p_train,Out_f_train,valid_error_threshold,test_error_threshold,max_iters,step_size_val);
     training_error_history_nocovar = all_histories['train error'];
     validation_error_history_nocovar = all_histories['validation error'];
@@ -1463,10 +1487,9 @@ while good_start == 0 and try_num < max_tries:
         print(test_accuracy);
 ### Write Vars to Checkpoint Files/MetaFiles
 # Creating a folder for saving the objects of the current run
-FOLDER_NAME = '_current_run_saved_files'
-if os.path.exists(FOLDER_NAME):
-    shutil.rmtree(FOLDER_NAME)  # Delete the folder and all the contents inside it
-os.mkdir(FOLDER_NAME)  # Recreate the folder
+if REMOVE_PREVIOUS_RUNDATA:
+    remove_past_run_data()
+FOLDER_NAME = generate_next_run_directory()
 
 Kx_num = sess.run(Kx)
 Wx_list_num = [sess.run(W_temp) for W_temp in Wx_list]
