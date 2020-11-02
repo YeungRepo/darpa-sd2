@@ -1072,13 +1072,16 @@ def remove_past_run_data():
 
 def generate_next_run_directory():
     main_folder = '_current_run_saved_files'
-    list_folders = os.listdir(main_folder)
-    highest_run_number = 0
-    for items in os.listdir(main_folder):
-        if str(items[0:4]) == 'RUN_':
-            highest_run_number = np.max([highest_run_number, int(items[4:])])
-        else:
-            list_folders.remove(items)
+    highest_run_number = -1
+    if os.path.exists(main_folder):
+        list_folders = os.listdir(main_folder)
+        for items in os.listdir(main_folder):
+            if str(items[0:4]) == 'RUN_':
+                highest_run_number = np.max([highest_run_number, int(items[4:])])
+            else:
+                list_folders.remove(items)
+    else:
+        os.mkdir(main_folder)
     FOLDER_NAME = main_folder + '/RUN_' + str(highest_run_number + 1)
     os.mkdir(FOLDER_NAME)
     return FOLDER_NAME
