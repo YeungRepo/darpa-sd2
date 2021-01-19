@@ -19,6 +19,7 @@ import cvxpy;
 
 # Tensorflow Packages
 import tensorflow as tf;
+tf.compat.v1.disable_eager_execution()
 
 # Plotting Tools for Visualizing Basis Functions
 import matplotlib
@@ -77,13 +78,13 @@ res_net = 0;   # Boolean condition on whether to use a resnet connection.
 
 # # #  PARAMS END # # # 
 
-sess = tf.InteractiveSession();
+sess = tf.compat.v1.InteractiveSession();
 
 
 def reg_term(Wlist):
-  output = tf.reduce_sum(tf.abs(Wlist[0]));
+  output = tf.reduce_sum(input_tensor=tf.abs(Wlist[0]));
   for k in range(1,len(Wlist)):
-    output += tf.reduce_sum(tf.abs(Wlist[k]));
+    output += tf.reduce_sum(input_tensor=tf.abs(Wlist[k]));
   return output;
 
 
@@ -311,20 +312,20 @@ def xavier_init(n_inputs, n_outputs, uniform=True):
   if uniform:
     # 6 was used in the paper.
     init_range = math.sqrt(6.0 / (n_inputs + n_outputs))
-    return tf.random_uniform_initializer(-init_range, init_range)
+    return tf.compat.v1.random_uniform_initializer(-init_range, init_range)
   else:
     # 3 gives us approximately the same limits as above since this repicks
     # values greater than 2 standard deviations from the mean.
     stddev = math.sqrt(3.0 / (n_inputs + n_outputs))
-    return tf.truncated_normal_initializer(stddev=stddev)
+    return tf.compat.v1.truncated_normal_initializer(stddev=stddev)
 
 def weight_variable(shape):
   std_dev = math.sqrt(3.0 /(shape[0] + shape[1]))
-  return tf.Variable(tf.truncated_normal(shape, mean=0.0,stddev=std_dev,dtype=tf.float32));
+  return tf.Variable(tf.random.truncated_normal(shape, mean=0.0,stddev=std_dev,dtype=tf.float32));
   
 def bias_variable(shape):
   std_dev = math.sqrt(3.0 / shape[0])
-  return tf.Variable(tf.truncated_normal(shape, mean=0.0,stddev=std_dev,dtype=tf.float32));
+  return tf.Variable(tf.random.truncated_normal(shape, mean=0.0,stddev=std_dev,dtype=tf.float32));
 
 def gen_next_yk(input_var,W_list,b_list,keep_prob=1.0,activation_flag=1,res_net=0):
     n_depth = len(W_list);
@@ -335,11 +336,11 @@ def gen_next_yk(input_var,W_list,b_list,keep_prob=1.0,activation_flag=1,res_net=
             W1 = W_list[0];
             b1 = b_list[0];
             if activation_flag==1:# RELU
-                z1 = tf.nn.dropout(tf.nn.relu(tf.matmul(input_var,W1)+b1),keep_prob);
+                z1 = tf.nn.dropout(tf.nn.relu(tf.matmul(input_var,W1)+b1),1 - (keep_prob));
             if activation_flag==2: #ELU 
-                z1 = tf.nn.dropout(tf.nn.elu(tf.matmul(input_var,W1)+b1),keep_prob);
+                z1 = tf.nn.dropout(tf.nn.elu(tf.matmul(input_var,W1)+b1),1 - (keep_prob));
             if activation_flag==3: # tanh
-                z1 = tf.nn.dropout(tf.nn.tanh(tf.matmul(input_var,W1)+b1),keep_prob);
+                z1 = tf.nn.dropout(tf.nn.tanh(tf.matmul(input_var,W1)+b1),1 - (keep_prob));
 
             z_temp_list.append(z1);
 
@@ -350,11 +351,11 @@ def gen_next_yk(input_var,W_list,b_list,keep_prob=1.0,activation_flag=1,res_net=
                 prev_layer_output += tf.matmul(u,W1)+b1 #  this expression is not compatible for variable width nets (where each layer has a different width at inialization - okay with regularization and dropout afterwards though)
 
             if activation_flag==1:
-                z_temp_list.append(tf.nn.dropout(tf.nn.relu(prev_layer_output),keep_prob));
+                z_temp_list.append(tf.nn.dropout(tf.nn.relu(prev_layer_output),1 - (keep_prob)));
             if activation_flag==2:
-                z_temp_list.append(tf.nn.dropout(tf.nn.elu(prev_layer_output),keep_prob));
+                z_temp_list.append(tf.nn.dropout(tf.nn.elu(prev_layer_output),1 - (keep_prob)));
             if activation_flag==3:
-                z_temp_list.append(tf.nn.dropout(tf.nn.tanh(prev_layer_output),keep_prob));
+                z_temp_list.append(tf.nn.dropout(tf.nn.tanh(prev_layer_output),1 - (keep_prob)));
 
     if debug_splash:
       print("[DEBUG] z_list" + repr(z_list[-1]));
@@ -362,7 +363,7 @@ def gen_next_yk(input_var,W_list,b_list,keep_prob=1.0,activation_flag=1,res_net=
     #y_out = tf.concat([z_list[-1],u],axis=1); # last element of activation output list is the actual NN output
     y_out = z_temp_list[-1];
 
-    result = sess.run(tf.global_variables_initializer())
+    result = sess.run(tf.compat.v1.global_variables_initializer())
     return y_out;
 
 def initialize_Wblist(n_u,hv_list):
@@ -384,7 +385,7 @@ def initialize_Wblist(n_u,hv_list):
     
 def initialize_stateinclusive_tensorflow_graph(n_u,deep_dict_size,hv_list,W_list,b_list,keep_prob=1.0,activation_flag=1,res_net=0):
 
-  u = tf.placeholder(tf.float32, shape=[None,n_u]); #state/input node,# inputs = dim(input) , None indicates batch size can be any size  
+  u = tf.compat.v1.placeholder(tf.float32, shape=[None,n_u]); #state/input node,# inputs = dim(input) , None indicates batch size can be any size  
   z_list= [];
   n_depth = len(hv_list);
   #print("[DEBUG] n_depth" + repr(n_depth);
@@ -394,11 +395,11 @@ def initialize_stateinclusive_tensorflow_graph(n_u,deep_dict_size,hv_list,W_list
         W1 = W_list[k];
         b1 = b_list[k];
         if activation_flag==1:# RELU
-          z1 = tf.nn.dropout(tf.nn.relu(tf.matmul(u,W1)+b1),keep_prob);
+          z1 = tf.nn.dropout(tf.nn.relu(tf.matmul(u,W1)+b1),1 - (keep_prob));
         if activation_flag==2: #ELU 
-          z1 = tf.nn.dropout(tf.nn.elu(tf.matmul(u,W1)+b1),keep_prob);
+          z1 = tf.nn.dropout(tf.nn.elu(tf.matmul(u,W1)+b1),1 - (keep_prob));
         if activation_flag==3: # tanh
-          z1 = tf.nn.dropout(tf.nn.tanh(tf.matmul(u,W1)+b1),keep_prob);
+          z1 = tf.nn.dropout(tf.nn.tanh(tf.matmul(u,W1)+b1),1 - (keep_prob));
             
         z_list.append(z1);
       else:
@@ -410,17 +411,17 @@ def initialize_stateinclusive_tensorflow_graph(n_u,deep_dict_size,hv_list,W_list
           if res_net and k==(n_depth-2):
               prev_layer_output += tf.matmul(u,W1)+b1 #  this expression is not compatible for variable width nets (where each layer has a different width at inialization - okay with regularization and dropout afterwards though)              
           if activation_flag==1:
-              z_list.append(tf.nn.dropout(tf.nn.relu(prev_layer_output),keep_prob));
+              z_list.append(tf.nn.dropout(tf.nn.relu(prev_layer_output),1 - (keep_prob)));
 
           if activation_flag==2:
-              z_list.append(tf.nn.dropout(tf.nn.elu(prev_layer_output),keep_prob));
+              z_list.append(tf.nn.dropout(tf.nn.elu(prev_layer_output),1 - (keep_prob)));
 
           if activation_flag==3:
-              z_list.append(tf.nn.dropout(tf.nn.tanh(prev_layer_output),keep_prob));
+              z_list.append(tf.nn.dropout(tf.nn.tanh(prev_layer_output),1 - (keep_prob)));
 
   y = tf.concat([u,z_list[-1]],axis=1); # [TODO] in the most general function signature, allow for default option with state/input inclusion
 
-  result = sess.run(tf.global_variables_initializer());
+  result = sess.run(tf.compat.v1.global_variables_initializer());
 
 #  print("[DEBUG] y.get_shape(): " + repr(y.get_shape()) + " y_.get_shape(): " + repr(y_.get_shape());
   return z_list,y,u;#,u_control;
@@ -436,29 +437,29 @@ def Deep_Output_KIC_Objective(all_psiXp,all_psiXf,Kx,all_psiUp,Ku,step_size,all_
    
    if learn_controllable_Koopman:
      n = np.int(Kx.get_shape()[0]);
-     Kut = tf.transpose(Ku);
-     Kxt = tf.transpose(Kx);
+     Kut = tf.transpose(a=Ku);
+     Kxt = tf.transpose(a=Kx);
      ctrb_matrix = Kut;
      for ind in range(1,n):
         ctrb_matrix = tf.concat([ctrb_matrix,tf.matmul(tf.pow(Kxt,ind),Kut)],axis=1);
-     ctrbTctrb = tf.matmul(ctrb_matrix,tf.transpose(ctrb_matrix) );
+     ctrbTctrb = tf.matmul(ctrb_matrix,tf.transpose(a=ctrb_matrix) );
      print(ctrbTctrb.get_shape())
-     ctrb_s,ctrb_v = tf.self_adjoint_eig(ctrbTctrb);
-     print(tf.norm(ctrb_s,1))
+     ctrb_s,ctrb_v = tf.linalg.eigh(ctrbTctrb);
+     print(tf.norm(tensor=ctrb_s,ord=1))
 
    # Frobenius norm error
    # tf_koopman_loss = tf.norm(all_psiXf - all_psiXf_predicted,axis=[0,1],ord='fro') + tf.norm(all_Yf - all_Yf_predicted,axis=[0,1],ord='fro') + tf.norm(all_Yp - all_Yp_predicted,axis=[0,1],ord='fro');
 
    # SSE
-   output_prediction_error = tf.norm(all_Yf - all_Yf_predicted,axis=[0,1],ord='fro')
-   state_prediction_error = tf.norm(all_psiXf - all_psiXf_predicted,axis=[0,1],ord='fro')
-   output_frobenius_norm = tf.norm(all_Yf,axis=[0,1],ord='fro')
-   state_frobenius_norm = tf.norm(all_psiXf,axis=[0,1],ord='fro')
+   output_prediction_error = tf.norm(tensor=all_Yf - all_Yf_predicted,axis=[0,1],ord='fro')
+   state_prediction_error = tf.norm(tensor=all_psiXf - all_psiXf_predicted,axis=[0,1],ord='fro')
+   output_frobenius_norm = tf.norm(tensor=all_Yf,axis=[0,1],ord='fro')
+   state_frobenius_norm = tf.norm(tensor=all_psiXf,axis=[0,1],ord='fro')
 
-   tf_koopman_loss =  tf.reduce_mean([output_prediction_error/output_frobenius_norm ,state_prediction_error/state_frobenius_norm]) #+ tf.norm(all_Yp - all_Yp_predicted,axis=[0,1],ord='fro')/tf.norm(all_Yp,axis=[0,1],ord='fro');
+   tf_koopman_loss =  tf.reduce_mean(input_tensor=[output_prediction_error/output_frobenius_norm ,state_prediction_error/state_frobenius_norm]) #+ tf.norm(all_Yp - all_Yp_predicted,axis=[0,1],ord='fro')/tf.norm(all_Yp,axis=[0,1],ord='fro');
 
-   optimizer = tf.train.AdagradOptimizer(step_size).minimize(tf_koopman_loss);
-   result = sess.run(tf.global_variables_initializer());
+   optimizer = tf.compat.v1.train.AdagradOptimizer(step_size).minimize(tf_koopman_loss);
+   result = sess.run(tf.compat.v1.global_variables_initializer());
    return tf_koopman_loss,optimizer,all_psiXf_predicted,all_Yf_predicted,all_Yp_predicted;
 
 def Deep_Control_Koopman_Objective(psiyp,psiyf,Kx,psiu,Ku,step_size,learn_controllable_Koopman=0):
@@ -467,32 +468,32 @@ def Deep_Control_Koopman_Objective(psiyp,psiyf,Kx,psiu,Ku,step_size,learn_contro
 
    if learn_controllable_Koopman:
      n = np.int(Kx.get_shape()[0]);
-     Kut = tf.transpose(Ku);
-     Kxt = tf.transpose(Kx);
+     Kut = tf.transpose(a=Ku);
+     Kxt = tf.transpose(a=Kx);
      ctrb_matrix = Kut;
      for ind in range(1,n):
         ctrb_matrix = tf.concat([ctrb_matrix,tf.matmul(tf.pow(Kxt,ind),Kut)],axis=1);
-     ctrbTctrb = tf.matmul(ctrb_matrix,tf.transpose(ctrb_matrix) );
+     ctrbTctrb = tf.matmul(ctrb_matrix,tf.transpose(a=ctrb_matrix) );
      print(ctrbTctrb.get_shape())
-     ctrb_s,ctrb_v = tf.self_adjoint_eig(ctrbTctrb);
-     print(tf.norm(ctrb_s,1))
+     ctrb_s,ctrb_v = tf.linalg.eigh(ctrbTctrb);
+     print(tf.norm(tensor=ctrb_s,ord=1))
    
-   tf_koopman_loss =  tf.reduce_mean(tf.norm(psiyf - forward_prediction_control,axis=[0,1],ord='fro'))#/tf.reduce_mean(tf.norm(psiyp,axis=[0,1],ord='fro'));   
-   optimizer = tf.train.AdagradOptimizer(step_size).minimize(tf_koopman_loss);
-   result = sess.run(tf.global_variables_initializer());
+   tf_koopman_loss =  tf.reduce_mean(input_tensor=tf.norm(tensor=psiyf - forward_prediction_control,axis=[0,1],ord='fro'))#/tf.reduce_mean(tf.norm(psiyp,axis=[0,1],ord='fro'));   
+   optimizer = tf.compat.v1.train.AdagradOptimizer(step_size).minimize(tf_koopman_loss);
+   result = sess.run(tf.compat.v1.global_variables_initializer());
    
    return tf_koopman_loss,optimizer,forward_prediction_control;
   
 def Deep_Direct_Koopman_Objective(psiyp,psiyf,Kx,step_size,convex_basis=0,u=None):
   
    forward_prediction = tf.matmul(psiyp,Kx)
-   tf_koopman_loss = tf.reduce_mean(tf.norm(forward_prediction-psiyf,axis=[0,1],ord='fro') )#/tf.reduce_mean(tf.norm(psiyf,axis=[0,1],ord='fro'));
+   tf_koopman_loss = tf.reduce_mean(input_tensor=tf.norm(tensor=forward_prediction-psiyf,axis=[0,1],ord='fro') )#/tf.reduce_mean(tf.norm(psiyf,axis=[0,1],ord='fro'));
    if convex_basis == 1:
      lagrange_multiplier_convex = 10.0;
      tf_koopman_loss = tf_koopman_loss + lagrange_multiplier_convex*jensen_term(psiyp,1e6,u)
 
-   optimizer = tf.train.AdagradOptimizer(step_size).minimize(tf_koopman_loss);
-   result = sess.run(tf.global_variables_initializer());
+   optimizer = tf.compat.v1.train.AdagradOptimizer(step_size).minimize(tf_koopman_loss);
+   result = sess.run(tf.compat.v1.global_variables_initializer());
    return tf_koopman_loss,optimizer,forward_prediction;
 
 
@@ -511,8 +512,8 @@ def instantiate_comp_graph(params_list):
  
 def instantiate_output_variables(Output_Dim,Koopman_Dim):
   Wh_var = weight_variable([Koopman_Dim,Output_Dim]);
-  y_output_p_var = tf.placeholder(tf.float32,shape=[None,Output_Dim])
-  y_output_f_var = tf.placeholder(tf.float32,shape=[None,Output_Dim])
+  y_output_p_var = tf.compat.v1.placeholder(tf.float32,shape=[None,Output_Dim])
+  y_output_f_var = tf.compat.v1.placeholder(tf.float32,shape=[None,Output_Dim])
   return y_output_f_var,y_output_p_var, Wh_var;
 
 
@@ -613,10 +614,10 @@ def dynamic_train_net(dict_train, dict_test, deep_koopman_loss, optimizer, train
                         NOT_SATISFIED = False
                     else:
                         print('*** Enter the parameters again ***')
-            # all_histories, good_start = train_net(up_all_training, uf_all_training, deep_koopman_loss, optimizer, U_train,
+            all_histories, good_start = train_net(up_all_training, uf_all_training, deep_koopman_loss, optimizer, U_train,
             #                           Out_p_train, Out_f_train, valid_error_threshold,
             #                           test_error_threshold, max_iters, step_size_val);
-            all_histories, good_start,n_epochs_run = train_net_v2(dict_train['Xp'], dict_train['Xf'], deep_koopman_loss, optimizer,dict_train['Up'],
+            #all_histories, good_start,n_epochs_run = train_net_v2(dict_train['Xp'], dict_train['Xf'], deep_koopman_loss, optimizer,dict_train['Up'],
                                                   dict_train['Yp'],dict_train['Yf'], train_error_threshold,
                                                   valid_error_threshold, max_epochs, step_size_val,batch_size)
             dict_run_info[run_info_index] = generate_hyperparam_entry(feed_dict_train,feed_dict_test,deep_koopman_loss,n_epochs_run,step_size_val,batch_size)
@@ -865,7 +866,6 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
       
       #if ctrb_rank == control.ctrb(At,Bt).shape[0] and test_error_history_nocovar[-1] <1e-5:
       #   iter=max_iters;
-
   all_histories = [training_error_history_nocovar, validation_error_history_nocovar,test_error_history_nocovar, \
                   training_error_history_withcovar,validation_error_history_withcovar,test_error_history_withcovar,covar_actual,covar_diff_history,covar_model_history];
   
@@ -1229,7 +1229,7 @@ while good_start==0 and try_num < max_tries:
       psiuz_list, psiu,u_control = initialize_stateinclusive_tensorflow_graph(n_inputs_control,deep_dict_size_control,hidden_vars_list_control,Wu_list,bu_list,keep_prob,activation_flag,res_net);
 
     # add hooks for affine control perturbation to Deep_Direct_Koopman_Objective
-    step_size = tf.placeholder(tf.float32,shape=[]);
+    step_size = tf.compat.v1.placeholder(tf.float32,shape=[]);
 
     if phase_space_stitching and (not with_control):
       try:
@@ -1258,7 +1258,7 @@ while good_start==0 and try_num < max_tries:
 
 
     if debug_splash:
-      train_vars = tf.trainable_variables();
+      train_vars = tf.compat.v1.trainable_variables();
       values = sess.run([x.name for x in train_vars]);
       print("[DEBUG] # of Trainable Variables: ") + repr(len(values));
       print("[DEBUG] Trainable Variables: ") + repr([ temp_var.shape for temp_var in values]);
@@ -1356,24 +1356,24 @@ if (not phase_space_stitching) and (not with_control):
   pickle.dump([Kx_num],file_obj_phase);
   file_obj_phase.close();
 
-saver = tf.train.Saver()
+saver = tf.compat.v1.train.Saver()
 
-tf.add_to_collection('psiyp',psiyp);
-tf.add_to_collection('psiyf',psiyf);
-tf.add_to_collection('Kx',Kx);
+tf.compat.v1.add_to_collection('psiyp',psiyp);
+tf.compat.v1.add_to_collection('psiyf',psiyf);
+tf.compat.v1.add_to_collection('Kx',Kx);
 if with_output:
-  tf.add_to_collection('Wh',Wh);
+  tf.compat.v1.add_to_collection('Wh',Wh);
 
 if with_control:
-  tf.add_to_collection('forward_prediction_control',forward_prediction_control);
-  tf.add_to_collection('psiu',psiu);
-  tf.add_to_collection('u_control',u_control);
-  tf.add_to_collection('Ku',Ku);
+  tf.compat.v1.add_to_collection('forward_prediction_control',forward_prediction_control);
+  tf.compat.v1.add_to_collection('psiu',psiu);
+  tf.compat.v1.add_to_collection('u_control',u_control);
+  tf.compat.v1.add_to_collection('Ku',Ku);
 else:
-  tf.add_to_collection('forward_prediction',forward_prediction);
+  tf.compat.v1.add_to_collection('forward_prediction',forward_prediction);
 
-tf.add_to_collection('yp_feed',yp_feed);
-tf.add_to_collection('yf_feed',yf_feed);
+tf.compat.v1.add_to_collection('yp_feed',yp_feed);
+tf.compat.v1.add_to_collection('yf_feed',yf_feed);
 
 save_path = saver.save(sess, data_suffix + '.ckpt')
 saver_path_curr = saver.save(sess, FOLDER_NAME + '/' + data_suffix + '.ckpt')

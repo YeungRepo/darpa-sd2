@@ -77,7 +77,7 @@ res_net = 0;   # Boolean condition on whether to use a resnet connection.
 
 # # #  PARAMS END # # # 
 
-sess = tf.InteractiveSession();
+sess = tf.compat.v1.InteractiveSession();
 
 
 def reg_term(Wlist):
@@ -320,11 +320,11 @@ def xavier_init(n_inputs, n_outputs, uniform=True):
 
 def weight_variable(shape):
   std_dev = math.sqrt(3.0 /(shape[0] + shape[1]))
-  return tf.Variable(tf.truncated_normal(shape, mean=0.0,stddev=std_dev,dtype=tf.float32));
+  return tf.Variable(tf.compat.v1.keras.initializers.TruncatedNormal(shape=shape, mean=0.0,stddev=std_dev,dtype=tf.float32));
   
 def bias_variable(shape):
   std_dev = math.sqrt(3.0 / shape[0])
-  return tf.Variable(tf.truncated_normal(shape, mean=0.0,stddev=std_dev,dtype=tf.float32));
+  return tf.Variable(tf.compat.v1.keras.initializers.TruncatedNormal(shape=shape, mean=0.0,stddev=std_dev,dtype=tf.float32));
 
 def gen_next_yk(input_var,W_list,b_list,keep_prob=1.0,activation_flag=1,res_net=0):
     n_depth = len(W_list);

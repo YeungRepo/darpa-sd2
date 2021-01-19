@@ -1,0 +1,99 @@
+TensorFlow 2.0 Upgrade Script
+-----------------------------
+Converted 1 files
+Detected 2 issues that require attention
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+File: gen_control_Koopman_CHARLES.py
+--------------------------------------------------------------------------------
+gen_control_Koopman_CHARLES.py:1378:12: WARNING: *.save requires manual check. (This warning is only applicable if the code saves a tf.Keras model) Keras model.save now saves to the Tensorflow SavedModel format by default, instead of HDF5. To continue saving to HDF5, add the argument save_format='h5' to the save() function.
+gen_control_Koopman_CHARLES.py:1379:18: WARNING: *.save requires manual check. (This warning is only applicable if the code saves a tf.Keras model) Keras model.save now saves to the Tensorflow SavedModel format by default, instead of HDF5. To continue saving to HDF5, add the argument save_format='h5' to the save() function.
+================================================================================
+Detailed log follows:
+
+================================================================================
+--------------------------------------------------------------------------------
+Processing file 'gen_control_Koopman_CHARLES.py'
+ outputting to 'gen_control_Koopman_CHARLES_v2.py'
+--------------------------------------------------------------------------------
+
+84:11: INFO: Added keywords to args of function 'tf.reduce_sum'
+86:14: INFO: Added keywords to args of function 'tf.reduce_sum'
+314:11: INFO: tf.random_uniform_initializer requires manual check. Initializers no longer have the dtype argument in the constructor or partition_info argument in the __call__ method.
+The calls have been converted to compat.v1 for safety (even though they may already have been correct).
+314:11: INFO: Renamed 'tf.random_uniform_initializer' to 'tf.compat.v1.random_uniform_initializer'
+319:11: INFO: tf.truncated_normal_initializer requires manual check. Initializers no longer have the dtype argument in the constructor or partition_info argument in the __call__ method.
+The calls have been converted to compat.v1 for safety (even though they may already have been correct).
+319:11: INFO: Renamed 'tf.truncated_normal_initializer' to 'tf.compat.v1.truncated_normal_initializer'
+338:21: INFO: Changing keep_prob arg of tf.nn.dropout to rate, and recomputing value.
+
+340:21: INFO: Changing keep_prob arg of tf.nn.dropout to rate, and recomputing value.
+
+342:21: INFO: Changing keep_prob arg of tf.nn.dropout to rate, and recomputing value.
+
+353:35: INFO: Changing keep_prob arg of tf.nn.dropout to rate, and recomputing value.
+
+355:35: INFO: Changing keep_prob arg of tf.nn.dropout to rate, and recomputing value.
+
+357:35: INFO: Changing keep_prob arg of tf.nn.dropout to rate, and recomputing value.
+
+365:22: INFO: Renamed 'tf.global_variables_initializer' to 'tf.compat.v1.global_variables_initializer'
+387:6: INFO: Renamed 'tf.placeholder' to 'tf.compat.v1.placeholder'
+397:15: INFO: Changing keep_prob arg of tf.nn.dropout to rate, and recomputing value.
+
+399:15: INFO: Changing keep_prob arg of tf.nn.dropout to rate, and recomputing value.
+
+401:15: INFO: Changing keep_prob arg of tf.nn.dropout to rate, and recomputing value.
+
+413:28: INFO: Changing keep_prob arg of tf.nn.dropout to rate, and recomputing value.
+
+416:28: INFO: Changing keep_prob arg of tf.nn.dropout to rate, and recomputing value.
+
+419:28: INFO: Changing keep_prob arg of tf.nn.dropout to rate, and recomputing value.
+
+423:20: INFO: Renamed 'tf.global_variables_initializer' to 'tf.compat.v1.global_variables_initializer'
+439:11: INFO: Added keywords to args of function 'tf.transpose'
+440:11: INFO: Added keywords to args of function 'tf.transpose'
+444:39: INFO: Added keywords to args of function 'tf.transpose'
+446:21: INFO: Renamed 'tf.self_adjoint_eig' to 'tf.linalg.eigh'
+447:11: INFO: Added keywords to args of function 'tf.norm'
+453:29: INFO: Added keywords to args of function 'tf.norm'
+454:28: INFO: Added keywords to args of function 'tf.norm'
+455:27: INFO: Added keywords to args of function 'tf.norm'
+456:26: INFO: Added keywords to args of function 'tf.norm'
+458:22: INFO: Added keywords to args of function 'tf.reduce_mean'
+460:15: INFO: Renamed 'tf.train.AdagradOptimizer' to 'tf.compat.v1.train.AdagradOptimizer'
+461:21: INFO: Renamed 'tf.global_variables_initializer' to 'tf.compat.v1.global_variables_initializer'
+470:11: INFO: Added keywords to args of function 'tf.transpose'
+471:11: INFO: Added keywords to args of function 'tf.transpose'
+475:39: INFO: Added keywords to args of function 'tf.transpose'
+477:21: INFO: Renamed 'tf.self_adjoint_eig' to 'tf.linalg.eigh'
+478:11: INFO: Added keywords to args of function 'tf.norm'
+480:22: INFO: Added keywords to args of function 'tf.reduce_mean'
+480:37: INFO: Added keywords to args of function 'tf.norm'
+481:15: INFO: Renamed 'tf.train.AdagradOptimizer' to 'tf.compat.v1.train.AdagradOptimizer'
+482:21: INFO: Renamed 'tf.global_variables_initializer' to 'tf.compat.v1.global_variables_initializer'
+489:21: INFO: Added keywords to args of function 'tf.reduce_mean'
+489:36: INFO: Added keywords to args of function 'tf.norm'
+494:15: INFO: Renamed 'tf.train.AdagradOptimizer' to 'tf.compat.v1.train.AdagradOptimizer'
+495:21: INFO: Renamed 'tf.global_variables_initializer' to 'tf.compat.v1.global_variables_initializer'
+514:19: INFO: Renamed 'tf.placeholder' to 'tf.compat.v1.placeholder'
+515:19: INFO: Renamed 'tf.placeholder' to 'tf.compat.v1.placeholder'
+1232:16: INFO: Renamed 'tf.placeholder' to 'tf.compat.v1.placeholder'
+1261:19: INFO: Renamed 'tf.trainable_variables' to 'tf.compat.v1.trainable_variables'
+1359:8: INFO: Renamed 'tf.train.Saver' to 'tf.compat.v1.train.Saver'
+1361:0: INFO: Renamed 'tf.add_to_collection' to 'tf.compat.v1.add_to_collection'
+1362:0: INFO: Renamed 'tf.add_to_collection' to 'tf.compat.v1.add_to_collection'
+1363:0: INFO: Renamed 'tf.add_to_collection' to 'tf.compat.v1.add_to_collection'
+1365:2: INFO: Renamed 'tf.add_to_collection' to 'tf.compat.v1.add_to_collection'
+1368:2: INFO: Renamed 'tf.add_to_collection' to 'tf.compat.v1.add_to_collection'
+1369:2: INFO: Renamed 'tf.add_to_collection' to 'tf.compat.v1.add_to_collection'
+1370:2: INFO: Renamed 'tf.add_to_collection' to 'tf.compat.v1.add_to_collection'
+1371:2: INFO: Renamed 'tf.add_to_collection' to 'tf.compat.v1.add_to_collection'
+1373:2: INFO: Renamed 'tf.add_to_collection' to 'tf.compat.v1.add_to_collection'
+1375:0: INFO: Renamed 'tf.add_to_collection' to 'tf.compat.v1.add_to_collection'
+1376:0: INFO: Renamed 'tf.add_to_collection' to 'tf.compat.v1.add_to_collection'
+1378:12: WARNING: *.save requires manual check. (This warning is only applicable if the code saves a tf.Keras model) Keras model.save now saves to the Tensorflow SavedModel format by default, instead of HDF5. To continue saving to HDF5, add the argument save_format='h5' to the save() function.
+1379:18: WARNING: *.save requires manual check. (This warning is only applicable if the code saves a tf.Keras model) Keras model.save now saves to the Tensorflow SavedModel format by default, instead of HDF5. To continue saving to HDF5, add the argument save_format='h5' to the save() function.
+--------------------------------------------------------------------------------
+
