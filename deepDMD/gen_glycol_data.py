@@ -12,9 +12,9 @@
 
 from sklearn.linear_model import Lasso, LassoLarsCV, LassoLars, LassoCV
 
-import cvxopt
-from cvxpy import Minimize,Problem,Variable,norm1,norm2,installed_solvers,lambda_max
-from cvxpy import norm as cvxpynorm
+#import cvxopt
+#from cvxpy import Minimize,Problem,Variable,norm1,norm2,installed_solvers,lambda_max
+#from cvxpy import norm as cvxpynorm
 
 from numpy.linalg import pinv,inv,cond,svd,eig
 
@@ -83,9 +83,9 @@ def glycol(tsteps=101,time=5,init=[.15,.19,.04,.1,.08,.14,.05],train_steps=50,pl
 
 obs_channels = 7
 plot_channels =4
-full_steps=90;
-train_steps = 20
-est_steps = 20
+full_steps=900;
+train_steps = 200
+est_steps = 200
 time = 5.0
     
 #init=[.15-1.6,.19-2.16,.04-.2,.1-.35,.08-.3,.14-2.67,.05-.1]
