@@ -615,7 +615,7 @@ def dynamic_train_net(dict_train, dict_test, deep_koopman_loss, optimizer, train
                         NOT_SATISFIED = False
                     else:
                         print('*** Enter the parameters again ***')
-            #print(max_epochs)
+            print(max_epochs)
             all_histories, good_start,n_epochs_run = train_net(up_all_training, uf_all_training, deep_koopman_loss, optimizer, U_train,
             #                           Out_p_train, Out_f_train, valid_error_threshold,
             #                           test_error_threshold, max_iters, step_size_val);
