@@ -1,2 +1,2 @@
-model_checkpoint_path: "oc_deepDMD_ClosedKoopmanSystem.pickle.ckpt"
-all_model_checkpoint_paths: "oc_deepDMD_ClosedKoopmanSystem.pickle.ckpt"
+model_checkpoint_path: "glycol.pickle.ckpt"
+all_model_checkpoint_paths: "glycol.pickle.ckpt"

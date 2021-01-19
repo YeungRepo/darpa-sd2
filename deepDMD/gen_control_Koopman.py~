@@ -88,7 +88,7 @@ def reg_term(Wlist):
   return output;
 
 
-def quick_nstep_predict(Y_p_old,u_control_all_training,with_control,num_bas_obs,iter):
+def quick_nstep_predict(Y_p_old,u_control_all_training,with_control,num_bas_obs,iter,output_file_dir):
   n_points_pred = len(Y_p_old) - test_indices[0]-1;
   init_index = test_indices[0];
   Yf_final_test_stack_nn = np.asarray(Y_p_old).T[:,init_index:(init_index+1)+n_points_pred]
@@ -108,7 +108,7 @@ def quick_nstep_predict(Y_p_old,u_control_all_training,with_control,num_bas_obs,
   Yf_final_test_ep_nn.append(psiyp_Ycurr.tolist()[0][0:num_bas_obs]); # append the initial seed state value.
 
   for i in range(0,n_points_pred):
-    print(i)
+    #print(i)
     if with_control:
       if len(U_test[i,:])==1:
         U_temp_mat = np.reshape(Uf_final_test_stack_nn[i,:],(1,1));
@@ -139,8 +139,9 @@ def quick_nstep_predict(Y_p_old,u_control_all_training,with_control,num_bas_obs,
   plt.legend(loc='best');
   plt.xlabel('t');
   fig = plt.gcf();
-
-  target_file = 'PredictionsDuringTraining/'+data_suffix.replace('.pickle','')+'nstep_prediction' + repr(iter) + '.pdf';
+  if not (os.path.exists(output_file_dir+'/PredictionsDuringTraining/')):
+    os.makedirs(output_file_dir+'/PredictionsDuringTraining/');
+  target_file = output_file_dir+'/PredictionsDuringTraining/'+data_suffix.replace('.pickle','')+'nstep_prediction' + repr(iter) + '.pdf';
   plt.savefig(target_file);
   plt.close();
 
@@ -204,7 +205,7 @@ def jensen_term(basis_hooks,n_samples,u):#z_list,num_bas_obs,deep_dict_size,iter
   return np.sum(output);
   
   
-def expose_deep_basis(z_list,num_bas_obs,deep_dict_size,iter_num,u):
+def expose_deep_basis(z_list,num_bas_obs,deep_dict_size,iter_num,u,output_file_dir):
   basis_hooks = z_list[-1]; #[-1] is y  = K *\phi; -2 is \phi(yk)
   x_range = np.arange(-10.0,10.0,0.1);
 
@@ -217,7 +218,9 @@ def expose_deep_basis(z_list,num_bas_obs,deep_dict_size,iter_num,u):
     plt.plot(x_range,phi_j,'.-',label='\phi_i(y)');
     #plt.ylim([-2.0,2.0]);
     fig = plt.gcf();
-    plt.savefig('deep_basis_images/phi_with_u' + repr(i) + '_iternum_' + repr(iter_num) + '.jpg');
+    if not (os.path.exists(output_file_dir+'/BasisPlots/')):
+      os.makedirs(output_file_dir+'/BasisPlots/');
+    plt.savefig(output_file_dir+'/BasisPlots/'+'/phi_with_u' + repr(i) + '_iternum_' + repr(iter_num) + '.jpg');
     
   return fig_hand;              
   
@@ -590,43 +593,49 @@ def dynamic_train_net(dict_train, dict_test, deep_koopman_loss, optimizer, train
         feed_dict_test[y_output_p] = dict_test['Yp']
         feed_dict_train[y_output_f] = dict_train['Yf']
         feed_dict_test[y_output_f] = dict_test['Yf']
-    # --------
-    KEEP_TRAINING = True
-    NO_CHOICE_VALUES = ['n','N','no','No','NO','']
-    dict_run_info = {}
-    run_info_index = 0
-    while (KEEP_TRAINING):
-        train_user_choice = input('Do you want to train the neural net [y/n]? ')
-        if train_user_choice not in NO_CHOICE_VALUES:
-            display_train_params(step_size_val,train_error_threshold,valid_error_threshold,max_epochs,batch_size)
-            param_user_choice = input('Do you want to change the parameters [y/n]?')
-            if param_user_choice not in NO_CHOICE_VALUES:
-                NOT_SATISFIED = True
-                while(NOT_SATISFIED):
-                    step_size_val = get_variable_value('Step Size',step_size_val,float)
-                    train_error_threshold = get_variable_value('Training error threshold', train_error_threshold, float)
-                    valid_error_threshold = get_variable_value('Validation error threshold',valid_error_threshold,float)
-                    max_epochs = get_variable_value('Maximum number of epochs',max_epochs,int)
-                    batch_size = get_variable_value('Batch size', batch_size, int)
-                    display_train_params(step_size_val,valid_error_threshold,test_error_threshold,max_epochs,batch_size)
-                    parameter_satisfaction = input('Are these parameters fine [y/n]?')
-                    if parameter_satisfaction not in NO_CHOICE_VALUES:
-                        print(NO_CHOICE_VALUES)
-                        NOT_SATISFIED = False
-                    else:
-                        print('*** Enter the parameters again ***')
-            print(max_epochs)
-            all_histories, good_start,n_epochs_run = train_net(up_all_training, uf_all_training, deep_koopman_loss, optimizer, U_train,
-            #                           Out_p_train, Out_f_train, valid_error_threshold,
-            #                           test_error_threshold, max_iters, step_size_val);
-            #all_histories, good_start,n_epochs_run = train_net_v2(dict_train['Xp'], dict_train['Xf'], deep_koopman_loss, optimizer,dict_train['Up'],
-                                                  dict_train['Yp'],dict_train['Yf'], train_error_threshold,
-                                                               valid_error_threshold, valid_error_threshold,max_epochs, step_size_val,batch_size)
-            dict_run_info[run_info_index] = generate_hyperparam_entry(feed_dict_train,feed_dict_test,deep_koopman_loss,n_epochs_run,step_size_val,batch_size)
-            run_info_index+=1
-        else:
-            print('Training Complete')
-            KEEP_TRAINING = False
+
+    if len(sys.argv)<2:
+         # --------
+         KEEP_TRAINING = True
+         NO_CHOICE_VALUES = ['n','N','no','No','NO','']
+         dict_run_info = {}
+         run_info_index = 0
+         while (KEEP_TRAINING):
+             train_user_choice = input('Do you want to train the neural net [y/n]? ')
+             if train_user_choice not in NO_CHOICE_VALUES:
+                 display_train_params(step_size_val,train_error_threshold,valid_error_threshold,max_epochs,batch_size)
+                 param_user_choice = input('Do you want to change the parameters [y/n]?')
+                 if param_user_choice not in NO_CHOICE_VALUES:
+                     NOT_SATISFIED = True
+                     while(NOT_SATISFIED):
+                         step_size_val = get_variable_value('Step Size',step_size_val,float)
+                         train_error_threshold = get_variable_value('Training error threshold', train_error_threshold, float)
+                         valid_error_threshold = get_variable_value('Validation error threshold',valid_error_threshold,float)
+                         max_epochs = get_variable_value('Maximum number of epochs',max_epochs,int)
+                         batch_size = get_variable_value('Batch size', batch_size, int)
+                         display_train_params(step_size_val,valid_error_threshold,test_error_threshold,max_epochs,batch_size)
+                         parameter_satisfaction = input('Are these parameters fine [y/n]?')
+                         if parameter_satisfaction not in NO_CHOICE_VALUES:
+                             print(NO_CHOICE_VALUES)
+                             NOT_SATISFIED = False
+                         else:
+                             print('*** Enter the parameters again ***')
+                 #print(max_epochs)
+                 all_histories, good_start,n_epochs_run = train_net(up_all_training, uf_all_training, deep_koopman_loss, optimizer, U_train,
+                 #                           Out_p_train, Out_f_train, valid_error_threshold,
+                 #                           test_error_threshold, max_iters, step_size_val);
+                 #all_histories, good_start,n_epochs_run = train_net_v2(dict_train['Xp'], dict_train['Xf'], deep_koopman_loss, optimizer,dict_train['Up'],
+                                                       dict_train['Yp'],dict_train['Yf'], train_error_threshold,
+                                                                    valid_error_threshold, valid_error_threshold,max_epochs, step_size_val,batch_size)
+                 dict_run_info[run_info_index] = generate_hyperparam_entry(feed_dict_train,feed_dict_test,deep_koopman_loss,n_epochs_run,step_size_val,batch_size)
+                 run_info_index+=1
+             else:
+                 print('Training Complete')
+                 KEEP_TRAINING = False
+    if len(sys.argv)>2:
+      all_histories, good_start,n_epochs_run = train_net(up_all_training, uf_all_training, deep_koopman_loss, optimizer, U_train,dict_train['Yp'],dict_train['Yf'], train_error_threshold,valid_error_threshold, valid_error_threshold,max_epochs, step_size_val,batch_size)
+      dict_run_info[run_info_index] = generate_hyperparam_entry(feed_dict_train,feed_dict_test,deep_koopman_loss,n_epochs_run,step_size_val,batch_size)
+            
 
     return all_histories, good_start, dict_run_info
 
@@ -832,8 +841,8 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
       if (iter%250==0) or (iter==1):
         plt.close();
         if plot_deep_basis:
-          fig_hand = expose_deep_basis(psiypz_list,num_bas_obs,deep_dict_size,iter,yp_feed);
-          fig_hand = quick_nstep_predict(Y_p_old,u_control_all_training,with_control,num_bas_obs,iter);
+          fig_hand = expose_deep_basis(psiypz_list,num_bas_obs,deep_dict_size,iter,yp_feed,output_file_directory);
+          fig_hand = quick_nstep_predict(Y_p_old,u_control_all_training,with_control,num_bas_obs,iter,output_file_directory);
 
         if with_control and (not with_output):        
           print ("step %d , validation error %g"%(iter, mean_diff_nocovar.eval(feed_dict={yp_feed:u_valid,yf_feed:y_valid,u_control:u_control_valid})));
@@ -894,7 +903,7 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
 
 
 pre_examples_switch = 5; 
-#os.chdir('/home/deepuser/Desktop/Shara/deepDMD')
+
 ### Randomly generated oscillator system with control
 
 
@@ -1019,25 +1028,37 @@ best_width = min_width_limit;
 
 ## CMD Line Argument (Override) Inputs:
 
-# import sys
+import sys
 #
-# if len(sys.argv)>1:
-#   data_suffix = sys.argv[1];
-# if len(sys.argv)>2:
-#   max_depth = np.int(sys.argv[2]);
-# if len(sys.argv)>3:
-#   max_width_limit = np.int(sys.argv[3]);
-# if len(sys.argv)>4:
-#   deep_dict_size = np.int(sys.argv[4]);
-# if len(sys.argv)>5 and with_control:
-#   max_depth_control = np.int(sys.argv[5]);
-# if len(sys.argv)>6 and with_control:
-#   deep_dict_size_control = np.int(sys.argv[6]);
-# if len(sys.argv)>7 and with_control:
-#   plot_deep_basis = np.int(sys.argv[7]);
+if len(sys.argv)>1:
+   data_suffix = sys.argv[1]; # PICKLE 
+if len(sys.argv)>2:
+   max_depth = np.int(sys.argv[2]); # DEPTH 
+if len(sys.argv)>3:
+   max_width_limit = np.int(sys.argv[3]); # NEURAL NETWORK WIDTH 
+if len(sys.argv)>4:
+   deep_dict_size = np.int(sys.argv[4]); # Deep Dictionary Size 
+if len(sys.argv)>5 :
+   max_epochs = np.int(sys.argv[5]); #Max Epochs  
+if len(sys.argv)>6 :
+   batch_size = np.int(sys.argv[6]); #Batch Size
+if len(sys.argv)>7:
+   plot_deep_basis = bool(sys.argv[7]); # Plot Prediction Plots and Deep Basis Or Not
+if len(sys.argv)>8:
+   output_file_directory = bool(sys.argv[8]); # Plot Prediction Plots and Deep Basis Or Not
+
+if len(sys.argv)>9 and with_control:
+   max_depth_control = np.int(sys.argv[9]); #  Depth of Control Observables Neural Network (Assumes the same width as the Koopman observables) 
+if len(sys.argv)>10 and with_control:
+   deep_dict_size_control = np.int(sys.argv[10]); # Control/Input Observable Dictionary Size 
+
 #
-  
-data_file = data_directory + data_suffix;
+
+if len(sys.argv)<2:
+  data_file = data_directory + data_suffix;
+  output_file_directory = '';
+else:
+  data_file = data_suffix;
 
 Yp,Yf,Y_whole,Up,Yp_output,Yf_output = load_pickle_data(data_file,with_control,with_output);
 u_control_all_training = Up;
