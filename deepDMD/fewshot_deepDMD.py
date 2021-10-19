@@ -12,12 +12,14 @@ import random;
 from numpy import genfromtxt
 
 
-# Import CVXOPT Packages
-from cvxpy import Minimize, Problem, Variable,norm1,norm2,installed_solvers,lambda_max;
-from cvxpy import norm as cvxpynorm;
-import cvxpy;
+# # Import CVXOPT Packages
+# from cvxpy import Minimize, Problem, Variable,norm1,norm2,installed_solvers,lambda_max;
+# from cvxpy import norm as cvxpynorm;
+# import cvxpy;
 
 # Tensorflow Packages
+#import tensorflow as tf
+
 import tensorflow as tf
 
 # Plotting Tools for Visualizing Basis Functions
@@ -27,7 +29,7 @@ matplotlib.use('Agg'); # for seamless execution in Linux environments with Tenso
 import matplotlib.pyplot as plt;
 matplotlib.rcParams.update({'font.size':22}) # default font size on (legible) figures
 import control;
-
+import math;
 
 ### Process Control Flags : User Defined (dev-note: run as a separate instance of code?) 
 #with_control = 1;  # This activates the closed-loop deep Koopman learning algorithm; requires input and state data, historical model parameter.  Now it is specified along with the dataset file path below.  
@@ -55,7 +57,7 @@ colors = np.asarray(colors); # defines a color palette
 lambd = 0.00000;
 step_size_val = 0.025#.025;
 
-batchsize =6#30#900;
+batchsize =50#30#900;
 eval_size = batchsize;
 
 use_crelu = 0;
@@ -110,7 +112,7 @@ def quick_nstep_predict(Y_p_old,u_control_all_training,with_control,num_bas_obs,
         psiyp_Ycurr = sess.run(forward_prediction_control, feed_dict={yp_feed:psiyp_Ycurr[:,0:num_bas_obs],u_control:U_temp_mat});# 
     else:
       psiyp_Ycurr = sess.run(forward_prediction,feed_dict={yp_feed:psiyp_Ycurr[:,0:num_bas_obs]});
-
+      
     Yout = psiyp_Ycurr.tolist()[0][0:num_bas_obs];
     Yf_final_test_ep_nn.append(Yout);
 
@@ -407,17 +409,17 @@ def Deep_Control_Koopman_Objective(psiyp,psiyf,Kx,psiu,Ku,step_size,learn_contro
 def Deep_Direct_Koopman_Objective(psiyp,psiyf,Kx,step_size,convex_basis=0,u=None):
   
    forward_prediction = tf.matmul(psiyp,Kx)
-   siamese_term = 0.0; 
-   for col_j in range(1,int(psiyp.get_shape()[1])):
-     exp_term = tf.reduce_mean(tf.norm(tf.matmul(tf.concat( [psiyp[:,col_j:] , psiyp[:,0:col_j]],axis=1),Kx)-psiyf,axis=[0,1],ord='fro'));
-     siamese_term = siamese_term + tf.math.exp(-exp_term);  
+   #siamese_term = 0.0; 
+   #for col_j in range(1,int(psiyp.get_shape()[1])):
+   #  exp_term = tf.reduce_mean(tf.norm(tf.matmul(tf.concat( [psiyp[:,col_j:] , psiyp[:,0:col_j]],axis=1),Kx)-psiyf,axis=[0,1],ord='fro'));
+     #siamese_term = siamese_term + tf.math.exp(-exp_term);  
     
      
    tf_koopman_loss = tf.reduce_mean(tf.norm(forward_prediction-psiyf,axis=[0,1],ord='fro') )#/tf.reduce_mean(tf.norm(psiyf,axis=[0,1],ord='fro'));
-   tf_koopman_loss = tf_koopman_loss + siamese_term; 
-   if convex_basis == 1:
-     lagrange_multiplier_convex = 10.0;
-     tf_koopman_loss = tf_koopman_loss + lagrange_multiplier_convex*jensen_term(psiyp,1e6,u)
+   #tf_koopman_loss = tf_koopman_loss + siamese_term; 
+   #if convex_basis == 1:
+   #  lagrange_multiplier_convex = 10.0;
+     #tf_koopman_loss = tf_koopman_loss + lagrange_multiplier_convex*jensen_term(psiyp,1e6,u)
 
    optimizer = tf.train.AdagradOptimizer(step_size).minimize(tf_koopman_loss);
    result = sess.run(tf.global_variables_initializer());
@@ -581,7 +583,7 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
 # # # - - - Begin Koopman Model Script - - - # # #
 
 
-pre_examples_switch =  5; 
+pre_examples_switch =  18; 
 
 ### Randomly generated oscillator system with control
 
@@ -655,30 +657,52 @@ if pre_examples_switch == 12:
   with_control = 1;
   phase_space_stitching = 0;
 
+if pre_examples_switch == 13:
+  data_suffix = 'arb_data_KCOT_DMJ.pickle';
+  with_control = 1;
+  phase_space_stitching = 0;
+
+if pre_examples_switch == 14:
+  data_suffix = 'activator_repressor_clock_sample_data.pickle';
+  with_control = 1;
+  phase_space_stitching = 0;
+
+if pre_examples_switch == 15:
+  data_suffix = 'KCOT_spring_mass_damper.pickle';
+  with_control = 1;
+  phase_space_stitching = 0;
 
 ## Inline Inputs
 ### Define Neural Network Hyperparameters
+
+if pre_examples_switch == 16:
+  data_suffix = 'arb_data_KCOT_DMJ_square_wave.pickle';
+  with_control = 0;
+  phase_space_stitching = 0;
   
-deep_dict_size =20;
+
+if pre_examples_switch == 17:
+  data_suffix = 'KCOT_spring_mass_damper_single_input.pickle';
+  with_control = 0;
+  phase_space_stitching = 0;
+
+
+
+if pre_examples_switch == 18:
+  data_suffix = 'KCOT_KoopmanClosure_single_input.pickle';
+  with_control = 0;
+  phase_space_stitching = 0;
+
+
+deep_dict_size =4;
 
 
 if with_control:
   deep_dict_size_control = 5;
   
-
-if with_control:
-  #print("[INFO TYPE]" + repr(type(u_control_all_training_old[0]));
-  if type(u_control_all_training_old[0])==np.ndarray:
-    print("[DEBUG]"  + repr(u_control_all_training_old[0]));
-    n_inputs_control =u_control_all_training_old[0].shape[0];
-    
-  else:
-    n_inputs_control = 1;
-else:
-  n_inputs_control = 0;
   
-max_depth = 7;  # max_depth 3 works well  
-max_width_limit =20 ;# max width_limit -4 works well 
+max_depth = 1;  # 7max_depth 3 works well  
+max_width_limit =4 ;# 20max width_limit -4 works well 
 
 min_width_limit = max_width_limit;# use regularization and dropout to trim edges for now. 
 min_width_limit_control =10;
@@ -742,6 +766,17 @@ for i in range(0,len(rand_indices) ):
 
 print("[INFO] Yp.shape (E-DMD): " + repr(Yp.shape));
 print("[INFO] Yf.shape (E-DMD): " + repr(Yf.shape));
+
+if with_control:
+  #print("[INFO TYPE]" + repr(type(u_control_all_training_old[0]));
+  if type(u_control_all_training_old[0])==np.ndarray:
+    print("[DEBUG]"  + repr(u_control_all_training_old[0]));
+    n_inputs_control = u_control_all_training_old[0].shape[0];
+    
+  else:
+    n_inputs_control = 1;
+else:
+  n_inputs_control = 0;
 
 
 ## Train/Test Split for Benchmarking Forecasting Later
@@ -1063,7 +1098,8 @@ Yf_final_test_ep_nn.append(psiyp_Ycurr.tolist()[0][0:num_bas_obs]); # append the
 for i in range(0,n_points_pred):
   if with_control:
     if len(U_test[i,:])==1:
-      U_temp_mat = np.reshape(Uf_final_test_stack_nn[i,:],(1,1));
+      print('Uf_final_test_stack_nn shape',Uf_final_test_stack_nn.shape)
+      U_temp_mat = np.reshape(Uf_final_test_stack_nn[:,i],(1,1));
       psiyp_Ycurr = sess.run(forward_prediction_control, feed_dict={yp_feed:psiyp_Ycurr[:,0:num_bas_obs],u_control:U_temp_mat});#
     else:
       U_temp_mat = np.reshape(Uf_final_test_stack_nn[i,:],(1,n_inputs_control));
@@ -1088,7 +1124,7 @@ matplotlib.rcParams.update({'font.size':20})
 ### Make a Prediction Plot
 #x_range = np.arange(0,350,1)
 x_range = np.arange(0,Yf_final_test_stack_nn.shape[1],1);
-for i in range(0,3):#num_bas_obs):
+for i in range(0,2):#num_bas_obs):
     plt.plot(x_range,Yf_final_test_ep_nn[i,0:len(x_range)],'--',color=colors[i,:]);
     plt.plot(x_range,Yf_final_test_stack_nn[i,0:len(x_range)],'*',color=colors[i,:]);
 axes = plt.gca();
@@ -1104,3 +1140,7 @@ plt.savefig(target_file);
 plt.show();
 
 
+#saver = tf.train.import_meta_graph('_current_run_saved_files/arb_data_KCOT_DMJ.pickle.ckpt.meta', clear_devices=True)
+#saver.restore(sess, tf.train.latest_checkpoint('_current_run_saved_files'))
+
+print(Kx_num)

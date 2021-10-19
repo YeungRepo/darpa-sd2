@@ -1,2 +1,7 @@
+<<<<<<< Updated upstream
 model_checkpoint_path: "glycol.pickle.ckpt"
 all_model_checkpoint_paths: "glycol.pickle.ckpt"
+=======
+model_checkpoint_path: "KCOT_KoopmanClosure_single_input.pickle.ckpt"
+all_model_checkpoint_paths: "KCOT_KoopmanClosure_single_input.pickle.ckpt"
+>>>>>>> Stashed changes
