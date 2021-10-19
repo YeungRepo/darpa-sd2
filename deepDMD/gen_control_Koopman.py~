@@ -141,7 +141,7 @@ def quick_nstep_predict(Y_p_old,u_control_all_training,with_control,num_bas_obs,
   fig = plt.gcf();
   if not (os.path.exists(output_file_dir+'/PredictionsDuringTraining/')):
     os.makedirs(output_file_dir+'/PredictionsDuringTraining/');
-  target_file = output_file_dir+'/PredictionsDuringTraining/'+data_suffix.replace('.pickle','')+'nstep_prediction' + repr(iter) + '.pdf';
+  target_file = output_file_dir+'/PredictionsDuringTraining/'+data_suffix.split('/')[-2].replace('.pickle','')+'nstep_prediction' + repr(iter) + '.pdf';
   plt.savefig(target_file);
   plt.close();
 
@@ -633,6 +633,8 @@ def dynamic_train_net(dict_train, dict_test, deep_koopman_loss, optimizer, train
                  print('Training Complete')
                  KEEP_TRAINING = False
     if len(sys.argv)>2:
+      dict_run_info = {}
+      run_info_index = 0
       all_histories, good_start,n_epochs_run = train_net(up_all_training, uf_all_training, deep_koopman_loss, optimizer, U_train,dict_train['Yp'],dict_train['Yf'], train_error_threshold,valid_error_threshold, valid_error_threshold,max_epochs, step_size_val,batch_size)
       dict_run_info[run_info_index] = generate_hyperparam_entry(feed_dict_train,feed_dict_test,deep_koopman_loss,n_epochs_run,step_size_val,batch_size)
             
@@ -1045,7 +1047,7 @@ if len(sys.argv)>6 :
 if len(sys.argv)>7:
    plot_deep_basis = bool(sys.argv[7]); # Plot Prediction Plots and Deep Basis Or Not
 if len(sys.argv)>8:
-   output_file_directory = bool(sys.argv[8]); # Plot Prediction Plots and Deep Basis Or Not
+   output_file_directory = sys.argv[8]; # Plot Prediction Plots and Deep Basis Or Not
 
 if len(sys.argv)>9 and with_control:
    max_depth_control = np.int(sys.argv[9]); #  Depth of Control Observables Neural Network (Assumes the same width as the Koopman observables) 

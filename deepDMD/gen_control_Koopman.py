@@ -35,7 +35,7 @@ import pandas as pd
 
 ### Process Control Flags : User Defined (dev-note: run as a separate instance of code?) 
 #with_control = 1;  # This activates the closed-loop deep Koopman learning algorithm; requires input and state data, historical model parameter.  Now it is specified along with the dataset file path below.  
-plot_deep_basis = 1;  # This activates plotting of deep basis functions as a function of training iterations.
+plot_deep_basis = 0;  # This activates plotting of deep basis functions as a function of training iterations.
 single_series = 0;  # Useful if you're analyzing a system with only a single time-series (requires extremely high temporal resolution). 
 debug_splash = 0;
 phase_space_stitching = 0;
