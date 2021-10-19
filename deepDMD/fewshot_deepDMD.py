@@ -21,6 +21,7 @@ from numpy import genfromtxt
 #import tensorflow as tf
 
 import tensorflow as tf
+tf.compat.v1.disable_eager_execution()
 
 # Plotting Tools for Visualizing Basis Functions
 import matplotlib
@@ -72,7 +73,7 @@ res_net = 0;   # Boolean condition on whether to use a resnet connection.
 
 # # #  PARAMS END # # # 
 
-sess = tf.InteractiveSession();
+sess = tf.compat.v1.InteractiveSession();
 
 
 def reg_term(Wlist):
@@ -275,15 +276,15 @@ def xavier_init(n_inputs, n_outputs, uniform=True):
     # 3 gives us approximately the same limits as above since this repicks
     # values greater than 2 standard deviations from the mean.
     stddev = math.sqrt(3.0 / (n_inputs + n_outputs))
-    return tf.truncated_normal_initializer(stddev=stddev)
+    return tf.compat.v1.truncated_normal_initializer(stddev=stddev)
 
 def weight_variable(shape):
   std_dev = math.sqrt(3.0 /(shape[0] + shape[1]))
-  return tf.Variable(tf.truncated_normal(shape, mean=0.0,stddev=std_dev,dtype=tf.float32));
+  return tf.Variable(tf.compat.v1.truncated_normal(shape, mean=0.0,stddev=std_dev,dtype=tf.float32));
   
 def bias_variable(shape):
   std_dev = math.sqrt(3.0 / shape[0])
-  return tf.Variable(tf.truncated_normal(shape, mean=0.0,stddev=std_dev,dtype=tf.float32));
+  return tf.Variable(tf.compat.v1.truncated_normal(shape, mean=0.0,stddev=std_dev,dtype=tf.float32));
 
 def gen_next_yk(input_var,W_list,b_list,keep_prob=1.0,activation_flag=1,res_net=0):
     n_depth = len(W_list);
@@ -294,11 +295,11 @@ def gen_next_yk(input_var,W_list,b_list,keep_prob=1.0,activation_flag=1,res_net=
             W1 = W_list[0];
             b1 = b_list[0];
             if activation_flag==1:# RELU
-                z1 = tf.nn.dropout(tf.nn.relu(tf.matmul(input_var,W1)+b1),keep_prob);
+                z1 = tf.nn.dropout(tf.nn.relu(tf.matmul(input_var,W1)+b1),1.0-(keep_prob));
             if activation_flag==2: #ELU 
-                z1 = tf.nn.dropout(tf.nn.elu(tf.matmul(input_var,W1)+b1),keep_prob);
+                z1 = tf.nn.dropout(tf.nn.elu(tf.matmul(input_var,W1)+b1),1.0-(keep_prob));
             if activation_flag==3: # tanh
-                z1 = tf.nn.dropout(tf.nn.tanh(tf.matmul(input_var,W1)+b1),keep_prob);
+                z1 = tf.nn.dropout(tf.nn.tanh(tf.matmul(input_var,W1)+b1),1.0-(keep_prob));
 
             z_temp_list.append(z1);
 
@@ -309,11 +310,11 @@ def gen_next_yk(input_var,W_list,b_list,keep_prob=1.0,activation_flag=1,res_net=
                 prev_layer_output += tf.matmul(u,W1)+b1 #  this expression is not compatible for variable width nets (where each layer has a different width at inialization - okay with regularization and dropout afterwards though)
 
             if activation_flag==1:
-                z_temp_list.append(tf.nn.dropout(tf.nn.relu(prev_layer_output),keep_prob));
+                z_temp_list.append(tf.nn.dropout(tf.nn.relu(prev_layer_output),1.0-keep_prob));
             if activation_flag==2:
-                z_temp_list.append(tf.nn.dropout(tf.nn.elu(prev_layer_output),keep_prob));
+                z_temp_list.append(tf.nn.dropout(tf.nn.elu(prev_layer_output),1.0-keep_prob));
             if activation_flag==3:
-                z_temp_list.append(tf.nn.dropout(tf.nn.tanh(prev_layer_output),keep_prob));
+                z_temp_list.append(tf.nn.dropout(tf.nn.tanh(prev_layer_output),1.0-keep_prob));
 
     if debug_splash:
       print("[DEBUG] z_list" + repr(z_list[-1]));
@@ -321,7 +322,7 @@ def gen_next_yk(input_var,W_list,b_list,keep_prob=1.0,activation_flag=1,res_net=
     #y_out = tf.concat([z_list[-1],u],axis=1); # last element of activation output list is the actual NN output
     y_out = z_temp_list[-1];
 
-    result = sess.run(tf.global_variables_initializer())
+    result = sess.run(tf.compat.v1.global_variables_initializer())
     return y_out;
 
 def initialize_Wblist(n_u,hv_list):
@@ -343,7 +344,7 @@ def initialize_Wblist(n_u,hv_list):
     
 def initialize_stateinclusive_tensorflow_graph(n_u,deep_dict_size,hv_list,W_list,b_list,keep_prob=1.0,activation_flag=1,res_net=0):
 
-  u = tf.placeholder(tf.float32, shape=[None,n_u]); #state/input node,# inputs = dim(input) , None indicates batch size can be any size  
+  u = tf.compat.v1.placeholder(tf.float32, shape=[None,n_u]); #state/input node,# inputs = dim(input) , None indicates batch size can be any size  
   z_list= [];
   n_depth = len(hv_list);
   #print("[DEBUG] n_depth" + repr(n_depth);
@@ -353,11 +354,11 @@ def initialize_stateinclusive_tensorflow_graph(n_u,deep_dict_size,hv_list,W_list
         W1 = W_list[k];
         b1 = b_list[k];
         if activation_flag==1:# RELU
-          z1 = tf.nn.dropout(tf.nn.relu(tf.matmul(u,W1)+b1),keep_prob);
+          z1 = tf.nn.dropout(tf.nn.relu(tf.matmul(u,W1)+b1),1.0-keep_prob);
         if activation_flag==2: #ELU 
-          z1 = tf.nn.dropout(tf.nn.elu(tf.matmul(u,W1)+b1),keep_prob);
+          z1 = tf.nn.dropout(tf.nn.elu(tf.matmul(u,W1)+b1),1.0-keep_prob);
         if activation_flag==3: # tanh
-          z1 = tf.nn.dropout(tf.nn.tanh(tf.matmul(u,W1)+b1),keep_prob);
+          z1 = tf.nn.dropout(tf.nn.tanh(tf.matmul(u,W1)+b1),1.0-keep_prob);
             
         z_list.append(z1);
       else:
@@ -369,17 +370,17 @@ def initialize_stateinclusive_tensorflow_graph(n_u,deep_dict_size,hv_list,W_list
           if res_net and k==(n_depth-2):
               prev_layer_output += tf.matmul(u,W1)+b1 #  this expression is not compatible for variable width nets (where each layer has a different width at inialization - okay with regularization and dropout afterwards though)              
           if activation_flag==1:
-              z_list.append(tf.nn.dropout(tf.nn.relu(prev_layer_output),keep_prob));
+              z_list.append(tf.nn.dropout(tf.nn.relu(prev_layer_output),1.0-keep_prob));
 
           if activation_flag==2:
-              z_list.append(tf.nn.dropout(tf.nn.elu(prev_layer_output),keep_prob));
+              z_list.append(tf.nn.dropout(tf.nn.elu(prev_layer_output),1.0-keep_prob));
 
           if activation_flag==3:
-              z_list.append(tf.nn.dropout(tf.nn.tanh(prev_layer_output),keep_prob));
+              z_list.append(tf.nn.dropout(tf.nn.tanh(prev_layer_output),1.0-keep_prob));
 
   y = tf.concat([u,z_list[-1]],axis=1); # [TODO] in the most general function signature, allow for default option with state/input inclusion
 
-  result = sess.run(tf.global_variables_initializer());
+  result = sess.run(tf.compat.v1.global_variables_initializer());
 
 #  print("[DEBUG] y.get_shape(): " + repr(y.get_shape()) + " y_.get_shape(): " + repr(y_.get_shape());
   return z_list,y,u;#,u_control;
@@ -401,8 +402,8 @@ def Deep_Control_Koopman_Objective(psiyp,psiyf,Kx,psiu,Ku,step_size,learn_contro
      print(tf.norm(ctrb_s,1))
    
    tf_koopman_loss =  tf.reduce_mean(tf.norm(psiyf - forward_prediction_control,axis=[0,1],ord='fro'))#/tf.reduce_mean(tf.norm(psiyp,axis=[0,1],ord='fro'));   
-   optimizer = tf.train.AdagradOptimizer(step_size).minimize(tf_koopman_loss);
-   result = sess.run(tf.global_variables_initializer());
+   optimizer = tf.compat.v1.train.AdagradOptimizer(step_size).minimize(tf_koopman_loss);
+   result = sess.run(tf.compat.v1.global_variables_initializer());
    
    return tf_koopman_loss,optimizer,forward_prediction_control;
   
@@ -421,8 +422,8 @@ def Deep_Direct_Koopman_Objective(psiyp,psiyf,Kx,step_size,convex_basis=0,u=None
    #  lagrange_multiplier_convex = 10.0;
      #tf_koopman_loss = tf_koopman_loss + lagrange_multiplier_convex*jensen_term(psiyp,1e6,u)
 
-   optimizer = tf.train.AdagradOptimizer(step_size).minimize(tf_koopman_loss);
-   result = sess.run(tf.global_variables_initializer());
+   optimizer = tf.compat.v1.train.AdagradOptimizer(step_size).minimize(tf_koopman_loss);
+   result = sess.run(tf.compat.v1.global_variables_initializer());
    return tf_koopman_loss,optimizer,forward_prediction;
 
 
@@ -701,7 +702,7 @@ if with_control:
   deep_dict_size_control = 5;
   
   
-max_depth = 1;  # 7max_depth 3 works well  
+max_depth = 5;  # 7max_depth 3 works well  
 max_width_limit =4 ;# 20max width_limit -4 works well 
 
 min_width_limit = max_width_limit;# use regularization and dropout to trim edges for now. 
@@ -897,7 +898,7 @@ for n_depth_reciprocal in range(1,2):#max_depth-2): #2
               psiuz_list, psiu,u_control = initialize_stateinclusive_tensorflow_graph(n_inputs_control,deep_dict_size_control,hidden_vars_list_control,Wu_list,bu_list,keep_prob,activation_flag,res_net);
             
             # add hooks for affine control perturbation to Deep_Direct_Koopman_Objective
-            step_size = tf.placeholder(tf.float32,shape=[]);
+            step_size = tf.compat.v1.placeholder(tf.float32,shape=[]);
 
             if phase_space_stitching and (not with_control):
               try:
@@ -993,25 +994,26 @@ if (not phase_space_stitching) and (not with_control):
   pickle.dump([Kx_num],file_obj_phase);
   file_obj_phase.close();
 
-saver = tf.train.Saver()
+saver = tf.compat.v1.train.Saver()
 
-tf.add_to_collection('psiyp',psiyp);
-tf.add_to_collection('psiyf',psiyf);
-tf.add_to_collection('Kx',Kx);
+tf.compat.v1.add_to_collection('psiyp',psiyp);
+tf.compat.v1.add_to_collection('psiyf',psiyf);
+tf.compat.v1.add_to_collection('Kx',Kx);
 
 
 if with_control:
-  tf.add_to_collection('forward_prediction_control',forward_prediction_control);
-  tf.add_to_collection('psiu',psiu);
-  tf.add_to_collection('u_control',u_control);
-  tf.add_to_collection('Ku',Ku);
+  tf.compat.v1.add_to_collection('forward_prediction_control',forward_prediction_control);
+  tf.compat.v1.add_to_collection('psiu',psiu);
+  tf.compat.v1.add_to_collection('u_control',u_control);
+  tf.compat.v1.add_to_collection('Ku',Ku);
 else:
-  tf.add_to_collection('forward_prediction',forward_prediction);
+  tf.compat.v1.add_to_collection('forward_prediction',forward_prediction);
 
-tf.add_to_collection('yp_feed',yp_feed);
-tf.add_to_collection('yf_feed',yf_feed);
+tf.compat.v1.add_to_collection('yp_feed',yp_feed);
+tf.compat.v1.add_to_collection('yf_feed',yf_feed);
 
 save_path = saver.save(sess, data_suffix + '.ckpt')
+
 
 Koopman_dim = Kx_num.shape[0];
 print("[INFO] Koopman_dim:" + repr(Kx_num.shape));
