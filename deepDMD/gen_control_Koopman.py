@@ -904,7 +904,7 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
 ## # - - - Begin Koopman Model Script - - - # # #
 
 
-pre_examples_switch = 5; 
+pre_examples_switch = 15; 
 
 ### Randomly generated oscillator system with control
 
@@ -1004,6 +1004,11 @@ if pre_examples_switch == 14:
   phase_space_stitching = 0;    
 
 
+if pre_examples_switch == 15:
+  data_suffix = 'arb_data_KCOT_DMJ.pickle';
+  with_control = 1;
+  with_output = 0;
+  phase_space_stitching = 0;    
 ## Inline Inputs
 ### Define Neural Network Hyperparameters
   
