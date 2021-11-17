@@ -58,7 +58,7 @@ colors = np.asarray(colors); # defines a color palette
 lambd = 0.00000;
 step_size_val = 0.025#.025;
 
-batchsize =50#30#900;
+batchsize =80#30#900;
 eval_size = batchsize;
 
 use_crelu = 0;
@@ -708,8 +708,8 @@ if with_control:
   deep_dict_size_control = 5;
   
   
-max_depth = 4;  # 7max_depth 3 works well  
-max_width_limit =20 ;# 20max width_limit -4 works well 
+max_depth = 3;  # 7max_depth 3 works well  
+max_width_limit =10 ;# 20max width_limit -4 works well 
 
 min_width_limit = max_width_limit;# use regularization and dropout to trim edges for now. 
 min_width_limit_control =10;
