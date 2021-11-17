@@ -34,7 +34,7 @@ import math;
 
 ### Process Control Flags : User Defined (dev-note: run as a separate instance of code?) 
 #with_control = 1;  # This activates the closed-loop deep Koopman learning algorithm; requires input and state data, historical model parameter.  Now it is specified along with the dataset file path below.  
-plot_deep_basis = 0;  # This activates plotting of deep basis functions as a function of training iterations.
+plot_deep_basis = 1;  # This activates plotting of deep basis functions as a function of training iterations.
 single_series = 0;  # Useful if you're analyzing a system with only a single time-series (requires extremely high temporal resolution). 
 debug_splash = 0;
 phase_space_stitching = 0;
@@ -56,7 +56,7 @@ colors = np.asarray(colors); # defines a color palette
 ###  Deep Learning Optimization Parameters ### 
 
 lambd = 0.00000;
-step_size_val = 0.1#.025;
+step_size_val = 0.05#.025;
 
 batchsize =75#30#900;
 eval_size = batchsize;
@@ -84,7 +84,7 @@ def reg_term(Wlist):
 
 
 def quick_nstep_predict(Y_p_old,u_control_all_training,with_control,num_bas_obs,iter):
-  n_points_pred = len(Y_p_old) - test_indices[0]-1;
+  n_points_pred = np.int((len(Y_p_old) - test_indices[0]-1)/2);
   init_index = test_indices[0];
   Yf_final_test_stack_nn = np.asarray(Y_p_old).T[:,init_index:(init_index+1)+n_points_pred]
   Ycurr = np.asarray(Y_p_old).T[:,init_index]
@@ -103,7 +103,7 @@ def quick_nstep_predict(Y_p_old,u_control_all_training,with_control,num_bas_obs,
   Yf_final_test_ep_nn.append(psiyp_Ycurr.tolist()[0][0:num_bas_obs]); # append the initial seed state value.
 
   for i in range(0,n_points_pred):
-    print(i)
+    #print(i)
     if with_control:
       if len(U_test[i,:])==1:
         U_temp_mat = np.reshape(Uf_final_test_stack_nn[i,:],(1,1));
@@ -127,7 +127,7 @@ def quick_nstep_predict(Y_p_old,u_control_all_training,with_control,num_bas_obs,
   plt.figure();
   ### Make a Prediction Plot 
   x_range = np.arange(0,Yf_final_test_stack_nn.shape[1],1);
-  for i in range(0,3):
+  for i in range(0,num_bas_obs):
       plt.plot(x_range,Yf_final_test_ep_nn[i,:],'--',color=colors[i,:]);
       plt.plot(x_range,Yf_final_test_stack_nn[i,:],'*',color=colors[i,:]);
   axes = plt.gca();
