@@ -703,7 +703,7 @@ if pre_examples_switch == 19:
 
 
 if pre_examples_switch == 20:
-  data_suffix = 'arb_data_KCOT_DMJ.pickle';
+  data_suffix = 'ARC_oscillations.pickle';
   with_control = 0;
   with_output = 0;
   phase_space_stitching = 0;    
