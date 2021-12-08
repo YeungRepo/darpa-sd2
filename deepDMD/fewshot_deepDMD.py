@@ -63,7 +63,7 @@ eval_size = batchsize;
 
 use_crelu = 0;
 activation_flag = 2; # sets the activation function type to RELU, ELU, SELU (initialized a certain way,dropout has to be done differently) , or tanh() 
-max_iters = 200000;#10000#200000 #1000000;
+max_iters = 1000;#10000#200000 #1000000;
 valid_error_threshold = .00001;
 test_error_threshold = .00001;
 
@@ -584,7 +584,7 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
 # # # - - - Begin Koopman Model Script - - - # # #
 
 
-pre_examples_switch =  16; 
+pre_examples_switch =  20; 
 
 ### Randomly generated oscillator system with control
 
@@ -696,6 +696,13 @@ if pre_examples_switch == 18:
 
 
 if pre_examples_switch == 19:
+  data_suffix = 'arb_data_KCOT_DMJ.pickle';
+  with_control = 0;
+  with_output = 0;
+  phase_space_stitching = 0;    
+
+
+if pre_examples_switch == 20:
   data_suffix = 'arb_data_KCOT_DMJ.pickle';
   with_control = 0;
   with_output = 0;
