@@ -1,0 +1,44 @@
+2021-12-08 18:34:25.920252: W tensorflow/stream_executor/platform/default/dso_loader.cc:59] Could not load dynamic library 'libcudart.so.10.1'; dlerror: libcudart.so.10.1: cannot open shared object file: No such file or directory
+2021-12-08 18:34:25.920309: I tensorflow/stream_executor/cuda/cudart_stub.cc:29] Ignore above cudart dlerror if you do not have a GPU set up on your machine.
+2021-12-08 18:34:27.650651: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN)to use the following CPU instructions in performance-critical operations:  AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2021-12-08 18:34:27.683959: I tensorflow/core/platform/profile_utils/cpu_utils.cc:104] CPU Frequency: 2198800000 Hz
+2021-12-08 18:34:27.686534: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x253bbf0 initialized for platform Host (this does not guarantee that XLA will be used). Devices:
+2021-12-08 18:34:27.686563: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): Host, Default Version
+2021-12-08 18:34:27.689473: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcuda.so.1
+2021-12-08 18:34:29.319156: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x22a69c0 initialized for platform CUDA (this does not guarantee that XLA will be used). Devices:
+2021-12-08 18:34:29.319211: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): Tesla V100-DGXS-32GB, Compute Capability 7.0
+2021-12-08 18:34:29.319223: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (1): Tesla V100-DGXS-32GB, Compute Capability 7.0
+2021-12-08 18:34:29.319232: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (2): Tesla V100-DGXS-32GB, Compute Capability 7.0
+2021-12-08 18:34:29.319241: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (3): Tesla V100-DGXS-32GB, Compute Capability 7.0
+2021-12-08 18:34:29.322275: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1716] Found device 0 with properties: 
+pciBusID: 0000:07:00.0 name: Tesla V100-DGXS-32GB computeCapability: 7.0
+coreClock: 1.53GHz coreCount: 80 deviceMemorySize: 31.71GiB deviceMemoryBandwidth: 836.37GiB/s
+2021-12-08 18:34:29.324483: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1716] Found device 1 with properties: 
+pciBusID: 0000:08:00.0 name: Tesla V100-DGXS-32GB computeCapability: 7.0
+coreClock: 1.53GHz coreCount: 80 deviceMemorySize: 31.72GiB deviceMemoryBandwidth: 836.37GiB/s
+2021-12-08 18:34:29.327486: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1716] Found device 2 with properties: 
+pciBusID: 0000:0e:00.0 name: Tesla V100-DGXS-32GB computeCapability: 7.0
+coreClock: 1.53GHz coreCount: 80 deviceMemorySize: 31.72GiB deviceMemoryBandwidth: 836.37GiB/s
+2021-12-08 18:34:29.329912: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1716] Found device 3 with properties: 
+pciBusID: 0000:0f:00.0 name: Tesla V100-DGXS-32GB computeCapability: 7.0
+coreClock: 1.53GHz coreCount: 80 deviceMemorySize: 31.72GiB deviceMemoryBandwidth: 836.37GiB/s
+2021-12-08 18:34:29.330150: W tensorflow/stream_executor/platform/default/dso_loader.cc:59] Could not load dynamic library 'libcudart.so.10.1'; dlerror: libcudart.so.10.1: cannot open shared object file: No such file or directory
+2021-12-08 18:34:29.330303: W tensorflow/stream_executor/platform/default/dso_loader.cc:59] Could not load dynamic library 'libcublas.so.10'; dlerror: libcublas.so.10: cannot open shared object file: No such file or directory
+2021-12-08 18:34:29.330439: W tensorflow/stream_executor/platform/default/dso_loader.cc:59] Could not load dynamic library 'libcufft.so.10'; dlerror: libcufft.so.10: cannot open shared object file: No such file or directory
+2021-12-08 18:34:29.330572: W tensorflow/stream_executor/platform/default/dso_loader.cc:59] Could not load dynamic library 'libcurand.so.10'; dlerror: libcurand.so.10: cannot open shared object file: No such file or directory
+2021-12-08 18:34:29.330801: W tensorflow/stream_executor/platform/default/dso_loader.cc:59] Could not load dynamic library 'libcusolver.so.10'; dlerror: libcusolver.so.10: cannot open shared object file: No such file or directory
+2021-12-08 18:34:29.330968: W tensorflow/stream_executor/platform/default/dso_loader.cc:59] Could not load dynamic library 'libcusparse.so.10'; dlerror: libcusparse.so.10: cannot open shared object file: No such file or directory
+2021-12-08 18:34:29.336695: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudnn.so.7
+2021-12-08 18:34:29.336722: W tensorflow/core/common_runtime/gpu/gpu_device.cc:1753] Cannot dlopen some GPU libraries. Please make sure the missing libraries mentioned above are installed properly if you would like to use GPU. Follow the guide at https://www.tensorflow.org/install/gpu for how to download and setup the required libraries for your platform.
+Skipping registering GPU devices...
+2021-12-08 18:34:29.336761: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1257] Device interconnect StreamExecutor with strength 1 edge matrix:
+2021-12-08 18:34:29.336772: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1263]      0 1 2 3 
+2021-12-08 18:34:29.336780: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1276] 0:   N Y Y Y 
+2021-12-08 18:34:29.336786: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1276] 1:   Y N Y Y 
+2021-12-08 18:34:29.336792: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1276] 2:   Y Y N Y 
+2021-12-08 18:34:29.336798: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1276] 3:   Y Y Y N 
+WARNING: Logging before flag parsing goes to stderr.
+W1208 18:34:30.469890 140384467306304 deprecation.py:506] From /home/yeunglab/.local/lib/python3.6/site-packages/tensorflow/python/training/adagrad.py:77: calling Constant.__init__ (from tensorflow.python.ops.init_ops) with dtype is deprecated and will be removed in a future version.
+Instructions for updating:
+Call initializer instance with the dtype argument instead of passing it to the constructor
