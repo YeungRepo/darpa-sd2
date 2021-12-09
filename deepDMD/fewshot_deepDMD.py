@@ -58,7 +58,7 @@ colors = np.asarray(colors); # defines a color palette
 lambd = 0.00000;
 step_size_val = 0.05#.025;
 
-batchsize =75#30#900;
+batchsize =50#30#900;
 eval_size = batchsize;
 
 use_crelu = 0;
@@ -587,9 +587,6 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
 pre_examples_switch =  19; 
 
 ### Randomly generated oscillator system with control
-
-
-
 
 data_directory = 'koopman_data/'
 if pre_examples_switch == 0:
