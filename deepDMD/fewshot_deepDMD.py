@@ -708,15 +708,14 @@ if pre_examples_switch == 20:
   with_output = 0;
   phase_space_stitching = 0;    
 
-deep_dict_size = 20;
-
+deep_dict_size = 40;
 
 if with_control:
   deep_dict_size_control = 5;
   
   
-max_depth = 7;  # 7max_depth 3 works well  
-max_width_limit =20 ;# 20max width_limit -4 works well 
+max_depth = 11;  # 7max_depth 3 works well  
+max_width_limit =40 ;# 20max width_limit -4 works well 
 
 min_width_limit = max_width_limit;# use regularization and dropout to trim edges for now. 
 min_width_limit_control =10;
