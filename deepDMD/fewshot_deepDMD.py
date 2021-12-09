@@ -84,7 +84,7 @@ def reg_term(Wlist):
 
 
 def quick_nstep_predict(Y_p_old,u_control_all_training,with_control,num_bas_obs,iter):
-  n_points_pred = np.int((len(Y_p_old) - test_indices[0]-1)/2);
+  n_points_pred = np.int((len(Y_p_old) - test_indices[0]-1)/3*2);
   init_index = test_indices[0];
   Yf_final_test_stack_nn = np.asarray(Y_p_old).T[:,init_index:(init_index+1)+n_points_pred]
   Ycurr = np.asarray(Y_p_old).T[:,init_index]
