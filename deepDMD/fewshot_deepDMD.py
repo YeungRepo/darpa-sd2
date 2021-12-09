@@ -523,7 +523,7 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
       if (iter%1000==0) or (iter==1):
         plt.close();
         if plot_deep_basis:
-          #fig_hand = expose_deep_basis(psiypz_list,num_bas_obs,deep_dict_size,iter,yp_feed);
+          fig_hand = expose_deep_basis(psiypz_list,num_bas_obs,deep_dict_size,iter,yp_feed);
           fig_hand = quick_nstep_predict(Y_p_old,u_control_all_training,with_control,num_bas_obs,iter);
 
         if with_control:  
