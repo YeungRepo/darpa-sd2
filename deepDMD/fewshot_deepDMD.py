@@ -64,8 +64,8 @@ eval_size = batchsize;
 use_crelu = 0;
 activation_flag = 2; # sets the activation function type to RELU, ELU, SELU (initialized a certain way,dropout has to be done differently) , or tanh() 
 max_iters = 250000;#10000#200000 #1000000;
-valid_error_threshold = .00001;
-test_error_threshold = .00001;
+valid_error_threshold = .0001;
+test_error_threshold = .0001;
 
 ### Deep Learning Metaparameters ###
 keep_prob = 1.0; #keep_prob = 1-dr opout probability 
@@ -718,12 +718,12 @@ if with_control:
   deep_dict_size_control = 5;
   
   
-max_depth = 11;  # 7max_depth 3 works well  
-max_width_limit =40 ;# 20max width_limit -4 works well 
+max_depth = 5;  # 7max_depth 3 works well  
+max_width_limit = 40 ;# 20max width_limit -4 works well 
 
 min_width_limit = max_width_limit;# use regularization and dropout to trim edges for now. 
 min_width_limit_control =10;
-max_depth_control =3;
+max_depth_control = 3;
 
 best_test_error = np.inf;
 best_depth = max_depth;
