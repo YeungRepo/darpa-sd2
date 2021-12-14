@@ -1,2 +1,2 @@
-model_checkpoint_path: "ARC_oscillations.pickle.ckpt"
-all_model_checkpoint_paths: "ARC_oscillations.pickle.ckpt"
+model_checkpoint_path: "arb_data_KCOT_DMJ_square_waveV2.pickle.ckpt"
+all_model_checkpoint_paths: "arb_data_KCOT_DMJ_square_waveV2.pickle.ckpt"
