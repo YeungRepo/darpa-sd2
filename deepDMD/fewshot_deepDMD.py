@@ -584,7 +584,7 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
 # # # - - - Begin Koopman Model Script - - - # # #
 
 
-pre_examples_switch =  19; 
+pre_examples_switch =  21; 
 
 ### Randomly generated oscillator system with control
 
@@ -704,6 +704,13 @@ if pre_examples_switch == 20:
   with_control = 0;
   with_output = 0;
   phase_space_stitching = 0;    
+
+if pre_examples_switch == 21:
+  data_suffix = 'arb_data_KCOT_DMJ_square_waveV2.pickle';
+  with_control = 0;
+  with_output = 0;
+  phase_space_stitching = 0;    
+
 
 deep_dict_size = 20;
 
