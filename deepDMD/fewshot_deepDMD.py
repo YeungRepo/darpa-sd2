@@ -712,7 +712,7 @@ if pre_examples_switch == 21:
   phase_space_stitching = 0;    
 
 if pre_examples_switch == 22:
-  data_suffix = 'CFS_Koopman3.pickle';
+  data_suffix = 'CFS_Koopman2.pickle';
   with_control = 0;
   with_output = 0;
   phase_space_stitching = 0;   
