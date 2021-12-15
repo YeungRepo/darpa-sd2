@@ -58,7 +58,7 @@ colors = np.asarray(colors); # defines a color palette
 lambd = 0.00000;
 step_size_val = 0.005#.025;
 
-batchsize =100#30#900;
+batchsize =20#30#900;
 eval_size = batchsize;
 
 use_crelu = 0;
