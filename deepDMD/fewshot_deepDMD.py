@@ -717,6 +717,11 @@ if pre_examples_switch == 22:
   with_output = 0;
   phase_space_stitching = 0;   
 
+if pre_examples_switch == 23:
+  data_suffix = 'arb_data_KCOT_DMJ_square_waveV3.pickle';
+  with_control = 0;
+  with_output = 0;
+  phase_space_stitching = 0;    
 
 
 deep_dict_size = 20;
