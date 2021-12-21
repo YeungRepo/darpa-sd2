@@ -56,9 +56,9 @@ colors = np.asarray(colors); # defines a color palette
 ###  Deep Learning Optimization Parameters ### 
 
 lambd = 0.00000;
-step_size_val = 0.005#.025;
+step_size_val = 0.05#.025;
 
-batchsize =20#30#900;
+batchsize = 75#30#900;
 eval_size = batchsize;
 
 use_crelu = 0;
@@ -724,14 +724,14 @@ if pre_examples_switch == 23:
   phase_space_stitching = 0;    
 
 
-deep_dict_size = 3;
+deep_dict_size = 20;
 
 if with_control:
   deep_dict_size_control = 5;
   
   
-max_depth = 5;  # 7max_depth 3 works well  
-max_width_limit = 10 ;# 20max width_limit -4 works well 
+max_depth = 7;  # 7max_depth 3 works well  
+max_width_limit = 20 ;# 20max width_limit -4 works well 
 
 min_width_limit = max_width_limit;# use regularization and dropout to trim edges for now. 
 min_width_limit_control =10;
