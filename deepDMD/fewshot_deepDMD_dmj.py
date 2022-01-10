@@ -724,18 +724,18 @@ if pre_examples_switch == 23:
   phase_space_stitching = 0;    
 
 
-deep_dict_size = 20;
+deep_dict_size = 2;
 
 if with_control:
   deep_dict_size_control = 5;
   
   
-max_depth = 1;  # 7max_depth 3 works well  
+max_depth = 8;  # 7max_depth 3 works well  
 max_width_limit = 1   ;# 20max width_limit -4 works well 
 
 min_width_limit = max_width_limit;# use regularization and dropout to trim edges for now. 
 min_width_limit_control =10;
-max_depth_control = 3;
+max_depth_control = 1;
 
 best_test_error = np.inf;
 best_depth = max_depth;
