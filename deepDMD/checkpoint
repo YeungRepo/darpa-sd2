@@ -1,2 +1,2 @@
-model_checkpoint_path: "arb_data_KCOT_DMJ_square_waveV3.pickle.ckpt"
-all_model_checkpoint_paths: "arb_data_KCOT_DMJ_square_waveV3.pickle.ckpt"
+model_checkpoint_path: "CFS_Koopman5.pickle.ckpt"
+all_model_checkpoint_paths: "CFS_Koopman5.pickle.ckpt"
