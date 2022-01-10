@@ -64,8 +64,8 @@ eval_size = batchsize;
 use_crelu = 0;
 activation_flag = 2; # sets the activation function type to RELU, ELU, SELU (initialized a certain way,dropout has to be done differently) , or tanh() 
 max_iters = 250000;#10000#200000 #1000000;
-valid_error_threshold = .0001;
-test_error_threshold = .0001;
+valid_error_threshold = .00001;
+test_error_threshold = .00001;
 
 ### Deep Learning Metaparameters ###
 keep_prob = 1.0; #keep_prob = 1-dr opout probability 
