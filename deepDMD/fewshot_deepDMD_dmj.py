@@ -58,12 +58,12 @@ colors = np.asarray(colors); # defines a color palette
 lambd = 0.00000;
 step_size_val = 0.05#.025;
 
-batchsize = 75#30#900;
+batchsize = 100#30#900;
 eval_size = batchsize;
 
 use_crelu = 0;
 activation_flag = 2; # sets the activation function type to RELU, ELU, SELU (initialized a certain way,dropout has to be done differently) , or tanh() 
-max_iters = 250000;#10000#200000 #1000000;
+max_iters = 25000;#10000#200000 #1000000;
 valid_error_threshold = .00001;
 test_error_threshold = .00001;
 
