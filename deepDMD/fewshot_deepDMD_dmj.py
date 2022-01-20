@@ -747,7 +747,7 @@ max_width_limit = 8   ;# 20max width_limit -4 works well
 
 min_width_limit = max_width_limit;# use regularization and dropout to trim edges for now. 
 min_width_limit_control =10;
-max_depth_control = 2;
+max_depth_control = 6;
 
 best_test_error = np.inf;
 best_depth = max_depth;
