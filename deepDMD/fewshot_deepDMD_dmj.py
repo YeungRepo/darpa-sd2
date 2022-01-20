@@ -738,7 +738,7 @@ if pre_examples_switch == 24:
   phase_space_stitching = 0;    
 
 
-deep_dict_size = 10;
+deep_dict_size = 20;
 
 if with_control:
   deep_dict_size_control = 5;
