@@ -124,6 +124,10 @@ def quick_nstep_predict(Y_p_old,u_control_all_training,with_control,num_bas_obs,
   prediction_error = np.linalg.norm(Yf_final_test_stack_nn-Yf_final_test_ep_nn,ord='fro')/np.linalg.norm(Yf_final_test_stack_nn,ord='fro');
   print('%s%f' % ('[INFO] Current n-step prediction error (not used for gradient descent/backprop): ',prediction_error));
 
+  file1 = open("performance logs.txt","a+")
+  file1.write(str(prediction_error))
+  file1.close() 
+
   plt.figure();
   ### Make a Prediction Plot 
   x_range = np.arange(0,Yf_final_test_stack_nn.shape[1],1);
