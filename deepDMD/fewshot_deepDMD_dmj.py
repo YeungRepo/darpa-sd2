@@ -571,7 +571,7 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
   plt.plot(x,test_error_history_nocovar,label='test err.');
   #plt.gca().set_yscale('log');
   file1 = open("performance logs.txt","w")
-  file1.write(iter, mean_diff_nocovar.eval(feed_dict={yp_feed:u_valid,yf_feed:y_valid}), mean_diff_nocovar.eval(feed_dict={yp_feed:u_test_train,yf_feed:y_test_train}))
+  file1.write([iter, mean_diff_nocovar.eval(feed_dict={yp_feed:u_valid,yf_feed:y_valid}), mean_diff_nocovar.eval(feed_dict={yp_feed:u_test_train,yf_feed:y_test_train})])
   file1.close() 
   plt.savefig('all_error_history.pdf');
 
