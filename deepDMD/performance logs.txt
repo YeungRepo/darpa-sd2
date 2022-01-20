@@ -1,0 +1,1 @@
+Iteration: 2500 : Validation Error - 0.06457331Test Error : 0.09527273
