@@ -63,7 +63,7 @@ eval_size = batchsize;
 
 use_crelu = 0;
 activation_flag = 2; # sets the activation function type to RELU, ELU, SELU (initialized a certain way,dropout has to be done differently) , or tanh() 
-max_iters = 25000;#10000#200000 #1000000;
+max_iters = 2500;#10000#200000 #1000000;
 valid_error_threshold = .00001;
 test_error_threshold = .00001;
 
@@ -570,6 +570,9 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
   plt.plot(x,validation_error_history_nocovar,label='valid. err.');
   plt.plot(x,test_error_history_nocovar,label='test err.');
   #plt.gca().set_yscale('log');
+  file1 = open("performance logs.txt","w")
+  file1.write(iter, mean_diff_nocovar.eval(feed_dict={yp_feed:u_valid,yf_feed:y_valid}), mean_diff_nocovar.eval(feed_dict={yp_feed:u_test_train,yf_feed:y_test_train}))
+  file1.close() 
   plt.savefig('all_error_history.pdf');
 
   plt.close();
@@ -736,11 +739,11 @@ if with_control:
   
   
 max_depth = 8;  # 7max_depth 3 works well  
-max_width_limit = 2   ;# 20max width_limit -4 works well 
+max_width_limit = 8   ;# 20max width_limit -4 works well 
 
 min_width_limit = max_width_limit;# use regularization and dropout to trim edges for now. 
 min_width_limit_control =10;
-max_depth_control = 1;
+max_depth_control = 2;
 
 best_test_error = np.inf;
 best_depth = max_depth;
@@ -1151,6 +1154,8 @@ Yf_final_test_ep_nn = np.transpose(Yf_final_test_ep_nn);
 
 prediction_error = np.linalg.norm(Yf_final_test_stack_nn-Yf_final_test_ep_nn,ord='fro')/np.linalg.norm(Yf_final_test_stack_nn,ord='fro');
 print('%s%f' % ('[RESULT] n-step Prediction error: ',prediction_error));
+
+
 
 import matplotlib
 matplotlib.rcParams.update({'font.size':20})
