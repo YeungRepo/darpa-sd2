@@ -63,7 +63,7 @@ eval_size = batchsize;
 
 use_crelu = 0;
 activation_flag = 2; # sets the activation function type to RELU, ELU, SELU (initialized a certain way,dropout has to be done differently) , or tanh() 
-max_iters = 2500;#10000#200000 #1000000;
+max_iters = 15000;#10000#200000 #1000000;
 valid_error_threshold = .00001;
 test_error_threshold = .00001;
 
@@ -570,8 +570,8 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
   plt.plot(x,validation_error_history_nocovar,label='valid. err.');
   plt.plot(x,test_error_history_nocovar,label='test err.');
   #plt.gca().set_yscale('log');
-  file1 = open("performance logs.txt","w")
-  file1.write("Iteration: "+str(iter) + " : " + "Validation Error - " + str(mean_diff_nocovar.eval(feed_dict={yp_feed:u_valid,yf_feed:y_valid})) + "Test Error : " + str(mean_diff_nocovar.eval(feed_dict={yp_feed:u_test_train,yf_feed:y_test_train})))
+  file1 = open("performance logs.txt","a+")
+  file1.write("Iteration: "+str(iter) + " : " + "Validation Error " + str(mean_diff_nocovar.eval(feed_dict={yp_feed:u_valid,yf_feed:y_valid})) + "Test Error : " + str(mean_diff_nocovar.eval(feed_dict={yp_feed:u_test_train,yf_feed:y_test_train})))
   file1.close() 
   plt.savefig('all_error_history.pdf');
 
