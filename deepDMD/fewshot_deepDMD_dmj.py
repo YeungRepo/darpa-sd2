@@ -603,7 +603,7 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
 # # # - - - Begin Koopman Model Script - - - # # #
 
 
-pre_examples_switch =  25; 
+pre_examples_switch =  26; 
 
 ### Randomly generated oscillator system with control
 
@@ -750,6 +750,12 @@ if pre_examples_switch == 24:
   phase_space_stitching = 0;  
 
 if pre_examples_switch == 25:
+  data_suffix = 'CFS_Koopman7.pickle';
+  with_control = 0;
+  with_output = 0;
+  phase_space_stitching = 0;    
+
+if pre_examples_switch == 26:
   data_suffix = 'CFS_Koopman7.pickle';
   with_control = 0;
   with_output = 0;
