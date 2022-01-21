@@ -56,7 +56,7 @@ colors = np.asarray(colors); # defines a color palette
 ###  Deep Learning Optimization Parameters ### 
 
 lambd = 0.00000;
-step_size_val = 0.5#.025;
+step_size_val = 0.25#.025;
 
 batchsize = 1#30#900;
 eval_size = batchsize;
@@ -382,8 +382,10 @@ def initialize_stateinclusive_tensorflow_graph(n_u,deep_dict_size,hv_list,W_list
           if activation_flag==3:
               z_list.append(tf.nn.dropout(tf.nn.tanh(prev_layer_output),1.0-keep_prob));
 
-  y = tf.concat([u,z_list[-1]],axis=1); # [TODO] in the most general function signature, allow for default option with state/input inclusion
+  #y = tf.concat([u,z_list[-1]], axis=1); # [TODO] in the most general function signature, allow for default option with state/input inclusion
 
+  yi = tf.concat([u,z_list[-1]], axis=1); 
+  y = tf.concat([yi, tf.ones(shape=(tf.shape(yi)[0], 1))], axis=1);
   result = sess.run(tf.compat.v1.global_variables_initializer());
 
 #  print("[DEBUG] y.get_shape(): " + repr(y.get_shape()) + " y_.get_shape(): " + repr(y_.get_shape());
@@ -426,9 +428,14 @@ def Deep_Direct_Koopman_Objective(psiyp,psiyf,Kx,step_size,convex_basis=0,u=None
    #  lagrange_multiplier_convex = 10.0;
      #tf_koopman_loss = tf_koopman_loss + lagrange_multiplier_convex*jensen_term(psiyp,1e6,u)
 
+   psiXf_prediction_error = psiyf - forward_prediction
+   SST_X = tf.math.reduce_sum(tf.math.square(psiyf - tf.math.reduce_mean(psiyf, axis=0)))
+   SSE_X = tf.math.reduce_sum(tf.math.square(psiXf_prediction_error))
+   R2 = (1 - tf.divide(SSE_X, SST_X)) * 100
+
    optimizer = tf.compat.v1.train.AdagradOptimizer(step_size).minimize(tf_koopman_loss);
    result = sess.run(tf.compat.v1.global_variables_initializer());
-   return tf_koopman_loss,optimizer,forward_prediction;
+   return tf_koopman_loss,optimizer,forward_prediction, R2;
 
 
  
@@ -965,13 +972,13 @@ for n_depth_reciprocal in range(1,2):#max_depth-2): #2
                 no_phase_space_prior = True;
                 Kx = weight_variable([deep_dict_size+n_outputs,deep_dict_size+n_outputs]);
             else: 
-                Kx = weight_variable([deep_dict_size+n_outputs,deep_dict_size+n_outputs]);
+                Kx = weight_variable([deep_dict_size+n_outputs+1,deep_dict_size+n_outputs+1]);
             
             if with_control:
               Ku = weight_variable([deep_dict_size_control+n_inputs_control,deep_dict_size+n_outputs]);  # [NOTE: generalize to vary deep_dict_size (first dim, num of lifted inputs)             
               deep_koopman_loss,optimizer,forward_prediction_control = Deep_Control_Koopman_Objective(psiyp,psiyf,Kx,psiu,Ku,step_size);    
             else:
-              deep_koopman_loss,optimizer,forward_prediction = Deep_Direct_Koopman_Objective(psiyp,psiyf,Kx,step_size,convex_basis=0,u=yp_feed);
+              deep_koopman_loss,optimizer,forward_prediction, R2 = Deep_Direct_Koopman_Objective(psiyp,psiyf,Kx,step_size,convex_basis=0,u=yp_feed);
               
             
             if debug_splash:
@@ -997,15 +1004,17 @@ for n_depth_reciprocal in range(1,2):#max_depth-2): #2
           test_error_history_withcovar = all_histories[5];
           print("[INFO] Initialization was successful: " + repr(good_start==1));
           
-          accuracy = deep_koopman_loss;#;
+          #accuracy = deep_koopman_loss;#;
+          accuracy = R2
           if with_control:
             train_accuracy = accuracy.eval(feed_dict={yp_feed:up_all_training,yf_feed:uf_all_training,u_control:U_train});
             test_accuracy = accuracy.eval(feed_dict={yp_feed:Yp_test,yf_feed:Yf_test,u_control:U_test});
       
           else:
             train_accuracy = accuracy.eval(feed_dict={yp_feed:up_all_training,yf_feed:uf_all_training});
+            print(train_accuracy)
             test_accuracy = accuracy.eval(feed_dict={yp_feed:Yp_test,yf_feed:Yf_test});
-      
+            print(test_accuracy)
           if test_accuracy <= best_test_error:
               best_test_error = test_accuracy;
               best_depth = n_depth;
@@ -1200,4 +1209,4 @@ plt.show();
 #saver = tf.train.import_meta_graph('_current_run_saved_files/arb_data_KCOT_DMJ.pickle.ckpt.meta', clear_devices=True)
 #saver.restore(sess, tf.train.latest_checkpoint('_current_run_saved_files'))
 
-print(Kx_num)
+print(Kx_num.T)
