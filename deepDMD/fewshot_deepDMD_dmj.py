@@ -56,14 +56,14 @@ colors = np.asarray(colors); # defines a color palette
 ###  Deep Learning Optimization Parameters ### 
 
 lambd = 0.00000;
-step_size_val = 0.05#.025;
+step_size_val = 0.5#.025;
 
-batchsize = 40#30#900;
+batchsize = 1#30#900;
 eval_size = batchsize;
 
 use_crelu = 0;
 activation_flag = 2; # sets the activation function type to RELU, ELU, SELU (initialized a certain way,dropout has to be done differently) , or tanh() 
-max_iters = 400000;#10000#200000 #1000000;
+max_iters = 4000;#10000#200000 #1000000;
 valid_error_threshold = .00001;
 test_error_threshold = .00001;
 
@@ -465,12 +465,17 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
   while (((test_error>test_error_thres) or (valid_error > valid_error_thres)) and iter < max_iters):
     iter+=1;
     
-    all_ind = set(np.arange(0,len(u_all_training)));
-    select_ind = np.random.randint(0,len(u_all_training),size=batchsize);
-    valid_ind = list(all_ind -set(select_ind))[0:batchsize];
-    select_ind_test = list(all_ind - set(valid_ind) - set(select_ind))[0:batchsize];
-
-    
+    all_ind = list(np.arange(0,len(u_all_training)));
+    #select_ind = np.random.shuffle(0,len(u_all_training),size=len(all_ind)/2);
+    #valid_ind = list(all_ind -set(select_ind))[0:batchsize];
+    #select_ind_test = list(all_ind - set(valid_ind) - set(select_ind))[0:batchsize];
+    np.random.shuffle(all_ind)
+    select_const = np.int(len(all_ind)/2)
+    valid_const = np.int(3/4*len(all_ind))
+    select_ind = all_ind[0:select_const]
+    valid_ind = all_ind[select_const:valid_const]
+    select_ind_test = all_ind[valid_const:len(all_ind)]
+      
     u_batch =[];
     u_control_batch = [];
     y_batch = [];
@@ -591,7 +596,7 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
 # # # - - - Begin Koopman Model Script - - - # # #
 
 
-pre_examples_switch =  24; 
+pre_examples_switch =  25; 
 
 ### Randomly generated oscillator system with control
 
@@ -735,17 +740,23 @@ if pre_examples_switch == 24:
   data_suffix = 'arb_data_KCOT_DMJ_square_waveV4.pickle';
   with_control = 0;
   with_output = 0;
+  phase_space_stitching = 0;  
+
+if pre_examples_switch == 25:
+  data_suffix = 'CFS_Koopman7.pickle';
+  with_control = 0;
+  with_output = 0;
   phase_space_stitching = 0;    
 
 
-deep_dict_size = 10;
+deep_dict_size = 1;
 
 if with_control:
   deep_dict_size_control = 5;
   
   
-max_depth = 7;  # 7max_depth 3 works well  
-max_width_limit = 16   ;# 20max width_limit -4 works well 
+max_depth = 3;  # 7max_depth 3 works well  
+max_width_limit = 4   ;# 20max width_limit -4 works well 
 
 min_width_limit = max_width_limit;# use regularization and dropout to trim edges for now. 
 min_width_limit_control =10;
@@ -831,7 +842,7 @@ else:
 #Yf_train_old = Yf[0:train_range];
 ## End Old Code for Train/Test Split
 
-num_trains = np.int(len(Yp)/2);
+num_trains = np.int(2*len(Yp)/3);
 
 
 
