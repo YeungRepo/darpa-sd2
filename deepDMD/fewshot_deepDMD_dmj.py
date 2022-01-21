@@ -58,7 +58,7 @@ colors = np.asarray(colors); # defines a color palette
 lambd = 0.00000;
 step_size_val = 1#.025;
 
-batchsize = 1#30#900;
+batchsize = 0.25#30#900;
 eval_size = batchsize;
 
 use_crelu = 0;
@@ -756,7 +756,7 @@ if pre_examples_switch == 25:
   phase_space_stitching = 0;    
 
 if pre_examples_switch == 26:
-  data_suffix = 'CFS_Koopman8.pickle';
+  data_suffix = 'CFS_Koopman9.pickle';
   with_control = 0;
   with_output = 0;
   phase_space_stitching = 0;    
