@@ -768,7 +768,7 @@ if with_control:
   deep_dict_size_control = 5;
   
   
-max_depth = 8;  # 7max_depth 3 works well  
+max_depth = 17;  # 7max_depth 3 works well  
 max_width_limit = 9   ;# 20max width_limit -4 works well 
 
 min_width_limit = max_width_limit;# use regularization and dropout to trim edges for now. 
