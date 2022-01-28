@@ -1,0 +1,1 @@
+1.1610339567593118Iteration: 5000 : Validation Error 0.3315849Test Error : 0.3411762Iteration: 5000 : Validation Error 0.6814255Test Error : 0.53823435

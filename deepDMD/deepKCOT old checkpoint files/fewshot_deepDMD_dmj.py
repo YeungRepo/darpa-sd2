@@ -126,7 +126,7 @@ def quick_nstep_predict(Y_p_old,u_control_all_training,with_control,num_bas_obs,
   prediction_error = np.linalg.norm(Yf_final_test_stack_nn-Yf_final_test_ep_nn,ord='fro')/np.linalg.norm(Yf_final_test_stack_nn,ord='fro');
   print('%s%f' % ('[INFO] Current n-step prediction error (not used for gradient descent/backprop): ',prediction_error));
 
-  file1 = open(state_save_folder+"/performance logs.txt","a+")
+  file1 = open("performance logs.txt","a+")
   file1.write(str(prediction_error))
   file1.close() 
 
@@ -592,7 +592,7 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
   file1 = open("performance logs.txt","a+")
   file1.write("Iteration: "+str(iter) + " : " + "Validation Error " + str(mean_diff_nocovar.eval(feed_dict={yp_feed:u_valid,yf_feed:y_valid})) + "Test Error : " + str(mean_diff_nocovar.eval(feed_dict={yp_feed:u_test_train,yf_feed:y_test_train})))
   file1.close() 
-  plt.savefig(state_save_folder+'/all_error_history.pdf');
+  plt.savefig('all_error_history.pdf');
 
   plt.close();
   return all_histories,good_start;
@@ -1080,7 +1080,7 @@ for simulation in range(0, 1):
   plt.xlabel('t');
   fig = plt.gcf();
 
-  target_file = state_save_folder+'/'+data_suffix.replace('.pickle','')+'final_nstep_prediction.pdf';
+  target_file = data_suffix.replace('.pickle','')+'final_nstep_prediction.pdf';
   plt.savefig(target_file);
   plt.show();
 
@@ -1089,5 +1089,5 @@ for simulation in range(0, 1):
   #saver.restore(sess, tf.train.latest_checkpoint('_current_run_saved_files'))
   print(type(Kx_num))
   print(Kx_num.T)
-  with open(state_save_folder+'/KoopmanOperator.pkl','wb+') as f:
+  with open('KoopmanOperator.pkl','wb+') as f:
     pickle.dump(Kx_num.T, f)
