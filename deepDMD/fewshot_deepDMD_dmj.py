@@ -38,6 +38,7 @@ plot_deep_basis = 1;  # This activates plotting of deep basis functions as a fun
 single_series = 0;  # Useful if you're analyzing a system with only a single time-series (requires extremely high temporal resolution). 
 debug_splash = 0;
 phase_space_stitching = 0;
+bias = 1
 ### Support Vars: 
 
 colors =[[ 0.68627453,  0.12156863,  0.16470589],
@@ -56,14 +57,14 @@ colors = np.asarray(colors); # defines a color palette
 ###  Deep Learning Optimization Parameters ### 
 
 lambd = 0.00000;
-step_size_val = 1#.025;
+step_size_val = 0.1#.025;
 
 batchsize = 0.25#30#900;
 eval_size = batchsize;
 
 use_crelu = 0;
 activation_flag = 2; # sets the activation function type to RELU, ELU, SELU (initialized a certain way,dropout has to be done differently) , or tanh() 
-max_iters = 10000;#10000#200000 #1000000;
+max_iters = 20000;#10000#200000 #1000000;
 valid_error_threshold = .00001;
 test_error_threshold = .00001;
 
@@ -142,10 +143,6 @@ def quick_nstep_predict(Y_p_old,u_control_all_training,with_control,num_bas_obs,
   target_file = 'PredictionsDuringTraining/'+data_suffix.replace('.pickle','')+'nstep_prediction' + repr(iter) + '.pdf';
   plt.savefig(target_file);
   plt.close();
-
-
-
-
 
 def compute_covarmat(U,Y):
   U = np.asarray(U);
@@ -230,7 +227,7 @@ def load_pickle_data(file_path,has_control):
         '''     
         file_obj = open(file_path,'rb');
         output_vec = pickle.load(file_obj);
-
+        #print(output_vec[0])
         Yp = output_vec[0]; # list of baseline observables, len(Yp) = (n_samps-1) 
         Yf = output_vec[1]; # list of baseline observables, len(Yf) = (n_samps-1) 
 
@@ -384,6 +381,8 @@ def initialize_stateinclusive_tensorflow_graph(n_u,deep_dict_size,hv_list,W_list
 
   #y = tf.concat([u,z_list[-1]], axis=1); # [TODO] in the most general function signature, allow for default option with state/input inclusion
 
+  
+
   yi = tf.concat([u,z_list[-1]], axis=1); 
   y = tf.concat([yi, tf.ones(shape=(tf.shape(yi)[0], 1))], axis=1);
   result = sess.run(tf.compat.v1.global_variables_initializer());
@@ -477,6 +476,7 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
     #valid_ind = list(all_ind -set(select_ind))[0:batchsize];
     #select_ind_test = list(all_ind - set(valid_ind) - set(select_ind))[0:batchsize];
     np.random.shuffle(all_ind)
+    #print(all_ind)
     select_const = np.int(len(all_ind)/2)
     valid_const = np.int(3/4*len(all_ind))
     select_ind = all_ind[0:select_const]
@@ -551,6 +551,8 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
           print ("step %d , validation error %g"%(iter, mean_diff_nocovar.eval(feed_dict={yp_feed:u_valid,yf_feed:y_valid})));
           print ("step %d , test error %g"%(iter, mean_diff_nocovar.eval(feed_dict={yp_feed:u_test_train,yf_feed:y_test_train})));
           
+          Kx_num = sess.run(Kx);
+          print(Kx_num.T)
     if ((iter>20000) and iter%10) :
 
       valid_gradient = np.gradient(np.asarray(validation_error_history_nocovar[np.int(iter/samplerate*3/10):]) );
@@ -603,163 +605,27 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
 # # # - - - Begin Koopman Model Script - - - # # #
 
 
-pre_examples_switch =  26; 
+pre_examples_switch =  1; 
 
 ### Randomly generated oscillator system with control
 
 data_directory = 'koopman_data/'
-if pre_examples_switch == 0:
-  data_suffix = 'rand_osc.pickle';  
-  with_control = 1; 
-  phase_space_stitching = 0;
 
 if pre_examples_switch == 1:
-  data_suffix = 'cons_law.pickle';
+  data_suffix = 'CFS_Koopman_correct_ics2.pickle';
   with_control = 0;
   phase_space_stitching = 0;
 
+
 if pre_examples_switch == 2:
-  data_suffix = '50bus.pickle';
-  with_control = 1;
+  data_suffix = 'Toggle_switch_DMJ.pickle';
+  with_control = 0;
   phase_space_stitching = 0;
 
 if pre_examples_switch == 3:
-  data_suffix = 'zhang_control.pickle';
-  with_control = 1;
-  phase_space_stitching = 0;
-
-  
-if pre_examples_switch == 4:
-  data_suffix = 'deltaomega-series.pickle'; ### IEEE 39 bus swing model 
-  with_control = 1; 
-  phase_space_stitching = 0;
-  
-if pre_examples_switch == 5:
-  data_suffix = 'glycol.pickle';
-  with_control = 0; 
-  phase_space_stitching = 0;
-  
-if pre_examples_switch == 6:
-  data_suffix = 'exp_toggle_switch.pickle';
-  with_control = 0; 
-  phase_space_stitching = 0;
-  
-if pre_examples_switch == 7:
-  data_suffix ='MD.pickle';
-  with_control = 1; 
-  phase_space_stitching = 0;
-  
-if pre_examples_switch == 8:
-  data_suffix = 'phase_space_stitching/sim_toggle_switch_phase1.pickle';
+  data_suffix = 'HandDrawn_repressilator.pickle';
   with_control = 0;
   phase_space_stitching = 0;
-
-if pre_examples_switch == 9:
-  data_suffix = 'phase_space_stitching/sim_toggle_switch_phase2.pickle';
-  with_control = 0;
-  phase_space_stitching = 1;
-  
-if pre_examples_switch ==10:
-  data_suffix = 'exp_toggle_switch_M9CA.pickle';
-  with_control=0; 
-  phase_space_stitching = 0;
-
-if pre_examples_switch == 11:
-  data_suffix = 'fourstate_mak.pickle'
-  with_control = 0;
-  phase_space_stitching = 0;
-
-if pre_examples_switch == 12:
-  data_suffix = 'SRI_ribo.pickle';
-  with_control = 1;
-  phase_space_stitching = 0;
-
-if pre_examples_switch == 13:
-  data_suffix = 'arb_data_KCOT_DMJ.pickle';
-  with_control = 1;
-  phase_space_stitching = 0;
-
-if pre_examples_switch == 14:
-  data_suffix = 'activator_repressor_clock_sample_data.pickle';
-  with_control = 1;
-  phase_space_stitching = 0;
-
-if pre_examples_switch == 15:
-  data_suffix = 'KCOT_spring_mass_damper.pickle';
-  with_control = 1;
-  phase_space_stitching = 0;
-
-## Inline Inputs
-### Define Neural Network Hyperparameters
-
-if pre_examples_switch == 16:
-  data_suffix = 'arb_data_KCOT_DMJ_square_wave.pickle';
-  with_control = 0;
-  phase_space_stitching = 0;
-  
-
-if pre_examples_switch == 17:
-  data_suffix = 'KCOT_spring_mass_damper_single_input.pickle';
-  with_control = 0;
-  phase_space_stitching = 0;
-
-
-
-if pre_examples_switch == 18:
-  data_suffix = 'KCOT_KoopmanClosure_single_input.pickle';
-  with_control = 0;
-  phase_space_stitching = 0;
-
-
-if pre_examples_switch == 19:
-  data_suffix = 'arb_data_KCOT_DMJ.pickle';
-  with_control = 0;
-  with_output = 0;
-  phase_space_stitching = 0;    
-
-
-if pre_examples_switch == 20:
-  data_suffix = 'ARC_oscillations.pickle';
-  with_control = 0;
-  with_output = 0;
-  phase_space_stitching = 0;    
-
-if pre_examples_switch == 21:
-  data_suffix = 'arb_data_KCOT_DMJ_square_waveV2.pickle';
-  with_control = 0;
-  with_output = 0;
-  phase_space_stitching = 0;    
-
-if pre_examples_switch == 22:
-  data_suffix = 'CFS_Koopman5.pickle';
-  with_control = 0;
-  with_output = 0;
-  phase_space_stitching = 0;   
-
-if pre_examples_switch == 23:
-  data_suffix = 'arb_data_KCOT_DMJ_square_waveV3.pickle';
-  with_control = 0;
-  with_output = 0;
-  phase_space_stitching = 0;    
-
-
-if pre_examples_switch == 24:
-  data_suffix = 'arb_data_KCOT_DMJ_square_waveV4.pickle';
-  with_control = 0;
-  with_output = 0;
-  phase_space_stitching = 0;  
-
-if pre_examples_switch == 25:
-  data_suffix = 'CFS_Koopman7.pickle';
-  with_control = 0;
-  with_output = 0;
-  phase_space_stitching = 0;    
-
-if pre_examples_switch == 26:
-  data_suffix = 'CFS_Koopman_correct_ics.pickle';
-  with_control = 0;
-  with_output = 0;
-  phase_space_stitching = 0;    
 
 
 deep_dict_size = 1;
@@ -768,8 +634,8 @@ if with_control:
   deep_dict_size_control = 5;
   
   
-max_depth = 17;  # 7max_depth 3 works well  
-max_width_limit = 17   ;# 20max width_limit -4 works well 
+max_depth = 8;  # 7max_depth 3 works well  
+max_width_limit = 2   ;# 20max width_limit -4 works well 
 
 min_width_limit = max_width_limit;# use regularization and dropout to trim edges for now. 
 min_width_limit_control =10;
@@ -855,7 +721,7 @@ else:
 #Yf_train_old = Yf[0:train_range];
 ## End Old Code for Train/Test Split
 
-num_trains = np.int(2*len(Yp)/3);
+num_trains = np.int(len(Yp)/2);
 
 
 
@@ -916,303 +782,311 @@ if debug_splash:
 
 
 ### Begin Sweep 
+for simulation in range(0, 1):
+  for n_depth_reciprocal in range(1,2):#max_depth-2): #2
+    n_depth = max_depth+1 - n_depth_reciprocal;
+    n_depth_control = max_depth_control + 1 - n_depth_reciprocal;   
+    for min_width_conjugate in range(1,2):#min_width_limit): #2
+        min_width= min_width_limit+1-min_width_conjugate;
+        max_width = min_width; #zero gap between min and max ; use regularization and dropout to trim edges. 
+        min_width_control = min_width_limit_control+1-min_width_conjugate;
 
-for n_depth_reciprocal in range(1,2):#max_depth-2): #2
-  n_depth = max_depth+1 - n_depth_reciprocal;
-  n_depth_control = max_depth_control + 1 - n_depth_reciprocal;   
-  for min_width_conjugate in range(1,2):#min_width_limit): #2
-      min_width= min_width_limit+1-min_width_conjugate;
-      max_width = min_width; #zero gap between min and max ; use regularization and dropout to trim edges. 
-      min_width_control = min_width_limit_control+1-min_width_conjugate;
+        
+        if min_width==max_width:
+          hidden_vars_list = np.asarray([min_width]*n_depth);
+        else:
+          hidden_vars_list = np.random.randint(min_width,max_width,size=n_depth);
 
-      
-      if min_width==max_width:
-        hidden_vars_list = np.asarray([min_width]*n_depth);
-      else:
-        hidden_vars_list = np.random.randint(min_width,max_width,size=n_depth);
+        if with_control:  
+          hidden_vars_list_control = np.asarray([min_width_control]*n_depth_control);
+          hidden_vars_list_control[-1] = deep_dict_size_control;
 
-      if with_control:  
-        hidden_vars_list_control = np.asarray([min_width_control]*n_depth_control);
-        hidden_vars_list_control[-1] = deep_dict_size_control;
-
-      good_start = 0;
-      max_tries = 1;
-      try_num = 0;
-      
-      # # # - - - enforce Koopman last layer # # #
-      
-      hidden_vars_list[-1] = deep_dict_size;
-      
-      print("[INFO] hidden_vars_list: " +repr(hidden_vars_list));
-      while good_start==0 and try_num < max_tries:
-          try_num +=1;
-          if debug_splash:
-            print("\n Initialization attempt number: ") + repr(try_num);
-            print("\n \t Initializing Tensorflow Residual ELU Network with ") + repr(n_inputs) + (" inputs and ") + repr(n_outputs) + (" outputs and ") + repr(len(hidden_vars_list)) + (" layers");
-
-          with tf.device('/cpu:0'):
-            Wy_list,by_list = initialize_Wblist(n_inputs,hidden_vars_list);
-            params_list = [ n_outputs, deep_dict_size, hidden_vars_list,Wy_list,by_list,keep_prob,activation_flag, res_net ]
-            
-            psiypz_list,psiyp,yp_feed =  instantiate_comp_graph(params_list); 
-            psiyfz_list,psiyf,yf_feed = instantiate_comp_graph(params_list);
-            
-            if with_control:
-              Wu_list,bu_list = initialize_Wblist(n_inputs_control,hidden_vars_list_control);
-              
-              
-              psiuz_list, psiu,u_control = initialize_stateinclusive_tensorflow_graph(n_inputs_control,deep_dict_size_control,hidden_vars_list_control,Wu_list,bu_list,keep_prob,activation_flag,res_net);
-            
-            # add hooks for affine control perturbation to Deep_Direct_Koopman_Objective
-            step_size = tf.compat.v1.placeholder(tf.float32,shape=[]);
-
-            if phase_space_stitching and (not with_control):
-              try:
-                Kmatrix_file_obj = open('phase_space_stitching/raws/Kmatrix_file.pickle','rb');
-                this_pickle_file_list = pickle.load(Kmatrix_file_obj);
-                Kx_num  = this_pickle_file_list[0];
-                Kx = tf.constant(Kx_num); # this is assuming a row space (pre-multiplication) Koopman
-
-              except:
-                print("[Warning]: No phase space prior for the Koopman Matrix Detected @ /phase_space_stitching/raws/Kmatrix_file.pickle\n . . . learning Koopman prior as a fixed variable. ");
-                no_phase_space_prior = True;
-                Kx = weight_variable([deep_dict_size+n_outputs,deep_dict_size+n_outputs]);
-            else: 
-                Kx = weight_variable([deep_dict_size+n_outputs+1,deep_dict_size+n_outputs+1]);
-            
-            if with_control:
-              Ku = weight_variable([deep_dict_size_control+n_inputs_control,deep_dict_size+n_outputs]);  # [NOTE: generalize to vary deep_dict_size (first dim, num of lifted inputs)             
-              deep_koopman_loss,optimizer,forward_prediction_control = Deep_Control_Koopman_Objective(psiyp,psiyf,Kx,psiu,Ku,step_size);    
-            else:
-              deep_koopman_loss,optimizer,forward_prediction, R2 = Deep_Direct_Koopman_Objective(psiyp,psiyf,Kx,step_size,convex_basis=0,u=yp_feed);
-              
-            
+        good_start = 0;
+        max_tries = 1;
+        try_num = 0;
+        
+        # # # - - - enforce Koopman last layer # # #
+        
+        hidden_vars_list[-1] = deep_dict_size;
+        
+        print("[INFO] hidden_vars_list: " +repr(hidden_vars_list));
+        while good_start==0 and try_num < max_tries:
+            try_num +=1;
             if debug_splash:
-              train_vars = tf.trainable_variables();
-              values = sess.run([x.name for x in train_vars]);
-              print("[DEBUG] # of Trainable Variables: ") + repr(len(values));
-              print("[DEBUG] Trainable Variables: ") + repr([ temp_var.shape for temp_var in values]);
+              print("\n Initialization attempt number: ") + repr(try_num);
+              print("\n \t Initializing Tensorflow Residual ELU Network with ") + repr(n_inputs) + (" inputs and ") + repr(n_outputs) + (" outputs and ") + repr(len(hidden_vars_list)) + (" layers");
 
-              print("[DEBUG] # of datapoints in up_all_training: ") + repr(up_all_training.shape);
-              print("[DEBUG] # of datapoints in uf_all_training: ") + repr(uf_all_training.shape);
+            with tf.device('/cpu:0'):
+              Wy_list,by_list = initialize_Wblist(n_inputs,hidden_vars_list);
+              params_list = [ n_outputs, deep_dict_size, hidden_vars_list,Wy_list,by_list,keep_prob,activation_flag, res_net ]
+              
+              psiypz_list,psiyp,yp_feed =  instantiate_comp_graph(params_list); 
+              psiyfz_list,psiyf,yf_feed = instantiate_comp_graph(params_list);
+              
+              if with_control:
+                Wu_list,bu_list = initialize_Wblist(n_inputs_control,hidden_vars_list_control);
+                
+                
+                psiuz_list, psiu,u_control = initialize_stateinclusive_tensorflow_graph(n_inputs_control,deep_dict_size_control,hidden_vars_list_control,Wu_list,bu_list,keep_prob,activation_flag,res_net);
+              
+              # add hooks for affine control perturbation to Deep_Direct_Koopman_Objective
+              step_size = tf.compat.v1.placeholder(tf.float32,shape=[]);
+
+              if phase_space_stitching and (not with_control):
+                try:
+                  Kmatrix_file_obj = open('phase_space_stitching/raws/Kmatrix_file.pickle','rb');
+                  this_pickle_file_list = pickle.load(Kmatrix_file_obj);
+                  Kx_num  = this_pickle_file_list[0];
+                  Kx = tf.constant(Kx_num); # this is assuming a row space (pre-multiplication) Koopman
+
+                except:
+                  print("[Warning]: No phase space prior for the Koopman Matrix Detected @ /phase_space_stitching/raws/Kmatrix_file.pickle\n . . . learning Koopman prior as a fixed variable. ");
+                  no_phase_space_prior = True;
+                  Kx = weight_variable([deep_dict_size+n_outputs,deep_dict_size+n_outputs]);
+              else: 
+                  Kx = weight_variable([deep_dict_size+n_outputs+1,deep_dict_size+n_outputs]);
+                  sess.run(tf.compat.v1.global_variables_initializer());
+                  last_col = tf.constant(np.zeros(shape=(deep_dict_size + n_outputs, 1)), dtype=tf.dtypes.float32)
+                  last_col = tf.concat([last_col, [[1.]]], axis=0)
+                  Kx = tf.concat([Kx, last_col], axis=1)  
+
+              
+              if with_control:
+                Ku = weight_variable([deep_dict_size_control+n_inputs_control,deep_dict_size+n_outputs]);  # [NOTE: generalize to vary deep_dict_size (first dim, num of lifted inputs)             
+                deep_koopman_loss,optimizer,forward_prediction_control = Deep_Control_Koopman_Objective(psiyp,psiyf,Kx,psiu,Ku,step_size);    
+              else:
+                print(psiyp)
+                deep_koopman_loss,optimizer,forward_prediction, R2 = Deep_Direct_Koopman_Objective(psiyp,psiyf,Kx,step_size,convex_basis=0,u=yp_feed);
+                
+              
+              if debug_splash:
+                train_vars = tf.trainable_variables();
+                values = sess.run([x.name for x in train_vars]);
+                print("[DEBUG] # of Trainable Variables: ") + repr(len(values));
+                print("[DEBUG] Trainable Variables: ") + repr([ temp_var.shape for temp_var in values]);
+
+                print("[DEBUG] # of datapoints in up_all_training: ") + repr(up_all_training.shape);
+                print("[DEBUG] # of datapoints in uf_all_training: ") + repr(uf_all_training.shape);
 
 
+              
+              all_histories,good_start  = train_net(up_all_training,uf_all_training,deep_koopman_loss,optimizer,U_train,valid_error_threshold,test_error_threshold,max_iters,step_size_val);
+              #all_histories,good_start  = train_net(up_all_training,uf_all_training,deep_koopman_loss,optimizer,U_train,valid_error_threshold*.1,test_error_threshold*.1,max_iters,step_size_val/10);
+              #all_histories,good_start  = train_net(up_all_training,uf_all_training,deep_koopman_loss,optimizer,U_train,valid_error_threshold*.025,test_error_threshold*.025,max_iters,step_size_val/100);
+
+            training_error_history_nocovar = all_histories[0];
+            validation_error_history_nocovar =   all_histories[1];
+            test_error_history_nocovar = all_histories[2];
+            training_error_history_withcovar  = all_histories[3];
+            validation_error_history_withcovar = all_histories[4];
+            test_error_history_withcovar = all_histories[5];
+            print("[INFO] Initialization was successful: " + repr(good_start==1));
             
-            all_histories,good_start  = train_net(up_all_training,uf_all_training,deep_koopman_loss,optimizer,U_train,valid_error_threshold,test_error_threshold,max_iters,step_size_val);
-            all_histories,good_start  = train_net(up_all_training,uf_all_training,deep_koopman_loss,optimizer,U_train,valid_error_threshold*.1,test_error_threshold*.1,max_iters,step_size_val/10);
-            #all_histories,good_start  = train_net(up_all_training,uf_all_training,deep_koopman_loss,optimizer,U_train,valid_error_threshold*.025,test_error_threshold*.025,max_iters,step_size_val/100);
+            #accuracy = deep_koopman_loss;#;
+            accuracy = R2
+            if with_control:
+              train_accuracy = accuracy.eval(feed_dict={yp_feed:up_all_training,yf_feed:uf_all_training,u_control:U_train});
+              test_accuracy = accuracy.eval(feed_dict={yp_feed:Yp_test,yf_feed:Yf_test,u_control:U_test});
+        
+            else:
+              train_accuracy = accuracy.eval(feed_dict={yp_feed:up_all_training,yf_feed:uf_all_training});
+              print(train_accuracy)
+              test_accuracy = accuracy.eval(feed_dict={yp_feed:Yp_test,yf_feed:Yf_test});
+              print(test_accuracy)
+            if test_accuracy <= best_test_error:
+                best_test_error = test_accuracy;
+                best_depth = n_depth;
+                best_width = min_width;
 
-          training_error_history_nocovar = all_histories[0];
-          validation_error_history_nocovar =   all_histories[1];
-          test_error_history_nocovar = all_histories[2];
-          training_error_history_withcovar  = all_histories[3];
-          validation_error_history_withcovar = all_histories[4];
-          test_error_history_withcovar = all_histories[5];
-          print("[INFO] Initialization was successful: " + repr(good_start==1));
-          
-          #accuracy = deep_koopman_loss;#;
-          accuracy = R2
-          if with_control:
-            train_accuracy = accuracy.eval(feed_dict={yp_feed:up_all_training,yf_feed:uf_all_training,u_control:U_train});
-            test_accuracy = accuracy.eval(feed_dict={yp_feed:Yp_test,yf_feed:Yf_test,u_control:U_test});
-      
-          else:
-            train_accuracy = accuracy.eval(feed_dict={yp_feed:up_all_training,yf_feed:uf_all_training});
-            print(train_accuracy)
-            test_accuracy = accuracy.eval(feed_dict={yp_feed:Yp_test,yf_feed:Yf_test});
-            print(test_accuracy)
-          if test_accuracy <= best_test_error:
-              best_test_error = test_accuracy;
-              best_depth = n_depth;
-              best_width = min_width;
+                if debug_splash:
+                  print("[DEBUG]: Regularization penalty: " + repr(sess.run(reg_term(Wy_list))));
+                np.set_printoptions(precision=2,suppress=True);
+                if debug_splash:
+                  print("[DEBUG]: " + repr(np.asarray(sess.run(Wy_list[0]).tolist())));
+            if debug_splash:
+              print("[Result]: Training Error: ");
+              print(train_accuracy);
+              print("[Result]: Test Error : ");
+              print(test_accuracy);
+            
+  ### Write Vars to Checkpoint Files/MetaFiles 
+            
+  Kx_num = sess.run(Kx);
 
-              if debug_splash:
-                print("[DEBUG]: Regularization penalty: " + repr(sess.run(reg_term(Wy_list))));
-              np.set_printoptions(precision=2,suppress=True);
-              if debug_splash:
-                print("[DEBUG]: " + repr(np.asarray(sess.run(Wy_list[0]).tolist())));
-          if debug_splash:
-            print("[Result]: Training Error: ");
-            print(train_accuracy);
-            print("[Result]: Test Error : ");
-            print(test_accuracy);
-          
-### Write Vars to Checkpoint Files/MetaFiles 
-          
-Kx_num = sess.run(Kx);
+  eig_val, eig_vec = np.linalg.eig(Kx_num) 
 
-eig_val, eig_vec = np.linalg.eig(Kx_num) 
-
-file_obj_swing = open('constrainedNN-Model.pickle','wb');
-Wy_list_num = [sess.run(W_temp) for W_temp in Wy_list];
-by_list_num = [sess.run(b_temp) for b_temp in by_list];
-
-if with_control:
-  Wu_list_num = [sess.run(W_temp) for W_temp in Wu_list];
-  bu_list_num = [sess.run(b_temp) for b_temp in bu_list];
-  Ku_num = sess.run(Ku);
-  pickle.dump([Wy_list_num,by_list_num,Wu_list_num,bu_list_num,Kx_num,Ku_num],file_obj_swing);
-else:
-    pickle.dump([Wy_list_num,by_list_num,Kx_num],file_obj_swing);
-file_obj_swing.close();
-
-
-if (not phase_space_stitching) and (not with_control):
-  file_obj_phase = open('phase_space_stitching/raws/Kmatrix_file.pickle','wb');
-  pickle.dump([Kx_num],file_obj_phase);
-  file_obj_phase.close();
-
-saver = tf.compat.v1.train.Saver()
-
-tf.compat.v1.add_to_collection('psiyp',psiyp);
-tf.compat.v1.add_to_collection('psiyf',psiyf);
-tf.compat.v1.add_to_collection('Kx',Kx);
-
-
-if with_control:
-  tf.compat.v1.add_to_collection('forward_prediction_control',forward_prediction_control);
-  tf.compat.v1.add_to_collection('psiu',psiu);
-  tf.compat.v1.add_to_collection('u_control',u_control);
-  tf.compat.v1.add_to_collection('Ku',Ku);
-else:
-  tf.compat.v1.add_to_collection('forward_prediction',forward_prediction);
-
-tf.compat.v1.add_to_collection('yp_feed',yp_feed);
-tf.compat.v1.add_to_collection('yf_feed',yf_feed);
-
-save_path = saver.save(sess, data_suffix + '.ckpt')
-
-
-Koopman_dim = Kx_num.shape[0];
-print("[INFO] Koopman_dim:" + repr(Kx_num.shape));
-
-if single_series:
-  if pre_examples_switch ==3:
-     Y_p_old,Y_f_old,Y_whole,u_control_all_training = load_pickle_data('koopman_data/zhang_control.pickle');
-  if pre_examples_switch == 4:
-     Y_p_old,Y_f_old,Y_whole,u_control_all_training = load_pickle_data('koopman_data/deltaomega-singleseries.pickle'); 
-
-
-  if not( Kx_num.shape[1]==Kx_num.shape[0]):
-      print("Warning! Estimated Koopman operator is not square with dimensions : " + repr(Kx_num.shape));
-
-  train_range = len(Y_p_old)/2; # define upper limits of training data 
-
-  if debug_splash:
-    print("[DEBUG] train_range: " + repr(train_range));
-
-
-
-  test_range = len(Y_p_old); # define upper limits of test data 
-
-  print("[DEBUG] test_range: " + repr(test_range));
-  Yp_test = Y_p_old[train_range:test_range];
-  Yf_test = Y_f_old[train_range:test_range];
+  file_obj_swing = open('constrainedNN-Model.pickle','wb');
+  Wy_list_num = [sess.run(W_temp) for W_temp in Wy_list];
+  by_list_num = [sess.run(b_temp) for b_temp in by_list];
 
   if with_control:
-    U_test = u_control_all_training_old[train_range:test_range];
-    U_train = u_control_all_training_old[0:train_range];
-    U_train = np.asarray(U_train);
-    U_test = np.asarray(U_test);
-    if len(U_test.shape)==1:
-      U_train = np.reshape(U_train,(U_train.shape[0],1));
-      U_test = np.reshape(U_test,(U_test.shape[0],1));
-
-
-Yp_train = np.asarray(Yp_train);
-Yf_train = np.asarray(Yf_train);
-Yp_test = np.asarray(Yp_test);
-Yf_test = np.asarray(Yf_test);
-Yp_final_test = Yp_test;
-Yf_final_test = Yf_test;
-Yp_final_train = Yp_train;    
-Yf_final_train = Yf_train;
-
-
-# # # Print Evaluation Metrics -  Deep Koopman Learning # # #
-
-#print("[DEBUG]: Yp_train.shape") + repr(Yp_train.shape);
-
-if with_control:
-  training_error = accuracy.eval(feed_dict={yp_feed:list(Yp_train),yf_feed:list(Yf_train),u_control:list(U_train)});
-  test_error = accuracy.eval(feed_dict={yp_feed:list(Yp_test),yf_feed:list(Yf_test),u_control:list(U_test)});
-else:
-  training_error = accuracy.eval(feed_dict={yp_feed:list(Yp_train),yf_feed:list(Yf_train)});
-  test_error = accuracy.eval(feed_dict={yp_feed:list(Yp_test),yf_feed:list(Yf_test)});
-  
-print('%s%f' % ('[COMP] Training error: ',training_error));
-print('%s%f' % ('[COMP] Test error: ',test_error));
-
-# # # - - - n-step Prediction Error Analysis - - - # # # 
-
-  
-n_points_pred = len(Y_p_old) - test_indices[0]-1;
-
-init_index = test_indices[0];
-Yf_final_test_stack_nn = np.asarray(Y_p_old).T[:,init_index:(init_index+1)+n_points_pred]
-Ycurr = np.asarray(Y_p_old).T[:,init_index]
-Ycurr = np.transpose(Ycurr);
-if with_control:
-  Uf_final_test_stack_nn = np.asarray(u_control_all_training).T[:,init_index:(init_index+1)+n_points_pred]
-
-#Reshape for tensorflow, which operates using row multiplication. 
-Ycurr = Ycurr.reshape(1,num_bas_obs);
-psiyp_Ycurr = psiyp.eval(feed_dict={yp_feed:Ycurr});
-psiyf_Ycurr = psiyf.eval(feed_dict={yf_feed:Ycurr});
-
-
-## Define a growing list of vector valued observables that is the forward prediction of the Yf snapshot matrix, initiated from an initial condition in Yp_final_test.   
-Yf_final_test_ep_nn = [];
-Yf_final_test_ep_nn.append(psiyp_Ycurr.tolist()[0][0:num_bas_obs]); # append the initial seed state value.
-
-for i in range(0,n_points_pred):
-  if with_control:
-    if len(U_test[i,:])==1:
-      print('Uf_final_test_stack_nn shape',Uf_final_test_stack_nn.shape)
-      U_temp_mat = np.reshape(Uf_final_test_stack_nn[:,i],(1,1));
-      psiyp_Ycurr = sess.run(forward_prediction_control, feed_dict={yp_feed:psiyp_Ycurr[:,0:num_bas_obs],u_control:U_temp_mat});#
-    else:
-      U_temp_mat = np.reshape(Uf_final_test_stack_nn[i,:],(1,n_inputs_control));
-      psiyp_Ycurr = sess.run(forward_prediction_control, feed_dict={yp_feed:psiyp_Ycurr[:,0:num_bas_obs],u_control:U_temp_mat});# 
+    Wu_list_num = [sess.run(W_temp) for W_temp in Wu_list];
+    bu_list_num = [sess.run(b_temp) for b_temp in bu_list];
+    Ku_num = sess.run(Ku);
+    pickle.dump([Wy_list_num,by_list_num,Wu_list_num,bu_list_num,Kx_num,Ku_num],file_obj_swing);
   else:
-    psiyp_Ycurr = sess.run(forward_prediction,feed_dict={yp_feed:psiyp_Ycurr[:,0:num_bas_obs]});
-
-  Yout = psiyp_Ycurr.tolist()[0][0:num_bas_obs];
-  Yf_final_test_ep_nn.append(Yout);
+      pickle.dump([Wy_list_num,by_list_num,Kx_num],file_obj_swing);
+  file_obj_swing.close();
 
 
-Yf_final_test_ep_nn = np.asarray(Yf_final_test_ep_nn);
-Yf_final_test_ep_nn = np.transpose(Yf_final_test_ep_nn);
+  if (not phase_space_stitching) and (not with_control):
+    file_obj_phase = open('phase_space_stitching/raws/Kmatrix_file.pickle','wb');
+    pickle.dump([Kx_num],file_obj_phase);
+    file_obj_phase.close();
 
-prediction_error = np.linalg.norm(Yf_final_test_stack_nn-Yf_final_test_ep_nn,ord='fro')/np.linalg.norm(Yf_final_test_stack_nn,ord='fro');
-print('%s%f' % ('[RESULT] n-step Prediction error: ',prediction_error));
+  saver = tf.compat.v1.train.Saver()
 
-
-
-import matplotlib
-matplotlib.rcParams.update({'font.size':20})
-
-
-### Make a Prediction Plot
-#x_range = np.arange(0,350,1)
-x_range = np.arange(0,Yf_final_test_stack_nn.shape[1],1);
-for i in range(0,2):#num_bas_obs):
-    plt.plot(x_range,Yf_final_test_ep_nn[i,0:len(x_range)],'--',color=colors[i,:]);
-    plt.plot(x_range,Yf_final_test_stack_nn[i,0:len(x_range)],'*',color=colors[i,:]);
-axes = plt.gca();
-axes.spines['right'].set_visible(False)
-axes.spines['top'].set_visible(False)
-
-#plt.legend(loc='best');
-plt.xlabel('t');
-fig = plt.gcf();
-
-target_file = data_suffix.replace('.pickle','')+'final_nstep_prediction.pdf';
-plt.savefig(target_file);
-plt.show();
+  tf.compat.v1.add_to_collection('psiyp',psiyp);
+  tf.compat.v1.add_to_collection('psiyf',psiyf);
+  tf.compat.v1.add_to_collection('Kx',Kx);
 
 
-#saver = tf.train.import_meta_graph('_current_run_saved_files/arb_data_KCOT_DMJ.pickle.ckpt.meta', clear_devices=True)
-#saver.restore(sess, tf.train.latest_checkpoint('_current_run_saved_files'))
+  if with_control:
+    tf.compat.v1.add_to_collection('forward_prediction_control',forward_prediction_control);
+    tf.compat.v1.add_to_collection('psiu',psiu);
+    tf.compat.v1.add_to_collection('u_control',u_control);
+    tf.compat.v1.add_to_collection('Ku',Ku);
+  else:
+    tf.compat.v1.add_to_collection('forward_prediction',forward_prediction);
 
-print(Kx_num.T)
+  tf.compat.v1.add_to_collection('yp_feed',yp_feed);
+  tf.compat.v1.add_to_collection('yf_feed',yf_feed);
+
+  save_path = saver.save(sess, data_suffix + '.ckpt')
+
+
+  Koopman_dim = Kx_num.shape[0];
+  print("[INFO] Koopman_dim:" + repr(Kx_num.shape));
+
+  if single_series:
+    if pre_examples_switch ==3:
+       Y_p_old,Y_f_old,Y_whole,u_control_all_training = load_pickle_data('koopman_data/zhang_control.pickle');
+    if pre_examples_switch == 4:
+       Y_p_old,Y_f_old,Y_whole,u_control_all_training = load_pickle_data('koopman_data/deltaomega-singleseries.pickle'); 
+
+
+    if not( Kx_num.shape[1]==Kx_num.shape[0]):
+        print("Warning! Estimated Koopman operator is not square with dimensions : " + repr(Kx_num.shape));
+
+    train_range = len(Y_p_old)/2; # define upper limits of training data 
+
+    if debug_splash:
+      print("[DEBUG] train_range: " + repr(train_range));
+
+
+
+    test_range = len(Y_p_old); # define upper limits of test data 
+
+    print("[DEBUG] test_range: " + repr(test_range));
+    Yp_test = Y_p_old[train_range:test_range];
+    Yf_test = Y_f_old[train_range:test_range];
+
+    if with_control:
+      U_test = u_control_all_training_old[train_range:test_range];
+      U_train = u_control_all_training_old[0:train_range];
+      U_train = np.asarray(U_train);
+      U_test = np.asarray(U_test);
+      if len(U_test.shape)==1:
+        U_train = np.reshape(U_train,(U_train.shape[0],1));
+        U_test = np.reshape(U_test,(U_test.shape[0],1));
+
+
+  Yp_train = np.asarray(Yp_train);
+  Yf_train = np.asarray(Yf_train);
+  Yp_test = np.asarray(Yp_test);
+  Yf_test = np.asarray(Yf_test);
+  Yp_final_test = Yp_test;
+  Yf_final_test = Yf_test;
+  Yp_final_train = Yp_train;    
+  Yf_final_train = Yf_train;
+
+
+  # # # Print Evaluation Metrics -  Deep Koopman Learning # # #
+
+  #print("[DEBUG]: Yp_train.shape") + repr(Yp_train.shape);
+
+  if with_control:
+    training_error = accuracy.eval(feed_dict={yp_feed:list(Yp_train),yf_feed:list(Yf_train),u_control:list(U_train)});
+    test_error = accuracy.eval(feed_dict={yp_feed:list(Yp_test),yf_feed:list(Yf_test),u_control:list(U_test)});
+  else:
+    training_error = accuracy.eval(feed_dict={yp_feed:list(Yp_train),yf_feed:list(Yf_train)});
+    test_error = accuracy.eval(feed_dict={yp_feed:list(Yp_test),yf_feed:list(Yf_test)});
+    
+  print('%s%f' % ('[COMP] Training error: ',training_error));
+  print('%s%f' % ('[COMP] Test error: ',test_error));
+
+  # # # - - - n-step Prediction Error Analysis - - - # # # 
+
+    
+  n_points_pred = len(Y_p_old) - test_indices[0]-1;
+
+  init_index = test_indices[0];
+  Yf_final_test_stack_nn = np.asarray(Y_p_old).T[:,init_index:(init_index+1)+n_points_pred]
+  Ycurr = np.asarray(Y_p_old).T[:,init_index]
+  Ycurr = np.transpose(Ycurr);
+  if with_control:
+    Uf_final_test_stack_nn = np.asarray(u_control_all_training).T[:,init_index:(init_index+1)+n_points_pred]
+
+  #Reshape for tensorflow, which operates using row multiplication. 
+  Ycurr = Ycurr.reshape(1,num_bas_obs);
+  psiyp_Ycurr = psiyp.eval(feed_dict={yp_feed:Ycurr});
+  psiyf_Ycurr = psiyf.eval(feed_dict={yf_feed:Ycurr});
+
+
+  ## Define a growing list of vector valued observables that is the forward prediction of the Yf snapshot matrix, initiated from an initial condition in Yp_final_test.   
+  Yf_final_test_ep_nn = [];
+  Yf_final_test_ep_nn.append(psiyp_Ycurr.tolist()[0][0:num_bas_obs]); # append the initial seed state value.
+
+  for i in range(0,n_points_pred):
+    if with_control:
+      if len(U_test[i,:])==1:
+        print('Uf_final_test_stack_nn shape',Uf_final_test_stack_nn.shape)
+        U_temp_mat = np.reshape(Uf_final_test_stack_nn[:,i],(1,1));
+        psiyp_Ycurr = sess.run(forward_prediction_control, feed_dict={yp_feed:psiyp_Ycurr[:,0:num_bas_obs],u_control:U_temp_mat});#
+      else:
+        U_temp_mat = np.reshape(Uf_final_test_stack_nn[i,:],(1,n_inputs_control));
+        psiyp_Ycurr = sess.run(forward_prediction_control, feed_dict={yp_feed:psiyp_Ycurr[:,0:num_bas_obs],u_control:U_temp_mat});# 
+    else:
+      psiyp_Ycurr = sess.run(forward_prediction,feed_dict={yp_feed:psiyp_Ycurr[:,0:num_bas_obs]});
+
+    Yout = psiyp_Ycurr.tolist()[0][0:num_bas_obs];
+    Yf_final_test_ep_nn.append(Yout);
+
+
+  Yf_final_test_ep_nn = np.asarray(Yf_final_test_ep_nn);
+  Yf_final_test_ep_nn = np.transpose(Yf_final_test_ep_nn);
+
+  prediction_error = np.linalg.norm(Yf_final_test_stack_nn-Yf_final_test_ep_nn,ord='fro')/np.linalg.norm(Yf_final_test_stack_nn,ord='fro');
+  print('%s%f' % ('[RESULT] n-step Prediction error: ',prediction_error));
+
+
+
+  import matplotlib
+  matplotlib.rcParams.update({'font.size':20})
+
+
+  ### Make a Prediction Plot
+  #x_range = np.arange(0,350,1)
+  x_range = np.arange(0,Yf_final_test_stack_nn.shape[1],1);
+  for i in range(0,2):#num_bas_obs):
+      plt.plot(x_range,Yf_final_test_ep_nn[i,0:len(x_range)],'--',color=colors[i,:]);
+      plt.plot(x_range,Yf_final_test_stack_nn[i,0:len(x_range)],'*',color=colors[i,:]);
+  axes = plt.gca();
+  axes.spines['right'].set_visible(False)
+  axes.spines['top'].set_visible(False)
+
+  #plt.legend(loc='best');
+  plt.xlabel('t');
+  fig = plt.gcf();
+
+  target_file = data_suffix.replace('.pickle','')+'final_nstep_prediction.pdf';
+  plt.savefig(target_file);
+  plt.show();
+
+
+  #saver = tf.train.import_meta_graph('_current_run_saved_files/arb_data_KCOT_DMJ.pickle.ckpt.meta', clear_devices=True)
+  #saver.restore(sess, tf.train.latest_checkpoint('_current_run_saved_files'))
+  print(type(Kx_num))
+  print(Kx_num.T)
+  with open('KoopmanOperator.pkl','wb+') as f:
+    pickle.dump(Kx_num.T, f)

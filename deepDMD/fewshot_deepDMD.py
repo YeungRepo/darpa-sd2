@@ -56,14 +56,14 @@ colors = np.asarray(colors); # defines a color palette
 ###  Deep Learning Optimization Parameters ### 
 
 lambd = 0.00000;
-step_size_val = 0.05#.025;
+step_size_val = 0.1#.025;
 
-batchsize = 75#30#900;
+batchsize = 30#30#900;
 eval_size = batchsize;
 
 use_crelu = 0;
 activation_flag = 2; # sets the activation function type to RELU, ELU, SELU (initialized a certain way,dropout has to be done differently) , or tanh() 
-max_iters = 250000;#10000#200000 #1000000;
+max_iters = 50000;#10000#200000 #1000000;
 valid_error_threshold = .0001;
 test_error_threshold = .0001;
 
@@ -725,7 +725,7 @@ if pre_examples_switch == 23:
 
 
 if pre_examples_switch == 24:
-  data_suffix = 'CFS_Koopman6.pickle';
+  data_suffix = 'CFS_Koopman_correct_ics2.pickle';
   with_control = 0;
   with_output = 0;
   phase_space_stitching = 0;    
@@ -1181,3 +1181,6 @@ plt.show();
 #saver.restore(sess, tf.train.latest_checkpoint('_current_run_saved_files'))
 
 print(Kx_num)
+with open('KoopmanOperator.pkl','wb+') as f:
+  pickle.dump(Kx_num.T, f)
+
