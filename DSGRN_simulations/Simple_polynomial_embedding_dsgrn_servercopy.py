@@ -85,7 +85,7 @@ num_states = 6
 # In[ ]:
 
 
-training_epochs = 10
+training_epochs = 200000
 learning_rates = np.array([1/10**i for i in range(0, 5)])
 reg = np.array([1/10**i for i in range(0, 5)])
 
@@ -106,7 +106,7 @@ for lambda_reg in reg:
             while epoch < training_epochs and np.abs(cost_list[epoch-1] - c) > 1e-8:
                 c = sesh.run(cost, feed_dict = {Xp: np.array(Xp_data), Xf: np.array(Xf_data)})
                 cost_list.append(c)
-                if epoch % 500 == 0:
+                if epoch % 50000 == 0:
                     print("Epoch:", epoch, "{:.5f}".format(c))
                     #print("Exponent", sesh.run(n1))
                     #print("R2", sesh.run(R2, feed_dict = {Xp: np.array(Xp_data), Xf: np.array(Xf_data)}))
