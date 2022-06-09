@@ -3,7 +3,7 @@
 
 # In[2]:
 
-
+import os
 import pickle
 import numpy as np
 import random as rd
