@@ -13,6 +13,17 @@ sess  = tf.compat.v1.InteractiveSession()
 import scipy
 
 
+# In[ ]:
+
+
+def generalized_hill_function(X):
+    return tf.concat([[(1 + a11_tf*X[1]**n1_tf + a12_tf*X[3]**n2_tf + a13_tf*X[5]**n3_tf)/(1 + b11_tf*X[0]**n1_tf + b12_tf*X[1]**n2_tf + b13_tf*X[1]**n3_tf)], 
+                      
+                      [(1 + a21_tf*X[1]**n1_tf + a22_tf*X[3]**n2_tf + a23_tf*X[5]**n3_tf)/(1 + b21_tf*X[0]**n1_tf + b22_tf*X[1]**n2_tf + b23_tf*X[1]**n3_tf)],
+                     
+                      [(1 + a31_tf*X[1]**n1_tf + a32_tf*X[3]**n2_tf + a33_tf*X[5]**n3_tf)/(1 + b31_tf*X[0]**n1_tf + b32_tf*X[1]**n2_tf + b33_tf*X[1]**n3_tf)]], axis = 0)
+
+
 # In[3]:
 
 
@@ -83,11 +94,10 @@ for lambda_reg in reg:
         c = 100
         cost_list = [0]
         epoch = 0
-        cost = (tf.reduce_sum(tf.pow(Xf - tf.matmul(Kx_tf, tf.concat([Xp, generalized_hill_function(Xp)], axis = 0)), 2)) + lambda_reg*tf.pow(tf.norm(Kx_tf[0: num_states, 0: num_states+3], ord = 'fro', axis = (0, 1)), 2))/Xp_data.shape[1]
-
         optimizer = tf.compat.v1.train.AdamOptimizer(learning_rate=learning_rate, beta1=0.9, beta2=0.99, epsilon=1e-08, use_locking=False, name='Adam').minimize(cost)
         init = tf.compat.v1.global_variables_initializer()
         
+        cost = (tf.reduce_sum(tf.pow(Xf - tf.matmul(Kx_tf, tf.concat([Xp, generalized_hill_function(Xp)], axis = 0)), 2)) + lambda_reg*tf.pow(tf.norm(Kx_tf[0: num_states, 0: num_states+3], ord = 'fro', axis = (0, 1)), 2))/Xp_data.shape[1]
 
         with tf.compat.v1.Session() as sesh:    
             sesh.run(init)    
