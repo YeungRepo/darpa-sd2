@@ -1,0 +1,16 @@
+id,n_genes,padj_thresh,fc_thresh,selected_genes,noise_scaler,temp
+x0_NAND,13,n/a,n/a,ara_lac,1,37
+,,,,,,
+x1_NAND,695,0.05,2,de_only,1,37
+x2_NAND,695,0.05,2,de_only,0.1,37
+,,,,,,
+x3_NAND,695,0.05,2,de_only,0.1,37
+,,,,,,
+x4_NAND,695,0.05,2,de_only,0.1,37
+,,,,,,
+x5_NAND,695,0.05,2,de_only,0.1,37
+,,,,,,
+x6_NAND,695,0.05,2,de_only,100,37
+x7_NAND,695,0.05,2.0,de_only,100,37
+
+x8_NAND,695,0.05,2.0,de_only,100,30

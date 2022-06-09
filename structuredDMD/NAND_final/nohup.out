@@ -1,0 +1,1738 @@
+Unable to init server: Could not connect: Connection refused
+Unable to init server: Could not connect: Connection refused
+
+(sdmd_NAND.py:35485): Gdk-CRITICAL **: 15:31:42.237: gdk_cursor_new_for_display: assertion 'GDK_IS_DISPLAY (display)' failed
+[INFO]: CVXPY Koopman operator variable: (695, 695)
+[INFO]: Shape of Yf and Yp: (695, 4), (695, 4)
+===============================================================================
+                                     CVXPY                                     
+                                    v1.1.18                                    
+===============================================================================
+(CVXPY) Feb 01 03:31:42 PM: Your problem has 483025 variables, 0 constraints, and 0 parameters.
+(CVXPY) Feb 01 03:31:42 PM: It is compliant with the following grammars: DCP, DQCP
+(CVXPY) Feb 01 03:31:42 PM: (If you need to solve this problem multiple times, but with different data, consider using parameters.)
+(CVXPY) Feb 01 03:31:42 PM: CVXPY will first compile your problem; then, it will invoke a numerical solver to obtain a solution.
+-------------------------------------------------------------------------------
+                                  Compilation                                  
+-------------------------------------------------------------------------------
+(CVXPY) Feb 01 03:31:42 PM: Compiling problem (target solver=SCS).
+(CVXPY) Feb 01 03:31:42 PM: Reduction chain: Dcp2Cone -> CvxAttr2Constr -> ConeMatrixStuffing -> SCS
+(CVXPY) Feb 01 03:31:42 PM: Applying reduction Dcp2Cone
+(CVXPY) Feb 01 03:31:42 PM: Applying reduction CvxAttr2Constr
+(CVXPY) Feb 01 03:31:42 PM: Applying reduction ConeMatrixStuffing
+(CVXPY) Feb 01 03:31:44 PM: Applying reduction SCS
+(CVXPY) Feb 01 03:31:46 PM: Finished problem compilation (took 4.097e+00 seconds).
+-------------------------------------------------------------------------------
+                                Numerical solver                               
+-------------------------------------------------------------------------------
+(CVXPY) Feb 01 03:31:46 PM: Invoking solver SCS  to obtain a solution.
+------------------------------------------------------------------
+	       SCS v3.1.0 - Splitting Conic Solver
+	(c) Brendan O'Donoghue, Stanford University, 2012
+------------------------------------------------------------------
+problem:  variables n: 483027, constraints m: 247431
+cones: 	  q: soc vars: 2781, qsize: 1
+	  s: psd vars: 244650, ssize: 1
+settings: eps_abs: 1.0e-05, eps_rel: 1.0e-05, eps_infeas: 1.0e-07
+	  alpha: 1.50, scale: 1.00e-01, adaptive_scale: 1
+	  max_iters: 1000000, normalize: 1, warm_start: 0
+	  acceleration_lookback: 10, acceleration_interval: 10
+lin-sys:  sparse-direct
+	  nnz(A): 3855865, nnz(P): 0
+------------------------------------------------------------------
+ iter | pri res | dua res |   gap   |   obj   |  scale  | time (s)
+------------------------------------------------------------------
+     0| 5.63e+01  1.00e+00  5.63e+01 -2.81e+01  1.00e-01  3.39e-01 
+    50| 2.20e-12  8.58e-15  2.20e-12 -1.10e-12  1.00e-01  1.04e+01 
+------------------------------------------------------------------
+status:  solved
+timings: total: 1.34e+01s = setup: 3.00e+00s + solve: 1.04e+01s
+	 lin-sys: 1.91e+00s, cones: 7.50e+00s, accel: 1.41e-01s
+------------------------------------------------------------------
+objective = -0.000000
+------------------------------------------------------------------
+-------------------------------------------------------------------------------
+                                    Summary                                    
+-------------------------------------------------------------------------------
+(CVXPY) Feb 01 03:32:00 PM: Problem status: optimal
+(CVXPY) Feb 01 03:32:00 PM: Optimal value: 1.922e-15
+(CVXPY) Feb 01 03:32:00 PM: Compilation took 4.097e+00 seconds
+(CVXPY) Feb 01 03:32:00 PM: Solver (including time spent in interface) took 1.342e+01 seconds
+[INFO]: CVXPY problem status: optimal
+MSE =  1.156e-30
+[INFO]: CVXPY Koopman operator variable: (695, 1)
+===============================================================================
+                                     CVXPY                                     
+                                    v1.1.18                                    
+===============================================================================
+(CVXPY) Feb 01 03:32:00 PM: Your problem has 695 variables, 0 constraints, and 0 parameters.
+(CVXPY) Feb 01 03:32:00 PM: It is compliant with the following grammars: DCP, DQCP
+(CVXPY) Feb 01 03:32:00 PM: (If you need to solve this problem multiple times, but with different data, consider using parameters.)
+(CVXPY) Feb 01 03:32:00 PM: CVXPY will first compile your problem; then, it will invoke a numerical solver to obtain a solution.
+-------------------------------------------------------------------------------
+                                  Compilation                                  
+-------------------------------------------------------------------------------
+(CVXPY) Feb 01 03:32:00 PM: Compiling problem (target solver=SCS).
+(CVXPY) Feb 01 03:32:00 PM: Reduction chain: Dcp2Cone -> CvxAttr2Constr -> ConeMatrixStuffing -> SCS
+(CVXPY) Feb 01 03:32:00 PM: Applying reduction Dcp2Cone
+(CVXPY) Feb 01 03:32:00 PM: Applying reduction CvxAttr2Constr
+(CVXPY) Feb 01 03:32:00 PM: Applying reduction ConeMatrixStuffing
+(CVXPY) Feb 01 03:32:00 PM: Applying reduction SCS
+(CVXPY) Feb 01 03:32:00 PM: Finished problem compilation (took 2.544e-01 seconds).
+-------------------------------------------------------------------------------
+                                Numerical solver                               
+-------------------------------------------------------------------------------
+(CVXPY) Feb 01 03:32:00 PM: Invoking solver SCS  to obtain a solution.
+------------------------------------------------------------------
+	       SCS v3.1.0 - Splitting Conic Solver
+	(c) Brendan O'Donoghue, Stanford University, 2012
+------------------------------------------------------------------
+problem:  variables n: 697, constraints m: 247431
+cones: 	  q: soc vars: 2781, qsize: 1
+	  s: psd vars: 244650, ssize: 1
+settings: eps_abs: 1.0e-05, eps_rel: 1.0e-05, eps_infeas: 1.0e-07
+	  alpha: 1.50, scale: 1.00e-01, adaptive_scale: 1
+	  max_iters: 1000000, normalize: 1, warm_start: 0
+	  acceleration_lookback: 10, acceleration_interval: 10
+lin-sys:  sparse-direct
+	  nnz(A): 3480, nnz(P): 0
+------------------------------------------------------------------
+ iter | pri res | dua res |   gap   |   obj   |  scale  | time (s)
+------------------------------------------------------------------
+     0| 2.62e-01  4.07e+00  2.39e-01  1.12e-01  1.00e-01  1.87e-01 
+   250| 6.40e-03  5.74e-02  2.21e-02  8.40e-02  5.18e-03  1.25e+02 
+   350| 1.23e-10  4.04e-11  1.26e-10  8.99e-02  5.18e-03  1.79e+02 
+------------------------------------------------------------------
+status:  solved
+timings: total: 1.79e+02s = setup: 1.21e-01s + solve: 1.79e+02s
+	 lin-sys: 1.58e+00s, cones: 1.75e+02s, accel: 4.90e-01s
+------------------------------------------------------------------
+objective = 0.089939
+------------------------------------------------------------------
+-------------------------------------------------------------------------------
+                                    Summary                                    
+-------------------------------------------------------------------------------
+(CVXPY) Feb 01 03:34:59 PM: Problem status: optimal
+(CVXPY) Feb 01 03:34:59 PM: Optimal value: 8.994e-02
+(CVXPY) Feb 01 03:34:59 PM: Compilation took 2.544e-01 seconds
+(CVXPY) Feb 01 03:34:59 PM: Solver (including time spent in interface) took 1.788e+02 seconds
+[INFO]: CVXPY problem status: optimal
+MSE =  4.097e-03
+[INFO]: CVXPY Koopman operator variable: (695, 1)
+===============================================================================
+                                     CVXPY                                     
+                                    v1.1.18                                    
+===============================================================================
+(CVXPY) Feb 01 03:34:59 PM: Your problem has 695 variables, 0 constraints, and 0 parameters.
+(CVXPY) Feb 01 03:34:59 PM: It is compliant with the following grammars: DCP, DQCP
+(CVXPY) Feb 01 03:34:59 PM: (If you need to solve this problem multiple times, but with different data, consider using parameters.)
+(CVXPY) Feb 01 03:34:59 PM: CVXPY will first compile your problem; then, it will invoke a numerical solver to obtain a solution.
+-------------------------------------------------------------------------------
+                                  Compilation                                  
+-------------------------------------------------------------------------------
+(CVXPY) Feb 01 03:34:59 PM: Compiling problem (target solver=SCS).
+(CVXPY) Feb 01 03:34:59 PM: Reduction chain: Dcp2Cone -> CvxAttr2Constr -> ConeMatrixStuffing -> SCS
+(CVXPY) Feb 01 03:34:59 PM: Applying reduction Dcp2Cone
+(CVXPY) Feb 01 03:34:59 PM: Applying reduction CvxAttr2Constr
+(CVXPY) Feb 01 03:34:59 PM: Applying reduction ConeMatrixStuffing
+(CVXPY) Feb 01 03:34:59 PM: Applying reduction SCS
+(CVXPY) Feb 01 03:34:59 PM: Finished problem compilation (took 1.883e-01 seconds).
+-------------------------------------------------------------------------------
+                                Numerical solver                               
+-------------------------------------------------------------------------------
+(CVXPY) Feb 01 03:34:59 PM: Invoking solver SCS  to obtain a solution.
+------------------------------------------------------------------
+	       SCS v3.1.0 - Splitting Conic Solver
+	(c) Brendan O'Donoghue, Stanford University, 2012
+------------------------------------------------------------------
+problem:  variables n: 697, constraints m: 247431
+cones: 	  q: soc vars: 2781, qsize: 1
+	  s: psd vars: 244650, ssize: 1
+settings: eps_abs: 1.0e-05, eps_rel: 1.0e-05, eps_infeas: 1.0e-07
+	  alpha: 1.50, scale: 1.00e-01, adaptive_scale: 1
+	  max_iters: 1000000, normalize: 1, warm_start: 0
+	  acceleration_lookback: 10, acceleration_interval: 10
+lin-sys:  sparse-direct
+	  nnz(A): 3480, nnz(P): 0
+------------------------------------------------------------------
+ iter | pri res | dua res |   gap   |   obj   |  scale  | time (s)
+------------------------------------------------------------------
+     0| 1.77e-01  5.36e+00  6.58e-01  3.21e-01  1.00e-01  1.75e-01 
+   225| 3.27e-09  1.21e-07  1.77e-08  1.96e-01  1.83e-02  1.05e+02 
+------------------------------------------------------------------
+status:  solved
+timings: total: 1.05e+02s = setup: 1.28e-01s + solve: 1.05e+02s
+	 lin-sys: 1.17e+00s, cones: 1.03e+02s, accel: 1.66e-01s
+------------------------------------------------------------------
+objective = 0.195607
+------------------------------------------------------------------
+-------------------------------------------------------------------------------
+                                    Summary                                    
+-------------------------------------------------------------------------------
+(CVXPY) Feb 01 03:36:44 PM: Problem status: optimal
+(CVXPY) Feb 01 03:36:44 PM: Optimal value: 1.956e-01
+(CVXPY) Feb 01 03:36:44 PM: Compilation took 1.883e-01 seconds
+(CVXPY) Feb 01 03:36:44 PM: Solver (including time spent in interface) took 1.054e+02 seconds
+[INFO]: CVXPY problem status: optimal
+MSE =  1.154e-02
+[INFO]: CVXPY Koopman operator variable: (695, 13)
+===============================================================================
+                                     CVXPY                                     
+                                    v1.1.18                                    
+===============================================================================
+(CVXPY) Feb 01 03:36:44 PM: Your problem has 9035 variables, 0 constraints, and 0 parameters.
+(CVXPY) Feb 01 03:36:44 PM: It is compliant with the following grammars: DCP, DQCP
+(CVXPY) Feb 01 03:36:44 PM: (If you need to solve this problem multiple times, but with different data, consider using parameters.)
+(CVXPY) Feb 01 03:36:44 PM: CVXPY will first compile your problem; then, it will invoke a numerical solver to obtain a solution.
+-------------------------------------------------------------------------------
+                                  Compilation                                  
+-------------------------------------------------------------------------------
+(CVXPY) Feb 01 03:36:44 PM: Compiling problem (target solver=SCS).
+(CVXPY) Feb 01 03:36:44 PM: Reduction chain: Dcp2Cone -> CvxAttr2Constr -> ConeMatrixStuffing -> SCS
+(CVXPY) Feb 01 03:36:44 PM: Applying reduction Dcp2Cone
+(CVXPY) Feb 01 03:36:44 PM: Applying reduction CvxAttr2Constr
+(CVXPY) Feb 01 03:36:44 PM: Applying reduction ConeMatrixStuffing
+(CVXPY) Feb 01 03:36:45 PM: Applying reduction SCS
+(CVXPY) Feb 01 03:36:45 PM: Finished problem compilation (took 2.746e-01 seconds).
+-------------------------------------------------------------------------------
+                                Numerical solver                               
+-------------------------------------------------------------------------------
+(CVXPY) Feb 01 03:36:45 PM: Invoking solver SCS  to obtain a solution.
+WARN: A->p (column pointers) not strictly increasing, column 5562 empty
+WARN: A->p (column pointers) not strictly increasing, column 5563 empty
+WARN: A->p (column pointers) not strictly increasing, column 5564 empty
+WARN: A->p (column pointers) not strictly increasing, column 5565 empty
+WARN: A->p (column pointers) not strictly increasing, column 5566 empty
+WARN: A->p (column pointers) not strictly increasing, column 5567 empty
+WARN: A->p (column pointers) not strictly increasing, column 5568 empty
+WARN: A->p (column pointers) not strictly increasing, column 5569 empty
+WARN: A->p (column pointers) not strictly increasing, column 5570 empty
+WARN: A->p (column pointers) not strictly increasing, column 5571 empty
+WARN: A->p (column pointers) not strictly increasing, column 5572 empty
+WARN: A->p (column pointers) not strictly increasing, column 5573 empty
+WARN: A->p (column pointers) not strictly increasing, column 5574 empty
+WARN: A->p (column pointers) not strictly increasing, column 5575 empty
+WARN: A->p (column pointers) not strictly increasing, column 5576 empty
+WARN: A->p (column pointers) not strictly increasing, column 5577 empty
+WARN: A->p (column pointers) not strictly increasing, column 5578 empty
+WARN: A->p (column pointers) not strictly increasing, column 5579 empty
+WARN: A->p (column pointers) not strictly increasing, column 5580 empty
+WARN: A->p (column pointers) not strictly increasing, column 5581 empty
+WARN: A->p (column pointers) not strictly increasing, column 5582 empty
+WARN: A->p (column pointers) not strictly increasing, column 5583 empty
+WARN: A->p (column pointers) not strictly increasing, column 5584 empty
+WARN: A->p (column pointers) not strictly increasing, column 5585 empty
+WARN: A->p (column pointers) not strictly increasing, column 5586 empty
+WARN: A->p (column pointers) not strictly increasing, column 5587 empty
+WARN: A->p (column pointers) not strictly increasing, column 5588 empty
+WARN: A->p (column pointers) not strictly increasing, column 5589 empty
+WARN: A->p (column pointers) not strictly increasing, column 5590 empty
+WARN: A->p (column pointers) not strictly increasing, column 5591 empty
+WARN: A->p (column pointers) not strictly increasing, column 5592 empty
+WARN: A->p (column pointers) not strictly increasing, column 5593 empty
+WARN: A->p (column pointers) not strictly increasing, column 5594 empty
+WARN: A->p (column pointers) not strictly increasing, column 5595 empty
+WARN: A->p (column pointers) not strictly increasing, column 5596 empty
+WARN: A->p (column pointers) not strictly increasing, column 5597 empty
+WARN: A->p (column pointers) not strictly increasing, column 5598 empty
+WARN: A->p (column pointers) not strictly increasing, column 5599 empty
+WARN: A->p (column pointers) not strictly increasing, column 5600 empty
+WARN: A->p (column pointers) not strictly increasing, column 5601 empty
+WARN: A->p (column pointers) not strictly increasing, column 5602 empty
+WARN: A->p (column pointers) not strictly increasing, column 5603 empty
+WARN: A->p (column pointers) not strictly increasing, column 5604 empty
+WARN: A->p (column pointers) not strictly increasing, column 5605 empty
+WARN: A->p (column pointers) not strictly increasing, column 5606 empty
+WARN: A->p (column pointers) not strictly increasing, column 5607 empty
+WARN: A->p (column pointers) not strictly increasing, column 5608 empty
+WARN: A->p (column pointers) not strictly increasing, column 5609 empty
+WARN: A->p (column pointers) not strictly increasing, column 5610 empty
+WARN: A->p (column pointers) not strictly increasing, column 5611 empty
+WARN: A->p (column pointers) not strictly increasing, column 5612 empty
+WARN: A->p (column pointers) not strictly increasing, column 5613 empty
+WARN: A->p (column pointers) not strictly increasing, column 5614 empty
+WARN: A->p (column pointers) not strictly increasing, column 5615 empty
+WARN: A->p (column pointers) not strictly increasing, column 5616 empty
+WARN: A->p (column pointers) not strictly increasing, column 5617 empty
+WARN: A->p (column pointers) not strictly increasing, column 5618 empty
+WARN: A->p (column pointers) not strictly increasing, column 5619 empty
+WARN: A->p (column pointers) not strictly increasing, column 5620 empty
+WARN: A->p (column pointers) not strictly increasing, column 5621 empty
+WARN: A->p (column pointers) not strictly increasing, column 5622 empty
+WARN: A->p (column pointers) not strictly increasing, column 5623 empty
+WARN: A->p (column pointers) not strictly increasing, column 5624 empty
+WARN: A->p (column pointers) not strictly increasing, column 5625 empty
+WARN: A->p (column pointers) not strictly increasing, column 5626 empty
+WARN: A->p (column pointers) not strictly increasing, column 5627 empty
+WARN: A->p (column pointers) not strictly increasing, column 5628 empty
+WARN: A->p (column pointers) not strictly increasing, column 5629 empty
+WARN: A->p (column pointers) not strictly increasing, column 5630 empty
+WARN: A->p (column pointers) not strictly increasing, column 5631 empty
+WARN: A->p (column pointers) not strictly increasing, column 5632 empty
+WARN: A->p (column pointers) not strictly increasing, column 5633 empty
+WARN: A->p (column pointers) not strictly increasing, column 5634 empty
+WARN: A->p (column pointers) not strictly increasing, column 5635 empty
+WARN: A->p (column pointers) not strictly increasing, column 5636 empty
+WARN: A->p (column pointers) not strictly increasing, column 5637 empty
+WARN: A->p (column pointers) not strictly increasing, column 5638 empty
+WARN: A->p (column pointers) not strictly increasing, column 5639 empty
+WARN: A->p (column pointers) not strictly increasing, column 5640 empty
+WARN: A->p (column pointers) not strictly increasing, column 5641 empty
+WARN: A->p (column pointers) not strictly increasing, column 5642 empty
+WARN: A->p (column pointers) not strictly increasing, column 5643 empty
+WARN: A->p (column pointers) not strictly increasing, column 5644 empty
+WARN: A->p (column pointers) not strictly increasing, column 5645 empty
+WARN: A->p (column pointers) not strictly increasing, column 5646 empty
+WARN: A->p (column pointers) not strictly increasing, column 5647 empty
+WARN: A->p (column pointers) not strictly increasing, column 5648 empty
+WARN: A->p (column pointers) not strictly increasing, column 5649 empty
+WARN: A->p (column pointers) not strictly increasing, column 5650 empty
+WARN: A->p (column pointers) not strictly increasing, column 5651 empty
+WARN: A->p (column pointers) not strictly increasing, column 5652 empty
+WARN: A->p (column pointers) not strictly increasing, column 5653 empty
+WARN: A->p (column pointers) not strictly increasing, column 5654 empty
+WARN: A->p (column pointers) not strictly increasing, column 5655 empty
+WARN: A->p (column pointers) not strictly increasing, column 5656 empty
+WARN: A->p (column pointers) not strictly increasing, column 5657 empty
+WARN: A->p (column pointers) not strictly increasing, column 5658 empty
+WARN: A->p (column pointers) not strictly increasing, column 5659 empty
+WARN: A->p (column pointers) not strictly increasing, column 5660 empty
+WARN: A->p (column pointers) not strictly increasing, column 5661 empty
+WARN: A->p (column pointers) not strictly increasing, column 5662 empty
+WARN: A->p (column pointers) not strictly increasing, column 5663 empty
+WARN: A->p (column pointers) not strictly increasing, column 5664 empty
+WARN: A->p (column pointers) not strictly increasing, column 5665 empty
+WARN: A->p (column pointers) not strictly increasing, column 5666 empty
+WARN: A->p (column pointers) not strictly increasing, column 5667 empty
+WARN: A->p (column pointers) not strictly increasing, column 5668 empty
+WARN: A->p (column pointers) not strictly increasing, column 5669 empty
+WARN: A->p (column pointers) not strictly increasing, column 5670 empty
+WARN: A->p (column pointers) not strictly increasing, column 5671 empty
+WARN: A->p (column pointers) not strictly increasing, column 5672 empty
+WARN: A->p (column pointers) not strictly increasing, column 5673 empty
+WARN: A->p (column pointers) not strictly increasing, column 5674 empty
+WARN: A->p (column pointers) not strictly increasing, column 5675 empty
+WARN: A->p (column pointers) not strictly increasing, column 5676 empty
+WARN: A->p (column pointers) not strictly increasing, column 5677 empty
+WARN: A->p (column pointers) not strictly increasing, column 5678 empty
+WARN: A->p (column pointers) not strictly increasing, column 5679 empty
+WARN: A->p (column pointers) not strictly increasing, column 5680 empty
+WARN: A->p (column pointers) not strictly increasing, column 5681 empty
+WARN: A->p (column pointers) not strictly increasing, column 5682 empty
+WARN: A->p (column pointers) not strictly increasing, column 5683 empty
+WARN: A->p (column pointers) not strictly increasing, column 5684 empty
+WARN: A->p (column pointers) not strictly increasing, column 5685 empty
+WARN: A->p (column pointers) not strictly increasing, column 5686 empty
+WARN: A->p (column pointers) not strictly increasing, column 5687 empty
+WARN: A->p (column pointers) not strictly increasing, column 5688 empty
+WARN: A->p (column pointers) not strictly increasing, column 5689 empty
+WARN: A->p (column pointers) not strictly increasing, column 5690 empty
+WARN: A->p (column pointers) not strictly increasing, column 5691 empty
+WARN: A->p (column pointers) not strictly increasing, column 5692 empty
+WARN: A->p (column pointers) not strictly increasing, column 5693 empty
+WARN: A->p (column pointers) not strictly increasing, column 5694 empty
+WARN: A->p (column pointers) not strictly increasing, column 5695 empty
+WARN: A->p (column pointers) not strictly increasing, column 5696 empty
+WARN: A->p (column pointers) not strictly increasing, column 5697 empty
+WARN: A->p (column pointers) not strictly increasing, column 5698 empty
+WARN: A->p (column pointers) not strictly increasing, column 5699 empty
+WARN: A->p (column pointers) not strictly increasing, column 5700 empty
+WARN: A->p (column pointers) not strictly increasing, column 5701 empty
+WARN: A->p (column pointers) not strictly increasing, column 5702 empty
+WARN: A->p (column pointers) not strictly increasing, column 5703 empty
+WARN: A->p (column pointers) not strictly increasing, column 5704 empty
+WARN: A->p (column pointers) not strictly increasing, column 5705 empty
+WARN: A->p (column pointers) not strictly increasing, column 5706 empty
+WARN: A->p (column pointers) not strictly increasing, column 5707 empty
+WARN: A->p (column pointers) not strictly increasing, column 5708 empty
+WARN: A->p (column pointers) not strictly increasing, column 5709 empty
+WARN: A->p (column pointers) not strictly increasing, column 5710 empty
+WARN: A->p (column pointers) not strictly increasing, column 5711 empty
+WARN: A->p (column pointers) not strictly increasing, column 5712 empty
+WARN: A->p (column pointers) not strictly increasing, column 5713 empty
+WARN: A->p (column pointers) not strictly increasing, column 5714 empty
+WARN: A->p (column pointers) not strictly increasing, column 5715 empty
+WARN: A->p (column pointers) not strictly increasing, column 5716 empty
+WARN: A->p (column pointers) not strictly increasing, column 5717 empty
+WARN: A->p (column pointers) not strictly increasing, column 5718 empty
+WARN: A->p (column pointers) not strictly increasing, column 5719 empty
+WARN: A->p (column pointers) not strictly increasing, column 5720 empty
+WARN: A->p (column pointers) not strictly increasing, column 5721 empty
+WARN: A->p (column pointers) not strictly increasing, column 5722 empty
+WARN: A->p (column pointers) not strictly increasing, column 5723 empty
+WARN: A->p (column pointers) not strictly increasing, column 5724 empty
+WARN: A->p (column pointers) not strictly increasing, column 5725 empty
+WARN: A->p (column pointers) not strictly increasing, column 5726 empty
+WARN: A->p (column pointers) not strictly increasing, column 5727 empty
+WARN: A->p (column pointers) not strictly increasing, column 5728 empty
+WARN: A->p (column pointers) not strictly increasing, column 5729 empty
+WARN: A->p (column pointers) not strictly increasing, column 5730 empty
+WARN: A->p (column pointers) not strictly increasing, column 5731 empty
+WARN: A->p (column pointers) not strictly increasing, column 5732 empty
+WARN: A->p (column pointers) not strictly increasing, column 5733 empty
+WARN: A->p (column pointers) not strictly increasing, column 5734 empty
+WARN: A->p (column pointers) not strictly increasing, column 5735 empty
+WARN: A->p (column pointers) not strictly increasing, column 5736 empty
+WARN: A->p (column pointers) not strictly increasing, column 5737 empty
+WARN: A->p (column pointers) not strictly increasing, column 5738 empty
+WARN: A->p (column pointers) not strictly increasing, column 5739 empty
+WARN: A->p (column pointers) not strictly increasing, column 5740 empty
+WARN: A->p (column pointers) not strictly increasing, column 5741 empty
+WARN: A->p (column pointers) not strictly increasing, column 5742 empty
+WARN: A->p (column pointers) not strictly increasing, column 5743 empty
+WARN: A->p (column pointers) not strictly increasing, column 5744 empty
+WARN: A->p (column pointers) not strictly increasing, column 5745 empty
+WARN: A->p (column pointers) not strictly increasing, column 5746 empty
+WARN: A->p (column pointers) not strictly increasing, column 5747 empty
+WARN: A->p (column pointers) not strictly increasing, column 5748 empty
+WARN: A->p (column pointers) not strictly increasing, column 5749 empty
+WARN: A->p (column pointers) not strictly increasing, column 5750 empty
+WARN: A->p (column pointers) not strictly increasing, column 5751 empty
+WARN: A->p (column pointers) not strictly increasing, column 5752 empty
+WARN: A->p (column pointers) not strictly increasing, column 5753 empty
+WARN: A->p (column pointers) not strictly increasing, column 5754 empty
+WARN: A->p (column pointers) not strictly increasing, column 5755 empty
+WARN: A->p (column pointers) not strictly increasing, column 5756 empty
+WARN: A->p (column pointers) not strictly increasing, column 5757 empty
+WARN: A->p (column pointers) not strictly increasing, column 5758 empty
+WARN: A->p (column pointers) not strictly increasing, column 5759 empty
+WARN: A->p (column pointers) not strictly increasing, column 5760 empty
+WARN: A->p (column pointers) not strictly increasing, column 5761 empty
+WARN: A->p (column pointers) not strictly increasing, column 5762 empty
+WARN: A->p (column pointers) not strictly increasing, column 5763 empty
+WARN: A->p (column pointers) not strictly increasing, column 5764 empty
+WARN: A->p (column pointers) not strictly increasing, column 5765 empty
+WARN: A->p (column pointers) not strictly increasing, column 5766 empty
+WARN: A->p (column pointers) not strictly increasing, column 5767 empty
+WARN: A->p (column pointers) not strictly increasing, column 5768 empty
+WARN: A->p (column pointers) not strictly increasing, column 5769 empty
+WARN: A->p (column pointers) not strictly increasing, column 5770 empty
+WARN: A->p (column pointers) not strictly increasing, column 5771 empty
+WARN: A->p (column pointers) not strictly increasing, column 5772 empty
+WARN: A->p (column pointers) not strictly increasing, column 5773 empty
+WARN: A->p (column pointers) not strictly increasing, column 5774 empty
+WARN: A->p (column pointers) not strictly increasing, column 5775 empty
+WARN: A->p (column pointers) not strictly increasing, column 5776 empty
+WARN: A->p (column pointers) not strictly increasing, column 5777 empty
+WARN: A->p (column pointers) not strictly increasing, column 5778 empty
+WARN: A->p (column pointers) not strictly increasing, column 5779 empty
+WARN: A->p (column pointers) not strictly increasing, column 5780 empty
+WARN: A->p (column pointers) not strictly increasing, column 5781 empty
+WARN: A->p (column pointers) not strictly increasing, column 5782 empty
+WARN: A->p (column pointers) not strictly increasing, column 5783 empty
+WARN: A->p (column pointers) not strictly increasing, column 5784 empty
+WARN: A->p (column pointers) not strictly increasing, column 5785 empty
+WARN: A->p (column pointers) not strictly increasing, column 5786 empty
+WARN: A->p (column pointers) not strictly increasing, column 5787 empty
+WARN: A->p (column pointers) not strictly increasing, column 5788 empty
+WARN: A->p (column pointers) not strictly increasing, column 5789 empty
+WARN: A->p (column pointers) not strictly increasing, column 5790 empty
+WARN: A->p (column pointers) not strictly increasing, column 5791 empty
+WARN: A->p (column pointers) not strictly increasing, column 5792 empty
+WARN: A->p (column pointers) not strictly increasing, column 5793 empty
+WARN: A->p (column pointers) not strictly increasing, column 5794 empty
+WARN: A->p (column pointers) not strictly increasing, column 5795 empty
+WARN: A->p (column pointers) not strictly increasing, column 5796 empty
+WARN: A->p (column pointers) not strictly increasing, column 5797 empty
+WARN: A->p (column pointers) not strictly increasing, column 5798 empty
+WARN: A->p (column pointers) not strictly increasing, column 5799 empty
+WARN: A->p (column pointers) not strictly increasing, column 5800 empty
+WARN: A->p (column pointers) not strictly increasing, column 5801 empty
+WARN: A->p (column pointers) not strictly increasing, column 5802 empty
+WARN: A->p (column pointers) not strictly increasing, column 5803 empty
+WARN: A->p (column pointers) not strictly increasing, column 5804 empty
+WARN: A->p (column pointers) not strictly increasing, column 5805 empty
+WARN: A->p (column pointers) not strictly increasing, column 5806 empty
+WARN: A->p (column pointers) not strictly increasing, column 5807 empty
+WARN: A->p (column pointers) not strictly increasing, column 5808 empty
+WARN: A->p (column pointers) not strictly increasing, column 5809 empty
+WARN: A->p (column pointers) not strictly increasing, column 5810 empty
+WARN: A->p (column pointers) not strictly increasing, column 5811 empty
+WARN: A->p (column pointers) not strictly increasing, column 5812 empty
+WARN: A->p (column pointers) not strictly increasing, column 5813 empty
+WARN: A->p (column pointers) not strictly increasing, column 5814 empty
+WARN: A->p (column pointers) not strictly increasing, column 5815 empty
+WARN: A->p (column pointers) not strictly increasing, column 5816 empty
+WARN: A->p (column pointers) not strictly increasing, column 5817 empty
+WARN: A->p (column pointers) not strictly increasing, column 5818 empty
+WARN: A->p (column pointers) not strictly increasing, column 5819 empty
+WARN: A->p (column pointers) not strictly increasing, column 5820 empty
+WARN: A->p (column pointers) not strictly increasing, column 5821 empty
+WARN: A->p (column pointers) not strictly increasing, column 5822 empty
+WARN: A->p (column pointers) not strictly increasing, column 5823 empty
+WARN: A->p (column pointers) not strictly increasing, column 5824 empty
+WARN: A->p (column pointers) not strictly increasing, column 5825 empty
+WARN: A->p (column pointers) not strictly increasing, column 5826 empty
+WARN: A->p (column pointers) not strictly increasing, column 5827 empty
+WARN: A->p (column pointers) not strictly increasing, column 5828 empty
+WARN: A->p (column pointers) not strictly increasing, column 5829 empty
+WARN: A->p (column pointers) not strictly increasing, column 5830 empty
+WARN: A->p (column pointers) not strictly increasing, column 5831 empty
+WARN: A->p (column pointers) not strictly increasing, column 5832 empty
+WARN: A->p (column pointers) not strictly increasing, column 5833 empty
+WARN: A->p (column pointers) not strictly increasing, column 5834 empty
+WARN: A->p (column pointers) not strictly increasing, column 5835 empty
+WARN: A->p (column pointers) not strictly increasing, column 5836 empty
+WARN: A->p (column pointers) not strictly increasing, column 5837 empty
+WARN: A->p (column pointers) not strictly increasing, column 5838 empty
+WARN: A->p (column pointers) not strictly increasing, column 5839 empty
+WARN: A->p (column pointers) not strictly increasing, column 5840 empty
+WARN: A->p (column pointers) not strictly increasing, column 5841 empty
+WARN: A->p (column pointers) not strictly increasing, column 5842 empty
+WARN: A->p (column pointers) not strictly increasing, column 5843 empty
+WARN: A->p (column pointers) not strictly increasing, column 5844 empty
+WARN: A->p (column pointers) not strictly increasing, column 5845 empty
+WARN: A->p (column pointers) not strictly increasing, column 5846 empty
+WARN: A->p (column pointers) not strictly increasing, column 5847 empty
+WARN: A->p (column pointers) not strictly increasing, column 5848 empty
+WARN: A->p (column pointers) not strictly increasing, column 5849 empty
+WARN: A->p (column pointers) not strictly increasing, column 5850 empty
+WARN: A->p (column pointers) not strictly increasing, column 5851 empty
+WARN: A->p (column pointers) not strictly increasing, column 5852 empty
+WARN: A->p (column pointers) not strictly increasing, column 5853 empty
+WARN: A->p (column pointers) not strictly increasing, column 5854 empty
+WARN: A->p (column pointers) not strictly increasing, column 5855 empty
+WARN: A->p (column pointers) not strictly increasing, column 5856 empty
+WARN: A->p (column pointers) not strictly increasing, column 5857 empty
+WARN: A->p (column pointers) not strictly increasing, column 5858 empty
+WARN: A->p (column pointers) not strictly increasing, column 5859 empty
+WARN: A->p (column pointers) not strictly increasing, column 5860 empty
+WARN: A->p (column pointers) not strictly increasing, column 5861 empty
+WARN: A->p (column pointers) not strictly increasing, column 5862 empty
+WARN: A->p (column pointers) not strictly increasing, column 5863 empty
+WARN: A->p (column pointers) not strictly increasing, column 5864 empty
+WARN: A->p (column pointers) not strictly increasing, column 5865 empty
+WARN: A->p (column pointers) not strictly increasing, column 5866 empty
+WARN: A->p (column pointers) not strictly increasing, column 5867 empty
+WARN: A->p (column pointers) not strictly increasing, column 5868 empty
+WARN: A->p (column pointers) not strictly increasing, column 5869 empty
+WARN: A->p (column pointers) not strictly increasing, column 5870 empty
+WARN: A->p (column pointers) not strictly increasing, column 5871 empty
+WARN: A->p (column pointers) not strictly increasing, column 5872 empty
+WARN: A->p (column pointers) not strictly increasing, column 5873 empty
+WARN: A->p (column pointers) not strictly increasing, column 5874 empty
+WARN: A->p (column pointers) not strictly increasing, column 5875 empty
+WARN: A->p (column pointers) not strictly increasing, column 5876 empty
+WARN: A->p (column pointers) not strictly increasing, column 5877 empty
+WARN: A->p (column pointers) not strictly increasing, column 5878 empty
+WARN: A->p (column pointers) not strictly increasing, column 5879 empty
+WARN: A->p (column pointers) not strictly increasing, column 5880 empty
+WARN: A->p (column pointers) not strictly increasing, column 5881 empty
+WARN: A->p (column pointers) not strictly increasing, column 5882 empty
+WARN: A->p (column pointers) not strictly increasing, column 5883 empty
+WARN: A->p (column pointers) not strictly increasing, column 5884 empty
+WARN: A->p (column pointers) not strictly increasing, column 5885 empty
+WARN: A->p (column pointers) not strictly increasing, column 5886 empty
+WARN: A->p (column pointers) not strictly increasing, column 5887 empty
+WARN: A->p (column pointers) not strictly increasing, column 5888 empty
+WARN: A->p (column pointers) not strictly increasing, column 5889 empty
+WARN: A->p (column pointers) not strictly increasing, column 5890 empty
+WARN: A->p (column pointers) not strictly increasing, column 5891 empty
+WARN: A->p (column pointers) not strictly increasing, column 5892 empty
+WARN: A->p (column pointers) not strictly increasing, column 5893 empty
+WARN: A->p (column pointers) not strictly increasing, column 5894 empty
+WARN: A->p (column pointers) not strictly increasing, column 5895 empty
+WARN: A->p (column pointers) not strictly increasing, column 5896 empty
+WARN: A->p (column pointers) not strictly increasing, column 5897 empty
+WARN: A->p (column pointers) not strictly increasing, column 5898 empty
+WARN: A->p (column pointers) not strictly increasing, column 5899 empty
+WARN: A->p (column pointers) not strictly increasing, column 5900 empty
+WARN: A->p (column pointers) not strictly increasing, column 5901 empty
+WARN: A->p (column pointers) not strictly increasing, column 5902 empty
+WARN: A->p (column pointers) not strictly increasing, column 5903 empty
+WARN: A->p (column pointers) not strictly increasing, column 5904 empty
+WARN: A->p (column pointers) not strictly increasing, column 5905 empty
+WARN: A->p (column pointers) not strictly increasing, column 5906 empty
+WARN: A->p (column pointers) not strictly increasing, column 5907 empty
+WARN: A->p (column pointers) not strictly increasing, column 5908 empty
+WARN: A->p (column pointers) not strictly increasing, column 5909 empty
+WARN: A->p (column pointers) not strictly increasing, column 5910 empty
+WARN: A->p (column pointers) not strictly increasing, column 5911 empty
+WARN: A->p (column pointers) not strictly increasing, column 5912 empty
+WARN: A->p (column pointers) not strictly increasing, column 5913 empty
+WARN: A->p (column pointers) not strictly increasing, column 5914 empty
+WARN: A->p (column pointers) not strictly increasing, column 5915 empty
+WARN: A->p (column pointers) not strictly increasing, column 5916 empty
+WARN: A->p (column pointers) not strictly increasing, column 5917 empty
+WARN: A->p (column pointers) not strictly increasing, column 5918 empty
+WARN: A->p (column pointers) not strictly increasing, column 5919 empty
+WARN: A->p (column pointers) not strictly increasing, column 5920 empty
+WARN: A->p (column pointers) not strictly increasing, column 5921 empty
+WARN: A->p (column pointers) not strictly increasing, column 5922 empty
+WARN: A->p (column pointers) not strictly increasing, column 5923 empty
+WARN: A->p (column pointers) not strictly increasing, column 5924 empty
+WARN: A->p (column pointers) not strictly increasing, column 5925 empty
+WARN: A->p (column pointers) not strictly increasing, column 5926 empty
+WARN: A->p (column pointers) not strictly increasing, column 5927 empty
+WARN: A->p (column pointers) not strictly increasing, column 5928 empty
+WARN: A->p (column pointers) not strictly increasing, column 5929 empty
+WARN: A->p (column pointers) not strictly increasing, column 5930 empty
+WARN: A->p (column pointers) not strictly increasing, column 5931 empty
+WARN: A->p (column pointers) not strictly increasing, column 5932 empty
+WARN: A->p (column pointers) not strictly increasing, column 5933 empty
+WARN: A->p (column pointers) not strictly increasing, column 5934 empty
+WARN: A->p (column pointers) not strictly increasing, column 5935 empty
+WARN: A->p (column pointers) not strictly increasing, column 5936 empty
+WARN: A->p (column pointers) not strictly increasing, column 5937 empty
+WARN: A->p (column pointers) not strictly increasing, column 5938 empty
+WARN: A->p (column pointers) not strictly increasing, column 5939 empty
+WARN: A->p (column pointers) not strictly increasing, column 5940 empty
+WARN: A->p (column pointers) not strictly increasing, column 5941 empty
+WARN: A->p (column pointers) not strictly increasing, column 5942 empty
+WARN: A->p (column pointers) not strictly increasing, column 5943 empty
+WARN: A->p (column pointers) not strictly increasing, column 5944 empty
+WARN: A->p (column pointers) not strictly increasing, column 5945 empty
+WARN: A->p (column pointers) not strictly increasing, column 5946 empty
+WARN: A->p (column pointers) not strictly increasing, column 5947 empty
+WARN: A->p (column pointers) not strictly increasing, column 5948 empty
+WARN: A->p (column pointers) not strictly increasing, column 5949 empty
+WARN: A->p (column pointers) not strictly increasing, column 5950 empty
+WARN: A->p (column pointers) not strictly increasing, column 5951 empty
+WARN: A->p (column pointers) not strictly increasing, column 5952 empty
+WARN: A->p (column pointers) not strictly increasing, column 5953 empty
+WARN: A->p (column pointers) not strictly increasing, column 5954 empty
+WARN: A->p (column pointers) not strictly increasing, column 5955 empty
+WARN: A->p (column pointers) not strictly increasing, column 5956 empty
+WARN: A->p (column pointers) not strictly increasing, column 5957 empty
+WARN: A->p (column pointers) not strictly increasing, column 5958 empty
+WARN: A->p (column pointers) not strictly increasing, column 5959 empty
+WARN: A->p (column pointers) not strictly increasing, column 5960 empty
+WARN: A->p (column pointers) not strictly increasing, column 5961 empty
+WARN: A->p (column pointers) not strictly increasing, column 5962 empty
+WARN: A->p (column pointers) not strictly increasing, column 5963 empty
+WARN: A->p (column pointers) not strictly increasing, column 5964 empty
+WARN: A->p (column pointers) not strictly increasing, column 5965 empty
+WARN: A->p (column pointers) not strictly increasing, column 5966 empty
+WARN: A->p (column pointers) not strictly increasing, column 5967 empty
+WARN: A->p (column pointers) not strictly increasing, column 5968 empty
+WARN: A->p (column pointers) not strictly increasing, column 5969 empty
+WARN: A->p (column pointers) not strictly increasing, column 5970 empty
+WARN: A->p (column pointers) not strictly increasing, column 5971 empty
+WARN: A->p (column pointers) not strictly increasing, column 5972 empty
+WARN: A->p (column pointers) not strictly increasing, column 5973 empty
+WARN: A->p (column pointers) not strictly increasing, column 5974 empty
+WARN: A->p (column pointers) not strictly increasing, column 5975 empty
+WARN: A->p (column pointers) not strictly increasing, column 5976 empty
+WARN: A->p (column pointers) not strictly increasing, column 5977 empty
+WARN: A->p (column pointers) not strictly increasing, column 5978 empty
+WARN: A->p (column pointers) not strictly increasing, column 5979 empty
+WARN: A->p (column pointers) not strictly increasing, column 5980 empty
+WARN: A->p (column pointers) not strictly increasing, column 5981 empty
+WARN: A->p (column pointers) not strictly increasing, column 5982 empty
+WARN: A->p (column pointers) not strictly increasing, column 5983 empty
+WARN: A->p (column pointers) not strictly increasing, column 5984 empty
+WARN: A->p (column pointers) not strictly increasing, column 5985 empty
+WARN: A->p (column pointers) not strictly increasing, column 5986 empty
+WARN: A->p (column pointers) not strictly increasing, column 5987 empty
+WARN: A->p (column pointers) not strictly increasing, column 5988 empty
+WARN: A->p (column pointers) not strictly increasing, column 5989 empty
+WARN: A->p (column pointers) not strictly increasing, column 5990 empty
+WARN: A->p (column pointers) not strictly increasing, column 5991 empty
+WARN: A->p (column pointers) not strictly increasing, column 5992 empty
+WARN: A->p (column pointers) not strictly increasing, column 5993 empty
+WARN: A->p (column pointers) not strictly increasing, column 5994 empty
+WARN: A->p (column pointers) not strictly increasing, column 5995 empty
+WARN: A->p (column pointers) not strictly increasing, column 5996 empty
+WARN: A->p (column pointers) not strictly increasing, column 5997 empty
+WARN: A->p (column pointers) not strictly increasing, column 5998 empty
+WARN: A->p (column pointers) not strictly increasing, column 5999 empty
+WARN: A->p (column pointers) not strictly increasing, column 6000 empty
+WARN: A->p (column pointers) not strictly increasing, column 6001 empty
+WARN: A->p (column pointers) not strictly increasing, column 6002 empty
+WARN: A->p (column pointers) not strictly increasing, column 6003 empty
+WARN: A->p (column pointers) not strictly increasing, column 6004 empty
+WARN: A->p (column pointers) not strictly increasing, column 6005 empty
+WARN: A->p (column pointers) not strictly increasing, column 6006 empty
+WARN: A->p (column pointers) not strictly increasing, column 6007 empty
+WARN: A->p (column pointers) not strictly increasing, column 6008 empty
+WARN: A->p (column pointers) not strictly increasing, column 6009 empty
+WARN: A->p (column pointers) not strictly increasing, column 6010 empty
+WARN: A->p (column pointers) not strictly increasing, column 6011 empty
+WARN: A->p (column pointers) not strictly increasing, column 6012 empty
+WARN: A->p (column pointers) not strictly increasing, column 6013 empty
+WARN: A->p (column pointers) not strictly increasing, column 6014 empty
+WARN: A->p (column pointers) not strictly increasing, column 6015 empty
+WARN: A->p (column pointers) not strictly increasing, column 6016 empty
+WARN: A->p (column pointers) not strictly increasing, column 6017 empty
+WARN: A->p (column pointers) not strictly increasing, column 6018 empty
+WARN: A->p (column pointers) not strictly increasing, column 6019 empty
+WARN: A->p (column pointers) not strictly increasing, column 6020 empty
+WARN: A->p (column pointers) not strictly increasing, column 6021 empty
+WARN: A->p (column pointers) not strictly increasing, column 6022 empty
+WARN: A->p (column pointers) not strictly increasing, column 6023 empty
+WARN: A->p (column pointers) not strictly increasing, column 6024 empty
+WARN: A->p (column pointers) not strictly increasing, column 6025 empty
+WARN: A->p (column pointers) not strictly increasing, column 6026 empty
+WARN: A->p (column pointers) not strictly increasing, column 6027 empty
+WARN: A->p (column pointers) not strictly increasing, column 6028 empty
+WARN: A->p (column pointers) not strictly increasing, column 6029 empty
+WARN: A->p (column pointers) not strictly increasing, column 6030 empty
+WARN: A->p (column pointers) not strictly increasing, column 6031 empty
+WARN: A->p (column pointers) not strictly increasing, column 6032 empty
+WARN: A->p (column pointers) not strictly increasing, column 6033 empty
+WARN: A->p (column pointers) not strictly increasing, column 6034 empty
+WARN: A->p (column pointers) not strictly increasing, column 6035 empty
+WARN: A->p (column pointers) not strictly increasing, column 6036 empty
+WARN: A->p (column pointers) not strictly increasing, column 6037 empty
+WARN: A->p (column pointers) not strictly increasing, column 6038 empty
+WARN: A->p (column pointers) not strictly increasing, column 6039 empty
+WARN: A->p (column pointers) not strictly increasing, column 6040 empty
+WARN: A->p (column pointers) not strictly increasing, column 6041 empty
+WARN: A->p (column pointers) not strictly increasing, column 6042 empty
+WARN: A->p (column pointers) not strictly increasing, column 6043 empty
+WARN: A->p (column pointers) not strictly increasing, column 6044 empty
+WARN: A->p (column pointers) not strictly increasing, column 6045 empty
+WARN: A->p (column pointers) not strictly increasing, column 6046 empty
+WARN: A->p (column pointers) not strictly increasing, column 6047 empty
+WARN: A->p (column pointers) not strictly increasing, column 6048 empty
+WARN: A->p (column pointers) not strictly increasing, column 6049 empty
+WARN: A->p (column pointers) not strictly increasing, column 6050 empty
+WARN: A->p (column pointers) not strictly increasing, column 6051 empty
+WARN: A->p (column pointers) not strictly increasing, column 6052 empty
+WARN: A->p (column pointers) not strictly increasing, column 6053 empty
+WARN: A->p (column pointers) not strictly increasing, column 6054 empty
+WARN: A->p (column pointers) not strictly increasing, column 6055 empty
+WARN: A->p (column pointers) not strictly increasing, column 6056 empty
+WARN: A->p (column pointers) not strictly increasing, column 6057 empty
+WARN: A->p (column pointers) not strictly increasing, column 6058 empty
+WARN: A->p (column pointers) not strictly increasing, column 6059 empty
+WARN: A->p (column pointers) not strictly increasing, column 6060 empty
+WARN: A->p (column pointers) not strictly increasing, column 6061 empty
+WARN: A->p (column pointers) not strictly increasing, column 6062 empty
+WARN: A->p (column pointers) not strictly increasing, column 6063 empty
+WARN: A->p (column pointers) not strictly increasing, column 6064 empty
+WARN: A->p (column pointers) not strictly increasing, column 6065 empty
+WARN: A->p (column pointers) not strictly increasing, column 6066 empty
+WARN: A->p (column pointers) not strictly increasing, column 6067 empty
+WARN: A->p (column pointers) not strictly increasing, column 6068 empty
+WARN: A->p (column pointers) not strictly increasing, column 6069 empty
+WARN: A->p (column pointers) not strictly increasing, column 6070 empty
+WARN: A->p (column pointers) not strictly increasing, column 6071 empty
+WARN: A->p (column pointers) not strictly increasing, column 6072 empty
+WARN: A->p (column pointers) not strictly increasing, column 6073 empty
+WARN: A->p (column pointers) not strictly increasing, column 6074 empty
+WARN: A->p (column pointers) not strictly increasing, column 6075 empty
+WARN: A->p (column pointers) not strictly increasing, column 6076 empty
+WARN: A->p (column pointers) not strictly increasing, column 6077 empty
+WARN: A->p (column pointers) not strictly increasing, column 6078 empty
+WARN: A->p (column pointers) not strictly increasing, column 6079 empty
+WARN: A->p (column pointers) not strictly increasing, column 6080 empty
+WARN: A->p (column pointers) not strictly increasing, column 6081 empty
+WARN: A->p (column pointers) not strictly increasing, column 6082 empty
+WARN: A->p (column pointers) not strictly increasing, column 6083 empty
+WARN: A->p (column pointers) not strictly increasing, column 6084 empty
+WARN: A->p (column pointers) not strictly increasing, column 6085 empty
+WARN: A->p (column pointers) not strictly increasing, column 6086 empty
+WARN: A->p (column pointers) not strictly increasing, column 6087 empty
+WARN: A->p (column pointers) not strictly increasing, column 6088 empty
+WARN: A->p (column pointers) not strictly increasing, column 6089 empty
+WARN: A->p (column pointers) not strictly increasing, column 6090 empty
+WARN: A->p (column pointers) not strictly increasing, column 6091 empty
+WARN: A->p (column pointers) not strictly increasing, column 6092 empty
+WARN: A->p (column pointers) not strictly increasing, column 6093 empty
+WARN: A->p (column pointers) not strictly increasing, column 6094 empty
+WARN: A->p (column pointers) not strictly increasing, column 6095 empty
+WARN: A->p (column pointers) not strictly increasing, column 6096 empty
+WARN: A->p (column pointers) not strictly increasing, column 6097 empty
+WARN: A->p (column pointers) not strictly increasing, column 6098 empty
+WARN: A->p (column pointers) not strictly increasing, column 6099 empty
+WARN: A->p (column pointers) not strictly increasing, column 6100 empty
+WARN: A->p (column pointers) not strictly increasing, column 6101 empty
+WARN: A->p (column pointers) not strictly increasing, column 6102 empty
+WARN: A->p (column pointers) not strictly increasing, column 6103 empty
+WARN: A->p (column pointers) not strictly increasing, column 6104 empty
+WARN: A->p (column pointers) not strictly increasing, column 6105 empty
+WARN: A->p (column pointers) not strictly increasing, column 6106 empty
+WARN: A->p (column pointers) not strictly increasing, column 6107 empty
+WARN: A->p (column pointers) not strictly increasing, column 6108 empty
+WARN: A->p (column pointers) not strictly increasing, column 6109 empty
+WARN: A->p (column pointers) not strictly increasing, column 6110 empty
+WARN: A->p (column pointers) not strictly increasing, column 6111 empty
+WARN: A->p (column pointers) not strictly increasing, column 6112 empty
+WARN: A->p (column pointers) not strictly increasing, column 6113 empty
+WARN: A->p (column pointers) not strictly increasing, column 6114 empty
+WARN: A->p (column pointers) not strictly increasing, column 6115 empty
+WARN: A->p (column pointers) not strictly increasing, column 6116 empty
+WARN: A->p (column pointers) not strictly increasing, column 6117 empty
+WARN: A->p (column pointers) not strictly increasing, column 6118 empty
+WARN: A->p (column pointers) not strictly increasing, column 6119 empty
+WARN: A->p (column pointers) not strictly increasing, column 6120 empty
+WARN: A->p (column pointers) not strictly increasing, column 6121 empty
+WARN: A->p (column pointers) not strictly increasing, column 6122 empty
+WARN: A->p (column pointers) not strictly increasing, column 6123 empty
+WARN: A->p (column pointers) not strictly increasing, column 6124 empty
+WARN: A->p (column pointers) not strictly increasing, column 6125 empty
+WARN: A->p (column pointers) not strictly increasing, column 6126 empty
+WARN: A->p (column pointers) not strictly increasing, column 6127 empty
+WARN: A->p (column pointers) not strictly increasing, column 6128 empty
+WARN: A->p (column pointers) not strictly increasing, column 6129 empty
+WARN: A->p (column pointers) not strictly increasing, column 6130 empty
+WARN: A->p (column pointers) not strictly increasing, column 6131 empty
+WARN: A->p (column pointers) not strictly increasing, column 6132 empty
+WARN: A->p (column pointers) not strictly increasing, column 6133 empty
+WARN: A->p (column pointers) not strictly increasing, column 6134 empty
+WARN: A->p (column pointers) not strictly increasing, column 6135 empty
+WARN: A->p (column pointers) not strictly increasing, column 6136 empty
+WARN: A->p (column pointers) not strictly increasing, column 6137 empty
+WARN: A->p (column pointers) not strictly increasing, column 6138 empty
+WARN: A->p (column pointers) not strictly increasing, column 6139 empty
+WARN: A->p (column pointers) not strictly increasing, column 6140 empty
+WARN: A->p (column pointers) not strictly increasing, column 6141 empty
+WARN: A->p (column pointers) not strictly increasing, column 6142 empty
+WARN: A->p (column pointers) not strictly increasing, column 6143 empty
+WARN: A->p (column pointers) not strictly increasing, column 6144 empty
+WARN: A->p (column pointers) not strictly increasing, column 6145 empty
+WARN: A->p (column pointers) not strictly increasing, column 6146 empty
+WARN: A->p (column pointers) not strictly increasing, column 6147 empty
+WARN: A->p (column pointers) not strictly increasing, column 6148 empty
+WARN: A->p (column pointers) not strictly increasing, column 6149 empty
+WARN: A->p (column pointers) not strictly increasing, column 6150 empty
+WARN: A->p (column pointers) not strictly increasing, column 6151 empty
+WARN: A->p (column pointers) not strictly increasing, column 6152 empty
+WARN: A->p (column pointers) not strictly increasing, column 6153 empty
+WARN: A->p (column pointers) not strictly increasing, column 6154 empty
+WARN: A->p (column pointers) not strictly increasing, column 6155 empty
+WARN: A->p (column pointers) not strictly increasing, column 6156 empty
+WARN: A->p (column pointers) not strictly increasing, column 6157 empty
+WARN: A->p (column pointers) not strictly increasing, column 6158 empty
+WARN: A->p (column pointers) not strictly increasing, column 6159 empty
+WARN: A->p (column pointers) not strictly increasing, column 6160 empty
+WARN: A->p (column pointers) not strictly increasing, column 6161 empty
+WARN: A->p (column pointers) not strictly increasing, column 6162 empty
+WARN: A->p (column pointers) not strictly increasing, column 6163 empty
+WARN: A->p (column pointers) not strictly increasing, column 6164 empty
+WARN: A->p (column pointers) not strictly increasing, column 6165 empty
+WARN: A->p (column pointers) not strictly increasing, column 6166 empty
+WARN: A->p (column pointers) not strictly increasing, column 6167 empty
+WARN: A->p (column pointers) not strictly increasing, column 6168 empty
+WARN: A->p (column pointers) not strictly increasing, column 6169 empty
+WARN: A->p (column pointers) not strictly increasing, column 6170 empty
+WARN: A->p (column pointers) not strictly increasing, column 6171 empty
+WARN: A->p (column pointers) not strictly increasing, column 6172 empty
+WARN: A->p (column pointers) not strictly increasing, column 6173 empty
+WARN: A->p (column pointers) not strictly increasing, column 6174 empty
+WARN: A->p (column pointers) not strictly increasing, column 6175 empty
+WARN: A->p (column pointers) not strictly increasing, column 6176 empty
+WARN: A->p (column pointers) not strictly increasing, column 6177 empty
+WARN: A->p (column pointers) not strictly increasing, column 6178 empty
+WARN: A->p (column pointers) not strictly increasing, column 6179 empty
+WARN: A->p (column pointers) not strictly increasing, column 6180 empty
+WARN: A->p (column pointers) not strictly increasing, column 6181 empty
+WARN: A->p (column pointers) not strictly increasing, column 6182 empty
+WARN: A->p (column pointers) not strictly increasing, column 6183 empty
+WARN: A->p (column pointers) not strictly increasing, column 6184 empty
+WARN: A->p (column pointers) not strictly increasing, column 6185 empty
+WARN: A->p (column pointers) not strictly increasing, column 6186 empty
+WARN: A->p (column pointers) not strictly increasing, column 6187 empty
+WARN: A->p (column pointers) not strictly increasing, column 6188 empty
+WARN: A->p (column pointers) not strictly increasing, column 6189 empty
+WARN: A->p (column pointers) not strictly increasing, column 6190 empty
+WARN: A->p (column pointers) not strictly increasing, column 6191 empty
+WARN: A->p (column pointers) not strictly increasing, column 6192 empty
+WARN: A->p (column pointers) not strictly increasing, column 6193 empty
+WARN: A->p (column pointers) not strictly increasing, column 6194 empty
+WARN: A->p (column pointers) not strictly increasing, column 6195 empty
+WARN: A->p (column pointers) not strictly increasing, column 6196 empty
+WARN: A->p (column pointers) not strictly increasing, column 6197 empty
+WARN: A->p (column pointers) not strictly increasing, column 6198 empty
+WARN: A->p (column pointers) not strictly increasing, column 6199 empty
+WARN: A->p (column pointers) not strictly increasing, column 6200 empty
+WARN: A->p (column pointers) not strictly increasing, column 6201 empty
+WARN: A->p (column pointers) not strictly increasing, column 6202 empty
+WARN: A->p (column pointers) not strictly increasing, column 6203 empty
+WARN: A->p (column pointers) not strictly increasing, column 6204 empty
+WARN: A->p (column pointers) not strictly increasing, column 6205 empty
+WARN: A->p (column pointers) not strictly increasing, column 6206 empty
+WARN: A->p (column pointers) not strictly increasing, column 6207 empty
+WARN: A->p (column pointers) not strictly increasing, column 6208 empty
+WARN: A->p (column pointers) not strictly increasing, column 6209 empty
+WARN: A->p (column pointers) not strictly increasing, column 6210 empty
+WARN: A->p (column pointers) not strictly increasing, column 6211 empty
+WARN: A->p (column pointers) not strictly increasing, column 6212 empty
+WARN: A->p (column pointers) not strictly increasing, column 6213 empty
+WARN: A->p (column pointers) not strictly increasing, column 6214 empty
+WARN: A->p (column pointers) not strictly increasing, column 6215 empty
+WARN: A->p (column pointers) not strictly increasing, column 6216 empty
+WARN: A->p (column pointers) not strictly increasing, column 6217 empty
+WARN: A->p (column pointers) not strictly increasing, column 6218 empty
+WARN: A->p (column pointers) not strictly increasing, column 6219 empty
+WARN: A->p (column pointers) not strictly increasing, column 6220 empty
+WARN: A->p (column pointers) not strictly increasing, column 6221 empty
+WARN: A->p (column pointers) not strictly increasing, column 6222 empty
+WARN: A->p (column pointers) not strictly increasing, column 6223 empty
+WARN: A->p (column pointers) not strictly increasing, column 6224 empty
+WARN: A->p (column pointers) not strictly increasing, column 6225 empty
+WARN: A->p (column pointers) not strictly increasing, column 6226 empty
+WARN: A->p (column pointers) not strictly increasing, column 6227 empty
+WARN: A->p (column pointers) not strictly increasing, column 6228 empty
+WARN: A->p (column pointers) not strictly increasing, column 6229 empty
+WARN: A->p (column pointers) not strictly increasing, column 6230 empty
+WARN: A->p (column pointers) not strictly increasing, column 6231 empty
+WARN: A->p (column pointers) not strictly increasing, column 6232 empty
+WARN: A->p (column pointers) not strictly increasing, column 6233 empty
+WARN: A->p (column pointers) not strictly increasing, column 6234 empty
+WARN: A->p (column pointers) not strictly increasing, column 6235 empty
+WARN: A->p (column pointers) not strictly increasing, column 6236 empty
+WARN: A->p (column pointers) not strictly increasing, column 6237 empty
+WARN: A->p (column pointers) not strictly increasing, column 6238 empty
+WARN: A->p (column pointers) not strictly increasing, column 6239 empty
+WARN: A->p (column pointers) not strictly increasing, column 6240 empty
+WARN: A->p (column pointers) not strictly increasing, column 6241 empty
+WARN: A->p (column pointers) not strictly increasing, column 6242 empty
+WARN: A->p (column pointers) not strictly increasing, column 6243 empty
+WARN: A->p (column pointers) not strictly increasing, column 6244 empty
+WARN: A->p (column pointers) not strictly increasing, column 6245 empty
+WARN: A->p (column pointers) not strictly increasing, column 6246 empty
+WARN: A->p (column pointers) not strictly increasing, column 6247 empty
+WARN: A->p (column pointers) not strictly increasing, column 6248 empty
+WARN: A->p (column pointers) not strictly increasing, column 6249 empty
+WARN: A->p (column pointers) not strictly increasing, column 6250 empty
+WARN: A->p (column pointers) not strictly increasing, column 6251 empty
+WARN: A->p (column pointers) not strictly increasing, column 6252 empty
+WARN: A->p (column pointers) not strictly increasing, column 6253 empty
+WARN: A->p (column pointers) not strictly increasing, column 6254 empty
+WARN: A->p (column pointers) not strictly increasing, column 6255 empty
+WARN: A->p (column pointers) not strictly increasing, column 6256 empty
+------------------------------------------------------------------
+	       SCS v3.1.0 - Splitting Conic Solver
+	(c) Brendan O'Donoghue, Stanford University, 2012
+------------------------------------------------------------------
+problem:  variables n: 9037, constraints m: 246037
+cones: 	  q: soc vars: 2086, qsize: 1
+	  s: psd vars: 243951, ssize: 1
+settings: eps_abs: 1.0e-05, eps_rel: 1.0e-05, eps_infeas: 1.0e-07
+	  alpha: 1.50, scale: 1.00e-01, adaptive_scale: 1
+	  max_iters: 1000000, normalize: 1, warm_start: 0
+	  acceleration_lookback: 10, acceleration_interval: 10
+lin-sys:  sparse-direct
+	  nnz(A): 49349, nnz(P): 0
+------------------------------------------------------------------
+ iter | pri res | dua res |   gap   |   obj   |  scale  | time (s)
+------------------------------------------------------------------
+     0| 1.79e+01  1.00e+00  1.79e+01 -8.94e+00  1.00e-01  1.48e-01 
+    50| 3.05e-10  4.74e-15  3.05e-10  1.52e-10  1.00e-01  7.88e+00 
+------------------------------------------------------------------
+status:  solved
+timings: total: 8.06e+00s = setup: 1.71e-01s + solve: 7.89e+00s
+	 lin-sys: 2.98e-01s, cones: 7.35e+00s, accel: 3.73e-02s
+------------------------------------------------------------------
+objective = 0.000000
+------------------------------------------------------------------
+-------------------------------------------------------------------------------
+                                    Summary                                    
+-------------------------------------------------------------------------------
+(CVXPY) Feb 01 03:36:53 PM: Problem status: optimal
+(CVXPY) Feb 01 03:36:53 PM: Optimal value: 1.299e-15
+(CVXPY) Feb 01 03:36:53 PM: Compilation took 2.746e-01 seconds
+(CVXPY) Feb 01 03:36:53 PM: Solver (including time spent in interface) took 8.065e+00 seconds
+[INFO]: CVXPY problem status: optimal
+MSE =  4.604e-31
+[INFO]: CVXPY Koopman operator variable: (695, 13)
+===============================================================================
+                                     CVXPY                                     
+                                    v1.1.18                                    
+===============================================================================
+(CVXPY) Feb 01 03:36:53 PM: Your problem has 9035 variables, 0 constraints, and 0 parameters.
+(CVXPY) Feb 01 03:36:53 PM: It is compliant with the following grammars: DCP, DQCP
+(CVXPY) Feb 01 03:36:53 PM: (If you need to solve this problem multiple times, but with different data, consider using parameters.)
+(CVXPY) Feb 01 03:36:53 PM: CVXPY will first compile your problem; then, it will invoke a numerical solver to obtain a solution.
+-------------------------------------------------------------------------------
+                                  Compilation                                  
+-------------------------------------------------------------------------------
+(CVXPY) Feb 01 03:36:53 PM: Compiling problem (target solver=SCS).
+(CVXPY) Feb 01 03:36:53 PM: Reduction chain: Dcp2Cone -> CvxAttr2Constr -> ConeMatrixStuffing -> SCS
+(CVXPY) Feb 01 03:36:53 PM: Applying reduction Dcp2Cone
+(CVXPY) Feb 01 03:36:53 PM: Applying reduction CvxAttr2Constr
+(CVXPY) Feb 01 03:36:53 PM: Applying reduction ConeMatrixStuffing
+(CVXPY) Feb 01 03:36:53 PM: Applying reduction SCS
+(CVXPY) Feb 01 03:36:53 PM: Finished problem compilation (took 2.744e-01 seconds).
+-------------------------------------------------------------------------------
+                                Numerical solver                               
+-------------------------------------------------------------------------------
+(CVXPY) Feb 01 03:36:53 PM: Invoking solver SCS  to obtain a solution.
+WARN: A->p (column pointers) not strictly increasing, column 6257 empty
+WARN: A->p (column pointers) not strictly increasing, column 6258 empty
+WARN: A->p (column pointers) not strictly increasing, column 6259 empty
+WARN: A->p (column pointers) not strictly increasing, column 6260 empty
+WARN: A->p (column pointers) not strictly increasing, column 6261 empty
+WARN: A->p (column pointers) not strictly increasing, column 6262 empty
+WARN: A->p (column pointers) not strictly increasing, column 6263 empty
+WARN: A->p (column pointers) not strictly increasing, column 6264 empty
+WARN: A->p (column pointers) not strictly increasing, column 6265 empty
+WARN: A->p (column pointers) not strictly increasing, column 6266 empty
+WARN: A->p (column pointers) not strictly increasing, column 6267 empty
+WARN: A->p (column pointers) not strictly increasing, column 6268 empty
+WARN: A->p (column pointers) not strictly increasing, column 6269 empty
+WARN: A->p (column pointers) not strictly increasing, column 6270 empty
+WARN: A->p (column pointers) not strictly increasing, column 6271 empty
+WARN: A->p (column pointers) not strictly increasing, column 6272 empty
+WARN: A->p (column pointers) not strictly increasing, column 6273 empty
+WARN: A->p (column pointers) not strictly increasing, column 6274 empty
+WARN: A->p (column pointers) not strictly increasing, column 6275 empty
+WARN: A->p (column pointers) not strictly increasing, column 6276 empty
+WARN: A->p (column pointers) not strictly increasing, column 6277 empty
+WARN: A->p (column pointers) not strictly increasing, column 6278 empty
+WARN: A->p (column pointers) not strictly increasing, column 6279 empty
+WARN: A->p (column pointers) not strictly increasing, column 6280 empty
+WARN: A->p (column pointers) not strictly increasing, column 6281 empty
+WARN: A->p (column pointers) not strictly increasing, column 6282 empty
+WARN: A->p (column pointers) not strictly increasing, column 6283 empty
+WARN: A->p (column pointers) not strictly increasing, column 6284 empty
+WARN: A->p (column pointers) not strictly increasing, column 6285 empty
+WARN: A->p (column pointers) not strictly increasing, column 6286 empty
+WARN: A->p (column pointers) not strictly increasing, column 6287 empty
+WARN: A->p (column pointers) not strictly increasing, column 6288 empty
+WARN: A->p (column pointers) not strictly increasing, column 6289 empty
+WARN: A->p (column pointers) not strictly increasing, column 6290 empty
+WARN: A->p (column pointers) not strictly increasing, column 6291 empty
+WARN: A->p (column pointers) not strictly increasing, column 6292 empty
+WARN: A->p (column pointers) not strictly increasing, column 6293 empty
+WARN: A->p (column pointers) not strictly increasing, column 6294 empty
+WARN: A->p (column pointers) not strictly increasing, column 6295 empty
+WARN: A->p (column pointers) not strictly increasing, column 6296 empty
+WARN: A->p (column pointers) not strictly increasing, column 6297 empty
+WARN: A->p (column pointers) not strictly increasing, column 6298 empty
+WARN: A->p (column pointers) not strictly increasing, column 6299 empty
+WARN: A->p (column pointers) not strictly increasing, column 6300 empty
+WARN: A->p (column pointers) not strictly increasing, column 6301 empty
+WARN: A->p (column pointers) not strictly increasing, column 6302 empty
+WARN: A->p (column pointers) not strictly increasing, column 6303 empty
+WARN: A->p (column pointers) not strictly increasing, column 6304 empty
+WARN: A->p (column pointers) not strictly increasing, column 6305 empty
+WARN: A->p (column pointers) not strictly increasing, column 6306 empty
+WARN: A->p (column pointers) not strictly increasing, column 6307 empty
+WARN: A->p (column pointers) not strictly increasing, column 6308 empty
+WARN: A->p (column pointers) not strictly increasing, column 6309 empty
+WARN: A->p (column pointers) not strictly increasing, column 6310 empty
+WARN: A->p (column pointers) not strictly increasing, column 6311 empty
+WARN: A->p (column pointers) not strictly increasing, column 6312 empty
+WARN: A->p (column pointers) not strictly increasing, column 6313 empty
+WARN: A->p (column pointers) not strictly increasing, column 6314 empty
+WARN: A->p (column pointers) not strictly increasing, column 6315 empty
+WARN: A->p (column pointers) not strictly increasing, column 6316 empty
+WARN: A->p (column pointers) not strictly increasing, column 6317 empty
+WARN: A->p (column pointers) not strictly increasing, column 6318 empty
+WARN: A->p (column pointers) not strictly increasing, column 6319 empty
+WARN: A->p (column pointers) not strictly increasing, column 6320 empty
+WARN: A->p (column pointers) not strictly increasing, column 6321 empty
+WARN: A->p (column pointers) not strictly increasing, column 6322 empty
+WARN: A->p (column pointers) not strictly increasing, column 6323 empty
+WARN: A->p (column pointers) not strictly increasing, column 6324 empty
+WARN: A->p (column pointers) not strictly increasing, column 6325 empty
+WARN: A->p (column pointers) not strictly increasing, column 6326 empty
+WARN: A->p (column pointers) not strictly increasing, column 6327 empty
+WARN: A->p (column pointers) not strictly increasing, column 6328 empty
+WARN: A->p (column pointers) not strictly increasing, column 6329 empty
+WARN: A->p (column pointers) not strictly increasing, column 6330 empty
+WARN: A->p (column pointers) not strictly increasing, column 6331 empty
+WARN: A->p (column pointers) not strictly increasing, column 6332 empty
+WARN: A->p (column pointers) not strictly increasing, column 6333 empty
+WARN: A->p (column pointers) not strictly increasing, column 6334 empty
+WARN: A->p (column pointers) not strictly increasing, column 6335 empty
+WARN: A->p (column pointers) not strictly increasing, column 6336 empty
+WARN: A->p (column pointers) not strictly increasing, column 6337 empty
+WARN: A->p (column pointers) not strictly increasing, column 6338 empty
+WARN: A->p (column pointers) not strictly increasing, column 6339 empty
+WARN: A->p (column pointers) not strictly increasing, column 6340 empty
+WARN: A->p (column pointers) not strictly increasing, column 6341 empty
+WARN: A->p (column pointers) not strictly increasing, column 6342 empty
+WARN: A->p (column pointers) not strictly increasing, column 6343 empty
+WARN: A->p (column pointers) not strictly increasing, column 6344 empty
+WARN: A->p (column pointers) not strictly increasing, column 6345 empty
+WARN: A->p (column pointers) not strictly increasing, column 6346 empty
+WARN: A->p (column pointers) not strictly increasing, column 6347 empty
+WARN: A->p (column pointers) not strictly increasing, column 6348 empty
+WARN: A->p (column pointers) not strictly increasing, column 6349 empty
+WARN: A->p (column pointers) not strictly increasing, column 6350 empty
+WARN: A->p (column pointers) not strictly increasing, column 6351 empty
+WARN: A->p (column pointers) not strictly increasing, column 6352 empty
+WARN: A->p (column pointers) not strictly increasing, column 6353 empty
+WARN: A->p (column pointers) not strictly increasing, column 6354 empty
+WARN: A->p (column pointers) not strictly increasing, column 6355 empty
+WARN: A->p (column pointers) not strictly increasing, column 6356 empty
+WARN: A->p (column pointers) not strictly increasing, column 6357 empty
+WARN: A->p (column pointers) not strictly increasing, column 6358 empty
+WARN: A->p (column pointers) not strictly increasing, column 6359 empty
+WARN: A->p (column pointers) not strictly increasing, column 6360 empty
+WARN: A->p (column pointers) not strictly increasing, column 6361 empty
+WARN: A->p (column pointers) not strictly increasing, column 6362 empty
+WARN: A->p (column pointers) not strictly increasing, column 6363 empty
+WARN: A->p (column pointers) not strictly increasing, column 6364 empty
+WARN: A->p (column pointers) not strictly increasing, column 6365 empty
+WARN: A->p (column pointers) not strictly increasing, column 6366 empty
+WARN: A->p (column pointers) not strictly increasing, column 6367 empty
+WARN: A->p (column pointers) not strictly increasing, column 6368 empty
+WARN: A->p (column pointers) not strictly increasing, column 6369 empty
+WARN: A->p (column pointers) not strictly increasing, column 6370 empty
+WARN: A->p (column pointers) not strictly increasing, column 6371 empty
+WARN: A->p (column pointers) not strictly increasing, column 6372 empty
+WARN: A->p (column pointers) not strictly increasing, column 6373 empty
+WARN: A->p (column pointers) not strictly increasing, column 6374 empty
+WARN: A->p (column pointers) not strictly increasing, column 6375 empty
+WARN: A->p (column pointers) not strictly increasing, column 6376 empty
+WARN: A->p (column pointers) not strictly increasing, column 6377 empty
+WARN: A->p (column pointers) not strictly increasing, column 6378 empty
+WARN: A->p (column pointers) not strictly increasing, column 6379 empty
+WARN: A->p (column pointers) not strictly increasing, column 6380 empty
+WARN: A->p (column pointers) not strictly increasing, column 6381 empty
+WARN: A->p (column pointers) not strictly increasing, column 6382 empty
+WARN: A->p (column pointers) not strictly increasing, column 6383 empty
+WARN: A->p (column pointers) not strictly increasing, column 6384 empty
+WARN: A->p (column pointers) not strictly increasing, column 6385 empty
+WARN: A->p (column pointers) not strictly increasing, column 6386 empty
+WARN: A->p (column pointers) not strictly increasing, column 6387 empty
+WARN: A->p (column pointers) not strictly increasing, column 6388 empty
+WARN: A->p (column pointers) not strictly increasing, column 6389 empty
+WARN: A->p (column pointers) not strictly increasing, column 6390 empty
+WARN: A->p (column pointers) not strictly increasing, column 6391 empty
+WARN: A->p (column pointers) not strictly increasing, column 6392 empty
+WARN: A->p (column pointers) not strictly increasing, column 6393 empty
+WARN: A->p (column pointers) not strictly increasing, column 6394 empty
+WARN: A->p (column pointers) not strictly increasing, column 6395 empty
+WARN: A->p (column pointers) not strictly increasing, column 6396 empty
+WARN: A->p (column pointers) not strictly increasing, column 6397 empty
+WARN: A->p (column pointers) not strictly increasing, column 6398 empty
+WARN: A->p (column pointers) not strictly increasing, column 6399 empty
+WARN: A->p (column pointers) not strictly increasing, column 6400 empty
+WARN: A->p (column pointers) not strictly increasing, column 6401 empty
+WARN: A->p (column pointers) not strictly increasing, column 6402 empty
+WARN: A->p (column pointers) not strictly increasing, column 6403 empty
+WARN: A->p (column pointers) not strictly increasing, column 6404 empty
+WARN: A->p (column pointers) not strictly increasing, column 6405 empty
+WARN: A->p (column pointers) not strictly increasing, column 6406 empty
+WARN: A->p (column pointers) not strictly increasing, column 6407 empty
+WARN: A->p (column pointers) not strictly increasing, column 6408 empty
+WARN: A->p (column pointers) not strictly increasing, column 6409 empty
+WARN: A->p (column pointers) not strictly increasing, column 6410 empty
+WARN: A->p (column pointers) not strictly increasing, column 6411 empty
+WARN: A->p (column pointers) not strictly increasing, column 6412 empty
+WARN: A->p (column pointers) not strictly increasing, column 6413 empty
+WARN: A->p (column pointers) not strictly increasing, column 6414 empty
+WARN: A->p (column pointers) not strictly increasing, column 6415 empty
+WARN: A->p (column pointers) not strictly increasing, column 6416 empty
+WARN: A->p (column pointers) not strictly increasing, column 6417 empty
+WARN: A->p (column pointers) not strictly increasing, column 6418 empty
+WARN: A->p (column pointers) not strictly increasing, column 6419 empty
+WARN: A->p (column pointers) not strictly increasing, column 6420 empty
+WARN: A->p (column pointers) not strictly increasing, column 6421 empty
+WARN: A->p (column pointers) not strictly increasing, column 6422 empty
+WARN: A->p (column pointers) not strictly increasing, column 6423 empty
+WARN: A->p (column pointers) not strictly increasing, column 6424 empty
+WARN: A->p (column pointers) not strictly increasing, column 6425 empty
+WARN: A->p (column pointers) not strictly increasing, column 6426 empty
+WARN: A->p (column pointers) not strictly increasing, column 6427 empty
+WARN: A->p (column pointers) not strictly increasing, column 6428 empty
+WARN: A->p (column pointers) not strictly increasing, column 6429 empty
+WARN: A->p (column pointers) not strictly increasing, column 6430 empty
+WARN: A->p (column pointers) not strictly increasing, column 6431 empty
+WARN: A->p (column pointers) not strictly increasing, column 6432 empty
+WARN: A->p (column pointers) not strictly increasing, column 6433 empty
+WARN: A->p (column pointers) not strictly increasing, column 6434 empty
+WARN: A->p (column pointers) not strictly increasing, column 6435 empty
+WARN: A->p (column pointers) not strictly increasing, column 6436 empty
+WARN: A->p (column pointers) not strictly increasing, column 6437 empty
+WARN: A->p (column pointers) not strictly increasing, column 6438 empty
+WARN: A->p (column pointers) not strictly increasing, column 6439 empty
+WARN: A->p (column pointers) not strictly increasing, column 6440 empty
+WARN: A->p (column pointers) not strictly increasing, column 6441 empty
+WARN: A->p (column pointers) not strictly increasing, column 6442 empty
+WARN: A->p (column pointers) not strictly increasing, column 6443 empty
+WARN: A->p (column pointers) not strictly increasing, column 6444 empty
+WARN: A->p (column pointers) not strictly increasing, column 6445 empty
+WARN: A->p (column pointers) not strictly increasing, column 6446 empty
+WARN: A->p (column pointers) not strictly increasing, column 6447 empty
+WARN: A->p (column pointers) not strictly increasing, column 6448 empty
+WARN: A->p (column pointers) not strictly increasing, column 6449 empty
+WARN: A->p (column pointers) not strictly increasing, column 6450 empty
+WARN: A->p (column pointers) not strictly increasing, column 6451 empty
+WARN: A->p (column pointers) not strictly increasing, column 6452 empty
+WARN: A->p (column pointers) not strictly increasing, column 6453 empty
+WARN: A->p (column pointers) not strictly increasing, column 6454 empty
+WARN: A->p (column pointers) not strictly increasing, column 6455 empty
+WARN: A->p (column pointers) not strictly increasing, column 6456 empty
+WARN: A->p (column pointers) not strictly increasing, column 6457 empty
+WARN: A->p (column pointers) not strictly increasing, column 6458 empty
+WARN: A->p (column pointers) not strictly increasing, column 6459 empty
+WARN: A->p (column pointers) not strictly increasing, column 6460 empty
+WARN: A->p (column pointers) not strictly increasing, column 6461 empty
+WARN: A->p (column pointers) not strictly increasing, column 6462 empty
+WARN: A->p (column pointers) not strictly increasing, column 6463 empty
+WARN: A->p (column pointers) not strictly increasing, column 6464 empty
+WARN: A->p (column pointers) not strictly increasing, column 6465 empty
+WARN: A->p (column pointers) not strictly increasing, column 6466 empty
+WARN: A->p (column pointers) not strictly increasing, column 6467 empty
+WARN: A->p (column pointers) not strictly increasing, column 6468 empty
+WARN: A->p (column pointers) not strictly increasing, column 6469 empty
+WARN: A->p (column pointers) not strictly increasing, column 6470 empty
+WARN: A->p (column pointers) not strictly increasing, column 6471 empty
+WARN: A->p (column pointers) not strictly increasing, column 6472 empty
+WARN: A->p (column pointers) not strictly increasing, column 6473 empty
+WARN: A->p (column pointers) not strictly increasing, column 6474 empty
+WARN: A->p (column pointers) not strictly increasing, column 6475 empty
+WARN: A->p (column pointers) not strictly increasing, column 6476 empty
+WARN: A->p (column pointers) not strictly increasing, column 6477 empty
+WARN: A->p (column pointers) not strictly increasing, column 6478 empty
+WARN: A->p (column pointers) not strictly increasing, column 6479 empty
+WARN: A->p (column pointers) not strictly increasing, column 6480 empty
+WARN: A->p (column pointers) not strictly increasing, column 6481 empty
+WARN: A->p (column pointers) not strictly increasing, column 6482 empty
+WARN: A->p (column pointers) not strictly increasing, column 6483 empty
+WARN: A->p (column pointers) not strictly increasing, column 6484 empty
+WARN: A->p (column pointers) not strictly increasing, column 6485 empty
+WARN: A->p (column pointers) not strictly increasing, column 6486 empty
+WARN: A->p (column pointers) not strictly increasing, column 6487 empty
+WARN: A->p (column pointers) not strictly increasing, column 6488 empty
+WARN: A->p (column pointers) not strictly increasing, column 6489 empty
+WARN: A->p (column pointers) not strictly increasing, column 6490 empty
+WARN: A->p (column pointers) not strictly increasing, column 6491 empty
+WARN: A->p (column pointers) not strictly increasing, column 6492 empty
+WARN: A->p (column pointers) not strictly increasing, column 6493 empty
+WARN: A->p (column pointers) not strictly increasing, column 6494 empty
+WARN: A->p (column pointers) not strictly increasing, column 6495 empty
+WARN: A->p (column pointers) not strictly increasing, column 6496 empty
+WARN: A->p (column pointers) not strictly increasing, column 6497 empty
+WARN: A->p (column pointers) not strictly increasing, column 6498 empty
+WARN: A->p (column pointers) not strictly increasing, column 6499 empty
+WARN: A->p (column pointers) not strictly increasing, column 6500 empty
+WARN: A->p (column pointers) not strictly increasing, column 6501 empty
+WARN: A->p (column pointers) not strictly increasing, column 6502 empty
+WARN: A->p (column pointers) not strictly increasing, column 6503 empty
+WARN: A->p (column pointers) not strictly increasing, column 6504 empty
+WARN: A->p (column pointers) not strictly increasing, column 6505 empty
+WARN: A->p (column pointers) not strictly increasing, column 6506 empty
+WARN: A->p (column pointers) not strictly increasing, column 6507 empty
+WARN: A->p (column pointers) not strictly increasing, column 6508 empty
+WARN: A->p (column pointers) not strictly increasing, column 6509 empty
+WARN: A->p (column pointers) not strictly increasing, column 6510 empty
+WARN: A->p (column pointers) not strictly increasing, column 6511 empty
+WARN: A->p (column pointers) not strictly increasing, column 6512 empty
+WARN: A->p (column pointers) not strictly increasing, column 6513 empty
+WARN: A->p (column pointers) not strictly increasing, column 6514 empty
+WARN: A->p (column pointers) not strictly increasing, column 6515 empty
+WARN: A->p (column pointers) not strictly increasing, column 6516 empty
+WARN: A->p (column pointers) not strictly increasing, column 6517 empty
+WARN: A->p (column pointers) not strictly increasing, column 6518 empty
+WARN: A->p (column pointers) not strictly increasing, column 6519 empty
+WARN: A->p (column pointers) not strictly increasing, column 6520 empty
+WARN: A->p (column pointers) not strictly increasing, column 6521 empty
+WARN: A->p (column pointers) not strictly increasing, column 6522 empty
+WARN: A->p (column pointers) not strictly increasing, column 6523 empty
+WARN: A->p (column pointers) not strictly increasing, column 6524 empty
+WARN: A->p (column pointers) not strictly increasing, column 6525 empty
+WARN: A->p (column pointers) not strictly increasing, column 6526 empty
+WARN: A->p (column pointers) not strictly increasing, column 6527 empty
+WARN: A->p (column pointers) not strictly increasing, column 6528 empty
+WARN: A->p (column pointers) not strictly increasing, column 6529 empty
+WARN: A->p (column pointers) not strictly increasing, column 6530 empty
+WARN: A->p (column pointers) not strictly increasing, column 6531 empty
+WARN: A->p (column pointers) not strictly increasing, column 6532 empty
+WARN: A->p (column pointers) not strictly increasing, column 6533 empty
+WARN: A->p (column pointers) not strictly increasing, column 6534 empty
+WARN: A->p (column pointers) not strictly increasing, column 6535 empty
+WARN: A->p (column pointers) not strictly increasing, column 6536 empty
+WARN: A->p (column pointers) not strictly increasing, column 6537 empty
+WARN: A->p (column pointers) not strictly increasing, column 6538 empty
+WARN: A->p (column pointers) not strictly increasing, column 6539 empty
+WARN: A->p (column pointers) not strictly increasing, column 6540 empty
+WARN: A->p (column pointers) not strictly increasing, column 6541 empty
+WARN: A->p (column pointers) not strictly increasing, column 6542 empty
+WARN: A->p (column pointers) not strictly increasing, column 6543 empty
+WARN: A->p (column pointers) not strictly increasing, column 6544 empty
+WARN: A->p (column pointers) not strictly increasing, column 6545 empty
+WARN: A->p (column pointers) not strictly increasing, column 6546 empty
+WARN: A->p (column pointers) not strictly increasing, column 6547 empty
+WARN: A->p (column pointers) not strictly increasing, column 6548 empty
+WARN: A->p (column pointers) not strictly increasing, column 6549 empty
+WARN: A->p (column pointers) not strictly increasing, column 6550 empty
+WARN: A->p (column pointers) not strictly increasing, column 6551 empty
+WARN: A->p (column pointers) not strictly increasing, column 6552 empty
+WARN: A->p (column pointers) not strictly increasing, column 6553 empty
+WARN: A->p (column pointers) not strictly increasing, column 6554 empty
+WARN: A->p (column pointers) not strictly increasing, column 6555 empty
+WARN: A->p (column pointers) not strictly increasing, column 6556 empty
+WARN: A->p (column pointers) not strictly increasing, column 6557 empty
+WARN: A->p (column pointers) not strictly increasing, column 6558 empty
+WARN: A->p (column pointers) not strictly increasing, column 6559 empty
+WARN: A->p (column pointers) not strictly increasing, column 6560 empty
+WARN: A->p (column pointers) not strictly increasing, column 6561 empty
+WARN: A->p (column pointers) not strictly increasing, column 6562 empty
+WARN: A->p (column pointers) not strictly increasing, column 6563 empty
+WARN: A->p (column pointers) not strictly increasing, column 6564 empty
+WARN: A->p (column pointers) not strictly increasing, column 6565 empty
+WARN: A->p (column pointers) not strictly increasing, column 6566 empty
+WARN: A->p (column pointers) not strictly increasing, column 6567 empty
+WARN: A->p (column pointers) not strictly increasing, column 6568 empty
+WARN: A->p (column pointers) not strictly increasing, column 6569 empty
+WARN: A->p (column pointers) not strictly increasing, column 6570 empty
+WARN: A->p (column pointers) not strictly increasing, column 6571 empty
+WARN: A->p (column pointers) not strictly increasing, column 6572 empty
+WARN: A->p (column pointers) not strictly increasing, column 6573 empty
+WARN: A->p (column pointers) not strictly increasing, column 6574 empty
+WARN: A->p (column pointers) not strictly increasing, column 6575 empty
+WARN: A->p (column pointers) not strictly increasing, column 6576 empty
+WARN: A->p (column pointers) not strictly increasing, column 6577 empty
+WARN: A->p (column pointers) not strictly increasing, column 6578 empty
+WARN: A->p (column pointers) not strictly increasing, column 6579 empty
+WARN: A->p (column pointers) not strictly increasing, column 6580 empty
+WARN: A->p (column pointers) not strictly increasing, column 6581 empty
+WARN: A->p (column pointers) not strictly increasing, column 6582 empty
+WARN: A->p (column pointers) not strictly increasing, column 6583 empty
+WARN: A->p (column pointers) not strictly increasing, column 6584 empty
+WARN: A->p (column pointers) not strictly increasing, column 6585 empty
+WARN: A->p (column pointers) not strictly increasing, column 6586 empty
+WARN: A->p (column pointers) not strictly increasing, column 6587 empty
+WARN: A->p (column pointers) not strictly increasing, column 6588 empty
+WARN: A->p (column pointers) not strictly increasing, column 6589 empty
+WARN: A->p (column pointers) not strictly increasing, column 6590 empty
+WARN: A->p (column pointers) not strictly increasing, column 6591 empty
+WARN: A->p (column pointers) not strictly increasing, column 6592 empty
+WARN: A->p (column pointers) not strictly increasing, column 6593 empty
+WARN: A->p (column pointers) not strictly increasing, column 6594 empty
+WARN: A->p (column pointers) not strictly increasing, column 6595 empty
+WARN: A->p (column pointers) not strictly increasing, column 6596 empty
+WARN: A->p (column pointers) not strictly increasing, column 6597 empty
+WARN: A->p (column pointers) not strictly increasing, column 6598 empty
+WARN: A->p (column pointers) not strictly increasing, column 6599 empty
+WARN: A->p (column pointers) not strictly increasing, column 6600 empty
+WARN: A->p (column pointers) not strictly increasing, column 6601 empty
+WARN: A->p (column pointers) not strictly increasing, column 6602 empty
+WARN: A->p (column pointers) not strictly increasing, column 6603 empty
+WARN: A->p (column pointers) not strictly increasing, column 6604 empty
+WARN: A->p (column pointers) not strictly increasing, column 6605 empty
+WARN: A->p (column pointers) not strictly increasing, column 6606 empty
+WARN: A->p (column pointers) not strictly increasing, column 6607 empty
+WARN: A->p (column pointers) not strictly increasing, column 6608 empty
+WARN: A->p (column pointers) not strictly increasing, column 6609 empty
+WARN: A->p (column pointers) not strictly increasing, column 6610 empty
+WARN: A->p (column pointers) not strictly increasing, column 6611 empty
+WARN: A->p (column pointers) not strictly increasing, column 6612 empty
+WARN: A->p (column pointers) not strictly increasing, column 6613 empty
+WARN: A->p (column pointers) not strictly increasing, column 6614 empty
+WARN: A->p (column pointers) not strictly increasing, column 6615 empty
+WARN: A->p (column pointers) not strictly increasing, column 6616 empty
+WARN: A->p (column pointers) not strictly increasing, column 6617 empty
+WARN: A->p (column pointers) not strictly increasing, column 6618 empty
+WARN: A->p (column pointers) not strictly increasing, column 6619 empty
+WARN: A->p (column pointers) not strictly increasing, column 6620 empty
+WARN: A->p (column pointers) not strictly increasing, column 6621 empty
+WARN: A->p (column pointers) not strictly increasing, column 6622 empty
+WARN: A->p (column pointers) not strictly increasing, column 6623 empty
+WARN: A->p (column pointers) not strictly increasing, column 6624 empty
+WARN: A->p (column pointers) not strictly increasing, column 6625 empty
+WARN: A->p (column pointers) not strictly increasing, column 6626 empty
+WARN: A->p (column pointers) not strictly increasing, column 6627 empty
+WARN: A->p (column pointers) not strictly increasing, column 6628 empty
+WARN: A->p (column pointers) not strictly increasing, column 6629 empty
+WARN: A->p (column pointers) not strictly increasing, column 6630 empty
+WARN: A->p (column pointers) not strictly increasing, column 6631 empty
+WARN: A->p (column pointers) not strictly increasing, column 6632 empty
+WARN: A->p (column pointers) not strictly increasing, column 6633 empty
+WARN: A->p (column pointers) not strictly increasing, column 6634 empty
+WARN: A->p (column pointers) not strictly increasing, column 6635 empty
+WARN: A->p (column pointers) not strictly increasing, column 6636 empty
+WARN: A->p (column pointers) not strictly increasing, column 6637 empty
+WARN: A->p (column pointers) not strictly increasing, column 6638 empty
+WARN: A->p (column pointers) not strictly increasing, column 6639 empty
+WARN: A->p (column pointers) not strictly increasing, column 6640 empty
+WARN: A->p (column pointers) not strictly increasing, column 6641 empty
+WARN: A->p (column pointers) not strictly increasing, column 6642 empty
+WARN: A->p (column pointers) not strictly increasing, column 6643 empty
+WARN: A->p (column pointers) not strictly increasing, column 6644 empty
+WARN: A->p (column pointers) not strictly increasing, column 6645 empty
+WARN: A->p (column pointers) not strictly increasing, column 6646 empty
+WARN: A->p (column pointers) not strictly increasing, column 6647 empty
+WARN: A->p (column pointers) not strictly increasing, column 6648 empty
+WARN: A->p (column pointers) not strictly increasing, column 6649 empty
+WARN: A->p (column pointers) not strictly increasing, column 6650 empty
+WARN: A->p (column pointers) not strictly increasing, column 6651 empty
+WARN: A->p (column pointers) not strictly increasing, column 6652 empty
+WARN: A->p (column pointers) not strictly increasing, column 6653 empty
+WARN: A->p (column pointers) not strictly increasing, column 6654 empty
+WARN: A->p (column pointers) not strictly increasing, column 6655 empty
+WARN: A->p (column pointers) not strictly increasing, column 6656 empty
+WARN: A->p (column pointers) not strictly increasing, column 6657 empty
+WARN: A->p (column pointers) not strictly increasing, column 6658 empty
+WARN: A->p (column pointers) not strictly increasing, column 6659 empty
+WARN: A->p (column pointers) not strictly increasing, column 6660 empty
+WARN: A->p (column pointers) not strictly increasing, column 6661 empty
+WARN: A->p (column pointers) not strictly increasing, column 6662 empty
+WARN: A->p (column pointers) not strictly increasing, column 6663 empty
+WARN: A->p (column pointers) not strictly increasing, column 6664 empty
+WARN: A->p (column pointers) not strictly increasing, column 6665 empty
+WARN: A->p (column pointers) not strictly increasing, column 6666 empty
+WARN: A->p (column pointers) not strictly increasing, column 6667 empty
+WARN: A->p (column pointers) not strictly increasing, column 6668 empty
+WARN: A->p (column pointers) not strictly increasing, column 6669 empty
+WARN: A->p (column pointers) not strictly increasing, column 6670 empty
+WARN: A->p (column pointers) not strictly increasing, column 6671 empty
+WARN: A->p (column pointers) not strictly increasing, column 6672 empty
+WARN: A->p (column pointers) not strictly increasing, column 6673 empty
+WARN: A->p (column pointers) not strictly increasing, column 6674 empty
+WARN: A->p (column pointers) not strictly increasing, column 6675 empty
+WARN: A->p (column pointers) not strictly increasing, column 6676 empty
+WARN: A->p (column pointers) not strictly increasing, column 6677 empty
+WARN: A->p (column pointers) not strictly increasing, column 6678 empty
+WARN: A->p (column pointers) not strictly increasing, column 6679 empty
+WARN: A->p (column pointers) not strictly increasing, column 6680 empty
+WARN: A->p (column pointers) not strictly increasing, column 6681 empty
+WARN: A->p (column pointers) not strictly increasing, column 6682 empty
+WARN: A->p (column pointers) not strictly increasing, column 6683 empty
+WARN: A->p (column pointers) not strictly increasing, column 6684 empty
+WARN: A->p (column pointers) not strictly increasing, column 6685 empty
+WARN: A->p (column pointers) not strictly increasing, column 6686 empty
+WARN: A->p (column pointers) not strictly increasing, column 6687 empty
+WARN: A->p (column pointers) not strictly increasing, column 6688 empty
+WARN: A->p (column pointers) not strictly increasing, column 6689 empty
+WARN: A->p (column pointers) not strictly increasing, column 6690 empty
+WARN: A->p (column pointers) not strictly increasing, column 6691 empty
+WARN: A->p (column pointers) not strictly increasing, column 6692 empty
+WARN: A->p (column pointers) not strictly increasing, column 6693 empty
+WARN: A->p (column pointers) not strictly increasing, column 6694 empty
+WARN: A->p (column pointers) not strictly increasing, column 6695 empty
+WARN: A->p (column pointers) not strictly increasing, column 6696 empty
+WARN: A->p (column pointers) not strictly increasing, column 6697 empty
+WARN: A->p (column pointers) not strictly increasing, column 6698 empty
+WARN: A->p (column pointers) not strictly increasing, column 6699 empty
+WARN: A->p (column pointers) not strictly increasing, column 6700 empty
+WARN: A->p (column pointers) not strictly increasing, column 6701 empty
+WARN: A->p (column pointers) not strictly increasing, column 6702 empty
+WARN: A->p (column pointers) not strictly increasing, column 6703 empty
+WARN: A->p (column pointers) not strictly increasing, column 6704 empty
+WARN: A->p (column pointers) not strictly increasing, column 6705 empty
+WARN: A->p (column pointers) not strictly increasing, column 6706 empty
+WARN: A->p (column pointers) not strictly increasing, column 6707 empty
+WARN: A->p (column pointers) not strictly increasing, column 6708 empty
+WARN: A->p (column pointers) not strictly increasing, column 6709 empty
+WARN: A->p (column pointers) not strictly increasing, column 6710 empty
+WARN: A->p (column pointers) not strictly increasing, column 6711 empty
+WARN: A->p (column pointers) not strictly increasing, column 6712 empty
+WARN: A->p (column pointers) not strictly increasing, column 6713 empty
+WARN: A->p (column pointers) not strictly increasing, column 6714 empty
+WARN: A->p (column pointers) not strictly increasing, column 6715 empty
+WARN: A->p (column pointers) not strictly increasing, column 6716 empty
+WARN: A->p (column pointers) not strictly increasing, column 6717 empty
+WARN: A->p (column pointers) not strictly increasing, column 6718 empty
+WARN: A->p (column pointers) not strictly increasing, column 6719 empty
+WARN: A->p (column pointers) not strictly increasing, column 6720 empty
+WARN: A->p (column pointers) not strictly increasing, column 6721 empty
+WARN: A->p (column pointers) not strictly increasing, column 6722 empty
+WARN: A->p (column pointers) not strictly increasing, column 6723 empty
+WARN: A->p (column pointers) not strictly increasing, column 6724 empty
+WARN: A->p (column pointers) not strictly increasing, column 6725 empty
+WARN: A->p (column pointers) not strictly increasing, column 6726 empty
+WARN: A->p (column pointers) not strictly increasing, column 6727 empty
+WARN: A->p (column pointers) not strictly increasing, column 6728 empty
+WARN: A->p (column pointers) not strictly increasing, column 6729 empty
+WARN: A->p (column pointers) not strictly increasing, column 6730 empty
+WARN: A->p (column pointers) not strictly increasing, column 6731 empty
+WARN: A->p (column pointers) not strictly increasing, column 6732 empty
+WARN: A->p (column pointers) not strictly increasing, column 6733 empty
+WARN: A->p (column pointers) not strictly increasing, column 6734 empty
+WARN: A->p (column pointers) not strictly increasing, column 6735 empty
+WARN: A->p (column pointers) not strictly increasing, column 6736 empty
+WARN: A->p (column pointers) not strictly increasing, column 6737 empty
+WARN: A->p (column pointers) not strictly increasing, column 6738 empty
+WARN: A->p (column pointers) not strictly increasing, column 6739 empty
+WARN: A->p (column pointers) not strictly increasing, column 6740 empty
+WARN: A->p (column pointers) not strictly increasing, column 6741 empty
+WARN: A->p (column pointers) not strictly increasing, column 6742 empty
+WARN: A->p (column pointers) not strictly increasing, column 6743 empty
+WARN: A->p (column pointers) not strictly increasing, column 6744 empty
+WARN: A->p (column pointers) not strictly increasing, column 6745 empty
+WARN: A->p (column pointers) not strictly increasing, column 6746 empty
+WARN: A->p (column pointers) not strictly increasing, column 6747 empty
+WARN: A->p (column pointers) not strictly increasing, column 6748 empty
+WARN: A->p (column pointers) not strictly increasing, column 6749 empty
+WARN: A->p (column pointers) not strictly increasing, column 6750 empty
+WARN: A->p (column pointers) not strictly increasing, column 6751 empty
+WARN: A->p (column pointers) not strictly increasing, column 6752 empty
+WARN: A->p (column pointers) not strictly increasing, column 6753 empty
+WARN: A->p (column pointers) not strictly increasing, column 6754 empty
+WARN: A->p (column pointers) not strictly increasing, column 6755 empty
+WARN: A->p (column pointers) not strictly increasing, column 6756 empty
+WARN: A->p (column pointers) not strictly increasing, column 6757 empty
+WARN: A->p (column pointers) not strictly increasing, column 6758 empty
+WARN: A->p (column pointers) not strictly increasing, column 6759 empty
+WARN: A->p (column pointers) not strictly increasing, column 6760 empty
+WARN: A->p (column pointers) not strictly increasing, column 6761 empty
+WARN: A->p (column pointers) not strictly increasing, column 6762 empty
+WARN: A->p (column pointers) not strictly increasing, column 6763 empty
+WARN: A->p (column pointers) not strictly increasing, column 6764 empty
+WARN: A->p (column pointers) not strictly increasing, column 6765 empty
+WARN: A->p (column pointers) not strictly increasing, column 6766 empty
+WARN: A->p (column pointers) not strictly increasing, column 6767 empty
+WARN: A->p (column pointers) not strictly increasing, column 6768 empty
+WARN: A->p (column pointers) not strictly increasing, column 6769 empty
+WARN: A->p (column pointers) not strictly increasing, column 6770 empty
+WARN: A->p (column pointers) not strictly increasing, column 6771 empty
+WARN: A->p (column pointers) not strictly increasing, column 6772 empty
+WARN: A->p (column pointers) not strictly increasing, column 6773 empty
+WARN: A->p (column pointers) not strictly increasing, column 6774 empty
+WARN: A->p (column pointers) not strictly increasing, column 6775 empty
+WARN: A->p (column pointers) not strictly increasing, column 6776 empty
+WARN: A->p (column pointers) not strictly increasing, column 6777 empty
+WARN: A->p (column pointers) not strictly increasing, column 6778 empty
+WARN: A->p (column pointers) not strictly increasing, column 6779 empty
+WARN: A->p (column pointers) not strictly increasing, column 6780 empty
+WARN: A->p (column pointers) not strictly increasing, column 6781 empty
+WARN: A->p (column pointers) not strictly increasing, column 6782 empty
+WARN: A->p (column pointers) not strictly increasing, column 6783 empty
+WARN: A->p (column pointers) not strictly increasing, column 6784 empty
+WARN: A->p (column pointers) not strictly increasing, column 6785 empty
+WARN: A->p (column pointers) not strictly increasing, column 6786 empty
+WARN: A->p (column pointers) not strictly increasing, column 6787 empty
+WARN: A->p (column pointers) not strictly increasing, column 6788 empty
+WARN: A->p (column pointers) not strictly increasing, column 6789 empty
+WARN: A->p (column pointers) not strictly increasing, column 6790 empty
+WARN: A->p (column pointers) not strictly increasing, column 6791 empty
+WARN: A->p (column pointers) not strictly increasing, column 6792 empty
+WARN: A->p (column pointers) not strictly increasing, column 6793 empty
+WARN: A->p (column pointers) not strictly increasing, column 6794 empty
+WARN: A->p (column pointers) not strictly increasing, column 6795 empty
+WARN: A->p (column pointers) not strictly increasing, column 6796 empty
+WARN: A->p (column pointers) not strictly increasing, column 6797 empty
+WARN: A->p (column pointers) not strictly increasing, column 6798 empty
+WARN: A->p (column pointers) not strictly increasing, column 6799 empty
+WARN: A->p (column pointers) not strictly increasing, column 6800 empty
+WARN: A->p (column pointers) not strictly increasing, column 6801 empty
+WARN: A->p (column pointers) not strictly increasing, column 6802 empty
+WARN: A->p (column pointers) not strictly increasing, column 6803 empty
+WARN: A->p (column pointers) not strictly increasing, column 6804 empty
+WARN: A->p (column pointers) not strictly increasing, column 6805 empty
+WARN: A->p (column pointers) not strictly increasing, column 6806 empty
+WARN: A->p (column pointers) not strictly increasing, column 6807 empty
+WARN: A->p (column pointers) not strictly increasing, column 6808 empty
+WARN: A->p (column pointers) not strictly increasing, column 6809 empty
+WARN: A->p (column pointers) not strictly increasing, column 6810 empty
+WARN: A->p (column pointers) not strictly increasing, column 6811 empty
+WARN: A->p (column pointers) not strictly increasing, column 6812 empty
+WARN: A->p (column pointers) not strictly increasing, column 6813 empty
+WARN: A->p (column pointers) not strictly increasing, column 6814 empty
+WARN: A->p (column pointers) not strictly increasing, column 6815 empty
+WARN: A->p (column pointers) not strictly increasing, column 6816 empty
+WARN: A->p (column pointers) not strictly increasing, column 6817 empty
+WARN: A->p (column pointers) not strictly increasing, column 6818 empty
+WARN: A->p (column pointers) not strictly increasing, column 6819 empty
+WARN: A->p (column pointers) not strictly increasing, column 6820 empty
+WARN: A->p (column pointers) not strictly increasing, column 6821 empty
+WARN: A->p (column pointers) not strictly increasing, column 6822 empty
+WARN: A->p (column pointers) not strictly increasing, column 6823 empty
+WARN: A->p (column pointers) not strictly increasing, column 6824 empty
+WARN: A->p (column pointers) not strictly increasing, column 6825 empty
+WARN: A->p (column pointers) not strictly increasing, column 6826 empty
+WARN: A->p (column pointers) not strictly increasing, column 6827 empty
+WARN: A->p (column pointers) not strictly increasing, column 6828 empty
+WARN: A->p (column pointers) not strictly increasing, column 6829 empty
+WARN: A->p (column pointers) not strictly increasing, column 6830 empty
+WARN: A->p (column pointers) not strictly increasing, column 6831 empty
+WARN: A->p (column pointers) not strictly increasing, column 6832 empty
+WARN: A->p (column pointers) not strictly increasing, column 6833 empty
+WARN: A->p (column pointers) not strictly increasing, column 6834 empty
+WARN: A->p (column pointers) not strictly increasing, column 6835 empty
+WARN: A->p (column pointers) not strictly increasing, column 6836 empty
+WARN: A->p (column pointers) not strictly increasing, column 6837 empty
+WARN: A->p (column pointers) not strictly increasing, column 6838 empty
+WARN: A->p (column pointers) not strictly increasing, column 6839 empty
+WARN: A->p (column pointers) not strictly increasing, column 6840 empty
+WARN: A->p (column pointers) not strictly increasing, column 6841 empty
+WARN: A->p (column pointers) not strictly increasing, column 6842 empty
+WARN: A->p (column pointers) not strictly increasing, column 6843 empty
+WARN: A->p (column pointers) not strictly increasing, column 6844 empty
+WARN: A->p (column pointers) not strictly increasing, column 6845 empty
+WARN: A->p (column pointers) not strictly increasing, column 6846 empty
+WARN: A->p (column pointers) not strictly increasing, column 6847 empty
+WARN: A->p (column pointers) not strictly increasing, column 6848 empty
+WARN: A->p (column pointers) not strictly increasing, column 6849 empty
+WARN: A->p (column pointers) not strictly increasing, column 6850 empty
+WARN: A->p (column pointers) not strictly increasing, column 6851 empty
+WARN: A->p (column pointers) not strictly increasing, column 6852 empty
+WARN: A->p (column pointers) not strictly increasing, column 6853 empty
+WARN: A->p (column pointers) not strictly increasing, column 6854 empty
+WARN: A->p (column pointers) not strictly increasing, column 6855 empty
+WARN: A->p (column pointers) not strictly increasing, column 6856 empty
+WARN: A->p (column pointers) not strictly increasing, column 6857 empty
+WARN: A->p (column pointers) not strictly increasing, column 6858 empty
+WARN: A->p (column pointers) not strictly increasing, column 6859 empty
+WARN: A->p (column pointers) not strictly increasing, column 6860 empty
+WARN: A->p (column pointers) not strictly increasing, column 6861 empty
+WARN: A->p (column pointers) not strictly increasing, column 6862 empty
+WARN: A->p (column pointers) not strictly increasing, column 6863 empty
+WARN: A->p (column pointers) not strictly increasing, column 6864 empty
+WARN: A->p (column pointers) not strictly increasing, column 6865 empty
+WARN: A->p (column pointers) not strictly increasing, column 6866 empty
+WARN: A->p (column pointers) not strictly increasing, column 6867 empty
+WARN: A->p (column pointers) not strictly increasing, column 6868 empty
+WARN: A->p (column pointers) not strictly increasing, column 6869 empty
+WARN: A->p (column pointers) not strictly increasing, column 6870 empty
+WARN: A->p (column pointers) not strictly increasing, column 6871 empty
+WARN: A->p (column pointers) not strictly increasing, column 6872 empty
+WARN: A->p (column pointers) not strictly increasing, column 6873 empty
+WARN: A->p (column pointers) not strictly increasing, column 6874 empty
+WARN: A->p (column pointers) not strictly increasing, column 6875 empty
+WARN: A->p (column pointers) not strictly increasing, column 6876 empty
+WARN: A->p (column pointers) not strictly increasing, column 6877 empty
+WARN: A->p (column pointers) not strictly increasing, column 6878 empty
+WARN: A->p (column pointers) not strictly increasing, column 6879 empty
+WARN: A->p (column pointers) not strictly increasing, column 6880 empty
+WARN: A->p (column pointers) not strictly increasing, column 6881 empty
+WARN: A->p (column pointers) not strictly increasing, column 6882 empty
+WARN: A->p (column pointers) not strictly increasing, column 6883 empty
+WARN: A->p (column pointers) not strictly increasing, column 6884 empty
+WARN: A->p (column pointers) not strictly increasing, column 6885 empty
+WARN: A->p (column pointers) not strictly increasing, column 6886 empty
+WARN: A->p (column pointers) not strictly increasing, column 6887 empty
+WARN: A->p (column pointers) not strictly increasing, column 6888 empty
+WARN: A->p (column pointers) not strictly increasing, column 6889 empty
+WARN: A->p (column pointers) not strictly increasing, column 6890 empty
+WARN: A->p (column pointers) not strictly increasing, column 6891 empty
+WARN: A->p (column pointers) not strictly increasing, column 6892 empty
+WARN: A->p (column pointers) not strictly increasing, column 6893 empty
+WARN: A->p (column pointers) not strictly increasing, column 6894 empty
+WARN: A->p (column pointers) not strictly increasing, column 6895 empty
+WARN: A->p (column pointers) not strictly increasing, column 6896 empty
+WARN: A->p (column pointers) not strictly increasing, column 6897 empty
+WARN: A->p (column pointers) not strictly increasing, column 6898 empty
+WARN: A->p (column pointers) not strictly increasing, column 6899 empty
+WARN: A->p (column pointers) not strictly increasing, column 6900 empty
+WARN: A->p (column pointers) not strictly increasing, column 6901 empty
+WARN: A->p (column pointers) not strictly increasing, column 6902 empty
+WARN: A->p (column pointers) not strictly increasing, column 6903 empty
+WARN: A->p (column pointers) not strictly increasing, column 6904 empty
+WARN: A->p (column pointers) not strictly increasing, column 6905 empty
+WARN: A->p (column pointers) not strictly increasing, column 6906 empty
+WARN: A->p (column pointers) not strictly increasing, column 6907 empty
+WARN: A->p (column pointers) not strictly increasing, column 6908 empty
+WARN: A->p (column pointers) not strictly increasing, column 6909 empty
+WARN: A->p (column pointers) not strictly increasing, column 6910 empty
+WARN: A->p (column pointers) not strictly increasing, column 6911 empty
+WARN: A->p (column pointers) not strictly increasing, column 6912 empty
+WARN: A->p (column pointers) not strictly increasing, column 6913 empty
+WARN: A->p (column pointers) not strictly increasing, column 6914 empty
+WARN: A->p (column pointers) not strictly increasing, column 6915 empty
+WARN: A->p (column pointers) not strictly increasing, column 6916 empty
+WARN: A->p (column pointers) not strictly increasing, column 6917 empty
+WARN: A->p (column pointers) not strictly increasing, column 6918 empty
+WARN: A->p (column pointers) not strictly increasing, column 6919 empty
+WARN: A->p (column pointers) not strictly increasing, column 6920 empty
+WARN: A->p (column pointers) not strictly increasing, column 6921 empty
+WARN: A->p (column pointers) not strictly increasing, column 6922 empty
+WARN: A->p (column pointers) not strictly increasing, column 6923 empty
+WARN: A->p (column pointers) not strictly increasing, column 6924 empty
+WARN: A->p (column pointers) not strictly increasing, column 6925 empty
+WARN: A->p (column pointers) not strictly increasing, column 6926 empty
+WARN: A->p (column pointers) not strictly increasing, column 6927 empty
+WARN: A->p (column pointers) not strictly increasing, column 6928 empty
+WARN: A->p (column pointers) not strictly increasing, column 6929 empty
+WARN: A->p (column pointers) not strictly increasing, column 6930 empty
+WARN: A->p (column pointers) not strictly increasing, column 6931 empty
+WARN: A->p (column pointers) not strictly increasing, column 6932 empty
+WARN: A->p (column pointers) not strictly increasing, column 6933 empty
+WARN: A->p (column pointers) not strictly increasing, column 6934 empty
+WARN: A->p (column pointers) not strictly increasing, column 6935 empty
+WARN: A->p (column pointers) not strictly increasing, column 6936 empty
+WARN: A->p (column pointers) not strictly increasing, column 6937 empty
+WARN: A->p (column pointers) not strictly increasing, column 6938 empty
+WARN: A->p (column pointers) not strictly increasing, column 6939 empty
+WARN: A->p (column pointers) not strictly increasing, column 6940 empty
+WARN: A->p (column pointers) not strictly increasing, column 6941 empty
+WARN: A->p (column pointers) not strictly increasing, column 6942 empty
+WARN: A->p (column pointers) not strictly increasing, column 6943 empty
+WARN: A->p (column pointers) not strictly increasing, column 6944 empty
+WARN: A->p (column pointers) not strictly increasing, column 6945 empty
+WARN: A->p (column pointers) not strictly increasing, column 6946 empty
+WARN: A->p (column pointers) not strictly increasing, column 6947 empty
+WARN: A->p (column pointers) not strictly increasing, column 6948 empty
+WARN: A->p (column pointers) not strictly increasing, column 6949 empty
+WARN: A->p (column pointers) not strictly increasing, column 6950 empty
+WARN: A->p (column pointers) not strictly increasing, column 6951 empty
+------------------------------------------------------------------
+	       SCS v3.1.0 - Splitting Conic Solver
+	(c) Brendan O'Donoghue, Stanford University, 2012
+------------------------------------------------------------------
+problem:  variables n: 9037, constraints m: 246037
+cones: 	  q: soc vars: 2086, qsize: 1
+	  s: psd vars: 243951, ssize: 1
+settings: eps_abs: 1.0e-05, eps_rel: 1.0e-05, eps_infeas: 1.0e-07
+	  alpha: 1.50, scale: 1.00e-01, adaptive_scale: 1
+	  max_iters: 1000000, normalize: 1, warm_start: 0
+	  acceleration_lookback: 10, acceleration_interval: 10
+lin-sys:  sparse-direct
+	  nnz(A): 50044, nnz(P): 0
+------------------------------------------------------------------
+ iter | pri res | dua res |   gap   |   obj   |  scale  | time (s)
+------------------------------------------------------------------
+     0| 8.24e+00  1.00e+00  8.24e+00 -4.12e+00  1.00e-01  1.78e-01 
+    25| 6.72e-06  2.69e-08  6.72e-06  3.36e-06  1.00e-01  4.16e+00 
+------------------------------------------------------------------
+status:  solved
+timings: total: 4.33e+00s = setup: 1.57e-01s + solve: 4.17e+00s
+	 lin-sys: 1.50e-01s, cones: 3.88e+00s, accel: 1.27e-02s
+------------------------------------------------------------------
+objective = 0.000003
+------------------------------------------------------------------
+-------------------------------------------------------------------------------
+                                    Summary                                    
+-------------------------------------------------------------------------------
+(CVXPY) Feb 01 03:36:57 PM: Problem status: optimal
+(CVXPY) Feb 01 03:36:57 PM: Optimal value: 8.580e-09
+(CVXPY) Feb 01 03:36:57 PM: Compilation took 2.744e-01 seconds
+(CVXPY) Feb 01 03:36:57 PM: Solver (including time spent in interface) took 4.331e+00 seconds
+[INFO]: CVXPY problem status: optimal
+MSE =  2.644e-17
+[INFO]: CVXPY Koopman operator variable: (695, 13)
+===============================================================================
+                                     CVXPY                                     
+                                    v1.1.18                                    
+===============================================================================
+(CVXPY) Feb 01 03:36:57 PM: Your problem has 9035 variables, 0 constraints, and 0 parameters.
+(CVXPY) Feb 01 03:36:57 PM: It is compliant with the following grammars: DCP, DQCP
+(CVXPY) Feb 01 03:36:57 PM: (If you need to solve this problem multiple times, but with different data, consider using parameters.)
+(CVXPY) Feb 01 03:36:57 PM: CVXPY will first compile your problem; then, it will invoke a numerical solver to obtain a solution.
+-------------------------------------------------------------------------------
+                                  Compilation                                  
+-------------------------------------------------------------------------------
+(CVXPY) Feb 01 03:36:57 PM: Compiling problem (target solver=SCS).
+(CVXPY) Feb 01 03:36:57 PM: Reduction chain: Dcp2Cone -> CvxAttr2Constr -> ConeMatrixStuffing -> SCS
+(CVXPY) Feb 01 03:36:57 PM: Applying reduction Dcp2Cone
+(CVXPY) Feb 01 03:36:57 PM: Applying reduction CvxAttr2Constr
+(CVXPY) Feb 01 03:36:57 PM: Applying reduction ConeMatrixStuffing
+(CVXPY) Feb 01 03:36:58 PM: Applying reduction SCS
+(CVXPY) Feb 01 03:36:58 PM: Finished problem compilation (took 2.936e-01 seconds).
+-------------------------------------------------------------------------------
+                                Numerical solver                               
+-------------------------------------------------------------------------------
+(CVXPY) Feb 01 03:36:58 PM: Invoking solver SCS  to obtain a solution.
+------------------------------------------------------------------
+	       SCS v3.1.0 - Splitting Conic Solver
+	(c) Brendan O'Donoghue, Stanford University, 2012
+------------------------------------------------------------------
+problem:  variables n: 9037, constraints m: 247431
+cones: 	  q: soc vars: 2781, qsize: 1
+	  s: psd vars: 244650, ssize: 1
+settings: eps_abs: 1.0e-05, eps_rel: 1.0e-05, eps_infeas: 1.0e-07
+	  alpha: 1.50, scale: 1.00e-01, adaptive_scale: 1
+	  max_iters: 1000000, normalize: 1, warm_start: 0
+	  acceleration_lookback: 10, acceleration_interval: 10
+lin-sys:  sparse-direct
+	  nnz(A): 68810, nnz(P): 0
+------------------------------------------------------------------
+ iter | pri res | dua res |   gap   |   obj   |  scale  | time (s)
+------------------------------------------------------------------
+     0| 4.29e+00  1.00e+00  4.29e+00 -2.15e+00  1.00e-01  1.78e-01 
+    25| 4.41e-06  2.88e-08  4.41e-06  2.21e-06  1.00e-01  4.20e+00 
+------------------------------------------------------------------
+status:  solved
+timings: total: 4.37e+00s = setup: 1.63e-01s + solve: 4.20e+00s
+	 lin-sys: 1.51e-01s, cones: 3.91e+00s, accel: 1.36e-02s
+------------------------------------------------------------------
+objective = 0.000002
+------------------------------------------------------------------
+-------------------------------------------------------------------------------
+                                    Summary                                    
+-------------------------------------------------------------------------------
+(CVXPY) Feb 01 03:37:02 PM: Problem status: optimal
+(CVXPY) Feb 01 03:37:02 PM: Optimal value: 4.943e-08
+(CVXPY) Feb 01 03:37:02 PM: Compilation took 2.936e-01 seconds
+(CVXPY) Feb 01 03:37:02 PM: Solver (including time spent in interface) took 4.369e+00 seconds
+[INFO]: CVXPY problem status: optimal
+MSE =  5.811e-16
