@@ -1,2 +1,2 @@
-model_checkpoint_path: "CFS_Koopman_correct_ics2.pickle.ckpt"
-all_model_checkpoint_paths: "CFS_Koopman_correct_ics2.pickle.ckpt"
+model_checkpoint_path: "Toggle_switch_DMJ_BFS.pickle.ckpt"
+all_model_checkpoint_paths: "Toggle_switch_DMJ_BFS.pickle.ckpt"
