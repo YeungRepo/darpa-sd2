@@ -86,7 +86,7 @@ num_states = 6
 
 
 training_epochs = 200000
-learning_rates = np.array([1/10**i for i in range(0, 5)])
+learning_rates = np.array([1/10**i for i in range(1, 5)])
 reg = np.array([1/10**i for i in range(0, 5)])
 
 for lambda_reg in reg:
