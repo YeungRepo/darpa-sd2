@@ -70,7 +70,7 @@ max_epochs =1000
 train_error_threshold = 0.00001
 valid_error_threshold = 0.00001;
 test_error_threshold = 0.00001;
-DISPLAY_SAMPLE_RATE_EPOCH = 500
+DISPLAY_SAMPLE_RATE_EPOCH = 5000
 
 ### Deep Learning Metaparameters ###
 keep_prob = 1.0; #keep_prob = 1-dr opout probability 
@@ -735,7 +735,7 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
 
 #def train_net( Xp, Xf, covariance structure matrix of Xp to Xf, 
   iter = 0;
-  samplerate = 250;
+  samplerate = 1000;
   good_start = 1;
   valid_error = 100.0;
   test_error = 100.0;
@@ -904,7 +904,7 @@ def train_net(u_all_training,y_all_training,mean_diff_nocovar,optimizer,u_contro
 ## # - - - Begin Koopman Model Script - - - # # #
 
 
-pre_examples_switch = 15; 
+pre_examples_switch = 5; 
 
 ### Randomly generated oscillator system with control
 
@@ -1040,24 +1040,24 @@ import sys
 if len(sys.argv)>1:
    data_suffix = sys.argv[1]; # PICKLE 
 if len(sys.argv)>2:
-   max_depth = np.int(sys.argv[2]); # DEPTH 
+   max_depth = int(sys.argv[2]); # DEPTH 
 if len(sys.argv)>3:
-   max_width_limit = np.int(sys.argv[3]); # NEURAL NETWORK WIDTH 
+   max_width_limit = int(sys.argv[3]); # NEURAL NETWORK WIDTH 
 if len(sys.argv)>4:
-   deep_dict_size = np.int(sys.argv[4]); # Deep Dictionary Size 
+   deep_dict_size = int(sys.argv[4]); # Deep Dictionary Size 
 if len(sys.argv)>5 :
-   max_epochs = np.int(sys.argv[5]); #Max Epochs  
+   max_epochs = int(sys.argv[5]); #Max Epochs  
 if len(sys.argv)>6 :
-   batch_size = np.int(sys.argv[6]); #Batch Size
+   batch_size = int(sys.argv[6]); #Batch Size
 if len(sys.argv)>7:
    plot_deep_basis = bool(sys.argv[7]); # Plot Prediction Plots and Deep Basis Or Not
 if len(sys.argv)>8:
    output_file_directory = sys.argv[8]; # Plot Prediction Plots and Deep Basis Or Not
 
 if len(sys.argv)>9 and with_control:
-   max_depth_control = np.int(sys.argv[9]); #  Depth of Control Observables Neural Network (Assumes the same width as the Koopman observables) 
+   max_depth_control = int(sys.argv[9]); #  Depth of Control Observables Neural Network (Assumes the same width as the Koopman observables) 
 if len(sys.argv)>10 and with_control:
-   deep_dict_size_control = np.int(sys.argv[10]); # Control/Input Observable Dictionary Size 
+   deep_dict_size_control = int(sys.argv[10]); # Control/Input Observable Dictionary Size 
 
 #
 
@@ -1120,7 +1120,7 @@ print("[INFO] Yf.shape (E-DMD): " + repr(Yf.shape));
 #Yf_train_old = Yf[0:train_range];
 ## End Old Code for Train/Test Split
 
-num_trains = np.int(len(Yp)/2);
+num_trains = int(len(Yp)/2);
 
 
 
@@ -1392,7 +1392,10 @@ saver = tf.compat.v1.train.Saver()
 
 tf.compat.v1.add_to_collection('psiyp',psiyp);
 tf.compat.v1.add_to_collection('psiyf',psiyf);
+
 tf.compat.v1.add_to_collection('Kx',Kx);
+tf.compat.v1.add_to_collection('Kx_constant',tf.constant(Kx_num));
+
 if with_output:
   tf.compat.v1.add_to_collection('Wh',Wh);
 
@@ -1407,9 +1410,9 @@ else:
 tf.compat.v1.add_to_collection('yp_feed',yp_feed);
 tf.compat.v1.add_to_collection('yf_feed',yf_feed);
 
-save_path = saver.save(sess, data_suffix + '.ckpt')
-saver_path_curr = saver.save(sess, FOLDER_NAME + '/' + data_suffix + '.ckpt')
 
+saver_path_curr = saver.save(sess,  data_suffix + '.ckpt')
+print("Saved Tensorflow variables as checkpoint.")
 Koopman_dim = Kx_num.shape[0];
 print("[INFO] Koopman_dim:" + repr(Kx_num.shape));
 
